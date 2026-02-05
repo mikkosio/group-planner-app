@@ -39,7 +39,7 @@ Backend API for the Gatherly - The Group Hangout Planner.
    NODE_ENV=development
    PORT=3000
    API_VERSION=v1
-   DATABASE_URL="postgresql://user:password@localhost:5432/hangout_planner"
+   DATABASE_URL="postgresql://user:password@localhost:5433/gatherly"
    CORS_ORIGIN=http://localhost:5173
 ```
 
