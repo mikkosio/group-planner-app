@@ -13,6 +13,7 @@ dotenv.config();
 // Create Express app
 const app: Application = express();
 app.use(helmet());
+app.use(express.json())
 
 // CORS
 app.use(
