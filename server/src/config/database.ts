@@ -1,6 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { logger } from "./logger";
 
+/**
+ * Initialize Prisma Client and connect to the database.
+ * Logs the connection status and handles any connection errors.
+ */
 const prisma = new PrismaClient({
   log:
     process.env.NODE_ENV === "development"
