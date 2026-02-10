@@ -1,4 +1,5 @@
 import { Container, Paper, Typography, Box } from "@mui/material";
+import { Link } from "react-router-dom";
 import AuthOptions from "../../components/AuthOptions";
 import FormDivider from "../../components/FormDivider";
 import LoginFields from "./LoginFields";
@@ -42,6 +43,14 @@ const LoginPage = () => {
 
                 {/* Input Fields */}
                 <LoginFields />
+
+                {/* Redirect to sign-up */}
+                <Typography variant="body2">
+                    New to Gatherly?{" "}
+                        <Link to="/signup" style={{ textDecoration: "none", fontWeight: "bold" }}>
+                            Create account
+                        </Link>
+                </Typography>
             </Paper>
         </Container>
     );
