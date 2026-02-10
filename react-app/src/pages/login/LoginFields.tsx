@@ -41,7 +41,7 @@ const LoginFields = () => {
                 />
 
                 {/* Submit button */}
-                <Button type="submit" variant="contained" fullWidth>
+                <Button type="submit" variant="contained" fullWidth sx={{ backgroundColor: "#35c2f1" }}>
                     Sign In
                 </Button>
             </Stack>
