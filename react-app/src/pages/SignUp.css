@@ -43,7 +43,7 @@
   height: 100px;
   object-fit: contain;
 }
-
+/* Common CSS styling for buttons will be tossed in globals later I think. */
 .signup-button,
 .button-with-icon {
   background: #35c2f1;
