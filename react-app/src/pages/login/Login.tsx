@@ -38,7 +38,7 @@ const LoginPage = () => {
                 <AuthOptions />
 
                 {/* Divider */}
-                <FormDivider text="Or" />
+                <FormDivider text="or" />
 
                 {/* Input Fields */}
                 <LoginFields />
