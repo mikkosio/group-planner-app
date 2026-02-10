@@ -5,7 +5,7 @@ import Login from './pages/Login'
 import SignUp from './pages/SignUp'
 import Profile from './pages/Profile'
 import Landing from './pages/Landing'
-import Navbar from './components/Navbar'
+import Navbar from './components/Navbar/Navbar'
 
 function App() {
     return (
