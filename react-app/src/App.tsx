@@ -6,6 +6,7 @@ import SignUp from './pages/signup/SignUp'
 import Profile from './pages/Profile'
 import Landing from './pages/Landing'
 import { AuthProvider } from './providers/AuthProvider'
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
     return (
@@ -14,10 +15,10 @@ function App() {
                 {/* Routes */}
                 <Routes>
                     <Route path="/" element={<Landing />} />
-                    <Route path="/home" element={<Home />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<SignUp />} />
-                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+                    <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                 </Routes>
             </Router>
         </AuthProvider>
