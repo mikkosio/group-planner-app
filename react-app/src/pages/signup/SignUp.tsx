@@ -1,73 +1,134 @@
-// import React, { useState } from "react";
-import GoogleIcon from "@mui/icons-material/Google";
-import AppleIcon from "@mui/icons-material/Apple";
+import {
+  Container,
+  Paper,
+  Typography,
+  Box,
+  Stack,
+  TextField,
+  Button,
+} from "@mui/material";
+import { Link } from "react-router-dom";
+import AuthOptions from "../../components/AuthOptions";
+import FormDivider from "../../components/FormDivider";
 import GatherlyLogo from "../../assets/gatherlylogo.png";
-import "./SignUp.css";
 
 const SignUpPage = () => {
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const firstName = formData.get("firstName")?.toString() || "";
+    const lastName = formData.get("lastName")?.toString() || "";
+    const email = formData.get("email")?.toString() || "";
+    const password = formData.get("password")?.toString() || "";
+    const confirmPassword = formData.get("confirmPassword")?.toString() || "";
+    console.log("Sign up data:", {
+      firstName,
+      lastName,
+      email,
+      password,
+      confirmPassword,
+    });
+  };
+
   return (
-    <div>
-      <div>
-        <img className="signup-logo" src={GatherlyLogo} alt="Gatherly Logo" />
-        <h1>Gatherly</h1>
-      </div>
-      <h2>Registration</h2>
-      <form className="signup-form">
-        <div className="signup-row signup-row--two">
-          <div className="signup-field">
-            <label htmlFor="firstName">First Name</label>
-            <input placeholder="Eg. John" type="text" id="firstName" />
-          </div>
-          <div className="signup-field">
-            <label htmlFor="lastName">Last Name</label>
-            <input placeholder="Eg. Smith" type="text" id="lastName" />
-          </div>
-        </div>
+    <Container maxWidth="sm">
+      <Paper
+        elevation={5}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 2,
+          mt: 8,
+          p: 2,
+          borderRadius: 2,
+        }}
+      >
+        <Box
+          component="img"
+          src={GatherlyLogo}
+          alt="Logo"
+          sx={{ height: 100 }}
+        />
+        <Typography variant="h3" sx={{ fontWeight: "bold" }}>
+          Gatherly
+        </Typography>
 
-        <div className="signup-row">
-          <label htmlFor="email">Email</label>
-          <input
-            placeholder="Eg. john.smith@example.com"
-            type="email"
-            id="email"
-          />
-        </div>
+        <FormDivider text="Sign up with" />
 
-        <div className="signup-row">
-          <label htmlFor="password">Password</label>
-          <input
-            placeholder="Enter your password"
-            type="password"
-            id="password"
-          />
-        </div>
+        <AuthOptions />
 
-        <div className="signup-row">
-          <label htmlFor="confirmPassword">Confirm Password</label>
-          <input
-            placeholder="Confirm your password"
-            type="password"
-            id="confirmPassword"
-          />
-        </div>
+        <FormDivider text="or" />
 
-        <button className="signup-button" type="submit">
-          Sign Up
-        </button>
-      </form>
-      <div>
-        <p>Or sign up with</p>
-        <button className="button-with-icon" type="button">
-          <GoogleIcon aria-hidden="true" /> Google
-        </button>
-        <button className="button-with-icon" type="button">
-          <AppleIcon aria-hidden="true" /> Apple
-        </button>
-      </div>
-      <p>
-        Already have an account? <a href="/login">Log in</a>
-      </p>
-    </div>
+        <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+          <Stack spacing={2}>
+            <Stack direction="row" spacing={2}>
+              <TextField
+                label="First Name"
+                name="firstName"
+                required
+                fullWidth
+                sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+              />
+              <TextField
+                label="Last Name"
+                name="lastName"
+                required
+                fullWidth
+                sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+              />
+            </Stack>
+
+            <TextField
+              label="Email"
+              name="email"
+              type="email"
+              required
+              fullWidth
+              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+            />
+
+            <TextField
+              label="Password"
+              name="password"
+              type="password"
+              required
+              fullWidth
+              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+            />
+
+            <TextField
+              label="Confirm Password"
+              name="confirmPassword"
+              type="password"
+              required
+              fullWidth
+              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+            />
+
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              sx={{ backgroundColor: "#35c2f1" }}
+            >
+              Sign Up
+            </Button>
+          </Stack>
+        </form>
+
+        {/* Redirect to login */}
+        <Typography variant="body2">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            style={{ textDecoration: "none", fontWeight: "bold" }}
+          >
+            Log in
+          </Link>
+        </Typography>
+      </Paper>
+    </Container>
   );
 };
 
