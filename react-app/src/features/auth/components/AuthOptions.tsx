@@ -1,6 +1,6 @@
 import { Box, Stack, Button } from "@mui/material";
-import GoogleLogo from "../assets/google-logo.svg";
-import AppleLogo from "../assets/apple-logo.svg";
+import GoogleLogo from "../../../assets/google-logo.svg";
+import AppleLogo from "../../../assets/apple-logo.svg";
 
 const AuthOptions = () => {
     return (
