@@ -1,12 +1,26 @@
 import { Stack, TextField, Button } from "@mui/material";
+import { useAuth } from "../../providers/AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 const LoginFields = () => {
+    const { login } = useAuth();
+    const navigate = useNavigate();
+
     const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const email = formData.get("email")?.toString() || "";
         const password = formData.get("password")?.toString() || "";
         console.log("Sign in data:", { email, password });
+
+        // auto login, change later
+        login({
+            id: "test123",
+            email: email,
+            name: "testUser"
+        })
+
+        navigate("/home");
     };
 
     return (
