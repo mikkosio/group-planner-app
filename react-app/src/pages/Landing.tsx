@@ -39,7 +39,7 @@ const LandingPage = () => {
                     backgroundColor: lightBlue[400],
                     color: "#fff",
                     borderRadius: 3,
-                    px: 5,
+                    px: 3,
                     "&:hover": {
                         backgroundColor: lightBlue[800],
                         boxShadow: ""
