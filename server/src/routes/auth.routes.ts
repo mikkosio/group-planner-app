@@ -10,3 +10,5 @@ router.post('/register', validateRequest(registerSchema), register);
 
 // POST /api/v1/auth/login
 router.post('/login', validateRequest(loginSchema), login);
+
+export default router;
