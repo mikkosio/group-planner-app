@@ -27,3 +27,53 @@ export const register = asyncHandler(
     });
   },
 );
+
+/**
+ * Login an existing user
+ * POST /api/v1/auth/login
+ */
+export const login = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+        const { email, password } = req.body;
+
+        logger.info(`Login attempt for email: ${email}`);
+
+        const { user, token } = await authService.login(email, password);
+
+        logger.info(`User logged in successfully: ${user.id}`);
+
+        res.status(200).json({
+            success: true,
+            message: 'Login successful',
+            data: {
+                user,
+                token,
+            },
+        });
+    }
+);
+
+/**
+ * Login an existing user
+ * POST /api/v1/auth/login
+ */
+export const login = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+        const { email, password } = req.body;
+
+        logger.info(`Login attempt for email: ${email}`);
+
+        const { user, token } = await authService.login(email, password);
+
+        logger.info(`User logged in successfully: ${user.id}`);
+
+        res.status(200).json({
+            success: true,
+            message: 'Login successful',
+            data: {
+                user,
+                token,
+            },
+        });
+    }
+);

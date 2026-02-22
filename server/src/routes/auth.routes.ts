@@ -1,11 +1,12 @@
-import { Router } from "express";
-import { register } from "../controllers/auth.controller";
+import { Router } from 'express';
+import { register, login } from '../controllers/auth.controller';
 import { validateRequest } from '../middlewares/validateRequest';
-import { registerSchema } from '../validators/auth.validator';
+import { registerSchema, loginSchema } from '../validators/auth.validator';
 
 const router = Router();
 
 // POST /api/v1/auth/register
-// todo add validation middleware
 router.post('/register', validateRequest(registerSchema), register);
-export default router;
+
+// POST /api/v1/auth/login
+router.post('/login', validateRequest(loginSchema), login);
