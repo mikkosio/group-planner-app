@@ -38,6 +38,24 @@ export const loginSchema = z.object({
     }),
 });
 
+export const updateProfileSchema = z.object({
+    body: z.object({
+        name: z
+            .string()
+            .min(2, 'Name must be at least 2 characters')
+            .max(100, 'Name must not exceed 100 characters')
+            .trim()
+            .optional(),
+        avatar: z
+            .string()
+            .url('Avatar must be a valid URL')
+            .optional()
+            .nullable(),
+    }),
+});
+
+
 // Export type for TypeScript
 export type RegisterInput = z.infer<typeof registerSchema>['body'];
 export type LoginInput = z.infer<typeof loginSchema>['body'];
+export type UpdateProfileInput = z.infer<typeof updateProfileSchema>['body'];
