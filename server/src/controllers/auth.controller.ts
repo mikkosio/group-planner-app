@@ -52,3 +52,23 @@ export const login = asyncHandler(
         });
     }
 );
+
+/**
+ * Get current logged in user (send User from Express.Request in authMiddleware)
+ * GET /api/v1/auth/me
+ */
+export const getMe = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+        // User is already attached by protect middleware
+        const user = req.user;
+
+        logger.info(`User profile fetched: ${user?.id}`);
+
+        res.status(200).json({
+            success: true,
+            data: {
+                user,
+            },
+        });
+    }
+);
