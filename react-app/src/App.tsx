@@ -7,6 +7,7 @@ import Profile from './pages/Profile'
 import Landing from './pages/Landing'
 import { AuthProvider } from './providers/AuthProvider'
 import ProtectedRoute from './components/ProtectedRoute'
+import GuestRoute from './components/GuestRoute'
 
 function App() {
     return (
@@ -15,8 +16,16 @@ function App() {
                 {/* Routes */}
                 <Routes>
                     <Route path="/" element={<Landing />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/signup" element={<SignUp />} />
+                    <Route path="/login" element={
+                        <GuestRoute>
+                            <Login />
+                        </GuestRoute>
+                    }/>
+                    <Route path="/signup" element={
+                        <GuestRoute>
+                            <SignUp />
+                        </GuestRoute>
+                    } />
                     <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
                     <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                 </Routes>

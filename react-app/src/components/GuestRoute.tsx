@@ -1,15 +1,15 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider"
 
-interface ProtectedRouteProps {
+interface GuestRouteProps {
     children: React.ReactNode;
 }
 
-const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+const GuestRoute = ({ children }: GuestRouteProps) => {
     const { user } = useAuth();
 
-    if (!user) {
-        return <Navigate to="/login" replace />
+    if (user) {
+        return <Navigate to="/home" replace />
     }
 
     return (
@@ -17,4 +17,4 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     )
 }
 
-export default ProtectedRoute;
+export default GuestRoute;
