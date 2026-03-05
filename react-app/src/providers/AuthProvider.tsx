@@ -1,6 +1,7 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import { authAPI } from "@/lib/auth";
 import type { User } from "@/types/models"
+import { jwtDecode, type JwtPayload } from "jwt-decode";
 
 /**
  * Shape of the AuthContext
@@ -36,6 +37,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [loading, setLoading] = useState<boolean>(true);
 
     /**
+     * Sets a timeout to automatically log out the user when the token expires
+     * @param exp JWT expiration time in seconds
+     */
+    const setLogoutTimer = (exp: number) => {
+        const timeout = exp * 1000 - Date.now();
+        if (timeout > 0) {
+            setTimeout(() => logout(), timeout);
+        } else {
+            logout();
+        }
+    }
+
+    /**
      * Check if user is already authenticated on mount
      */
     useEffect(() => {
@@ -47,6 +61,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             }
 
             try {
+                const { exp } = jwtDecode<JwtPayload>(token);
+
+                // Logout if token has no exp or expired
+                if (!exp || Date.now() >= exp * 1000) {
+                    logout();
+                    return;
+                } else {
+                    // Token is valid, set auto timeout
+                    setLogoutTimer(exp);
+                }
+
                 // Fetch current user from /me endpoint
                 const res = await authAPI.me();
                 setUser(res.data.user);
