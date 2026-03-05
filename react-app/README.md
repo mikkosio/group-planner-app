@@ -38,7 +38,7 @@ npm run dev
 
 | Route | Status | Description |
 | -------|-------- | ------------- |
-| `/` | ❌ Not implemented | Landing page |
+| `/` | ✅ Working | Landing page |
 | `/login` | ⚠️ Not Functional | Login page |
 | `/signup` | ⚠️ Not Functional | Sign-up page |
 | `/home` | ❌ Not implemented | Home page |

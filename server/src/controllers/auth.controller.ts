@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { asyncHandler } from "../utils/asyncHandler";
 import authService from "../services/auth.service";
 import { logger } from "../config/logger";
+import { AppError } from "../middlewares/errorHandler";
 
 /**
  * Register a new user
@@ -26,4 +27,78 @@ export const register = asyncHandler(
       },
     });
   },
+);
+
+/**
+ * Login an existing user
+ * POST /api/v1/auth/login
+ */
+export const login = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+        const { email, password } = req.body;
+
+        logger.info(`Login attempt for email: ${email}`);
+
+        const { user, token } = await authService.login(email, password);
+
+        logger.info(`User logged in successfully: ${user.id}`);
+
+        res.status(200).json({
+            success: true,
+            message: 'Login successful',
+            data: {
+                user,
+                token,
+            },
+        });
+    }
+);
+
+/**
+ * Get current logged in user (send User from Express.Request in authMiddleware)
+ * GET /api/v1/auth/me
+ */
+export const getMe = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+        // User is already attached by protect middleware
+        const user = req.user;
+
+        logger.info(`User profile fetched: ${user?.id}`);
+
+        res.status(200).json({
+            success: true,
+            data: {
+                user,
+            },
+        });
+    }
+);
+
+/**
+ * Update current user's profile
+ * PUT /api/v1/auth/profile
+ */
+export const updateProfile = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+        const userId = req.user?.id;
+        if (!userId) {
+            throw new AppError('User not authenticated', 401);
+        }
+
+        const { name, avatar } = req.body;
+        logger.info(`Profile update attempt for user: ${userId}`);
+        const updatedUser = await authService.updateProfile(userId, {
+            name,
+            avatar,
+        });
+
+        logger.info(`Profile updated successfully: ${userId}`);
+        res.status(200).json({
+            success: true,
+            message: 'Profile updated successfully',
+            data: {
+                user: updatedUser,
+            },
+        });
+    }
 );
