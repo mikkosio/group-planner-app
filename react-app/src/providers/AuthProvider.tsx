@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext } from "react";
+import { useState, useEffect, createContext, useContext, useRef } from "react";
 import { authAPI } from "@/lib/auth";
 import type { User } from "@/types/models"
 import { jwtDecode, type JwtPayload } from "jwt-decode";
@@ -7,17 +7,9 @@ import { jwtDecode, type JwtPayload } from "jwt-decode";
  * Shape of the AuthContext
  */
 interface AuthContextValue {
-    /** Currently authenticated user, or null if not logged in */
     user: User | null;
-
-    /**
-     * Log in a user
-     * @param email User's email
-     * @param password User's password
-     */
+    isLoading: boolean;
     login: (email: string, password: string) => void;
-
-    /** Log out the current user */
     logout: () => void;
 }
 
@@ -34,16 +26,22 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
  */
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [user, setUser] = useState<User | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [isLoading, setLoading] = useState<boolean>(true);
+    const logoutTimerRef = useRef<number | null>(null);
 
     /**
      * Sets a timeout to automatically log out the user when the token expires
      * @param exp JWT expiration time in seconds
      */
     const setLogoutTimer = (exp: number) => {
+        // Clear logout timer
+        if (logoutTimerRef.current) {
+            clearTimeout(logoutTimerRef.current);
+        }
+
         const timeout = exp * 1000 - Date.now();
         if (timeout > 0) {
-            setTimeout(() => logout(), timeout);
+            logoutTimerRef.current = window.setTimeout(() => logout(), timeout);
         } else {
             logout();
         }
@@ -81,6 +79,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             } finally {
                 setLoading(false);
             }
+
+            return () => {
+                // Clear logout timer on unmount
+                if (logoutTimerRef.current) {
+                    clearTimeout(logoutTimerRef.current);
+                };
+            }
         };
 
         checkAuth();
@@ -113,13 +118,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
      * Log out the current user
      */
     const logout = () => {
+        if (logoutTimerRef.current) {
+            clearTimeout(logoutTimerRef.current);
+            logoutTimerRef.current = null;
+        };
+
         localStorage.removeItem("authToken");
         setUser(null);
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout }}>
-            {loading ? <div>Loading...</div> : children}
+        <AuthContext.Provider value={{ user, isLoading, login, logout }}>
+            {isLoading ? <div>Loading...</div> : children}
         </AuthContext.Provider>
     );
 };
