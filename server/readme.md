@@ -119,6 +119,9 @@ Server runs at `http://localhost:3000`
 ### Health Checks
 ```
 POST  /auth/register      Register user with name, email, and password
+POST  /auth/login         Login user with email, and password
+GET   /auth/me            Retrieve authenticated user's profile
+PUT   /auth/profile       Update authenticated user's profile
 
 GET  /health              Server health check
 GET  /api/v1/health       API health check

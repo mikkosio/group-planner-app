@@ -1,11 +1,22 @@
-import { Router } from "express";
-import { register } from "../controllers/auth.controller";
+import { Router } from 'express';
+import { register, login, getMe, updateProfile } from '../controllers/auth.controller';
 import { validateRequest } from '../middlewares/validateRequest';
-import { registerSchema } from '../validators/auth.validator';
+import { registerSchema, loginSchema, updateProfileSchema } from '../validators/auth.validator';
+import { protect } from '../middlewares/authMiddleware';
 
 const router = Router();
 
+//=============================== PUBLIC ROUTES ===============================
 // POST /api/v1/auth/register
-// todo add validation middleware
 router.post('/register', validateRequest(registerSchema), register);
+
+// POST /api/v1/auth/login
+router.post('/login', validateRequest(loginSchema), login);
+
+
+//=============================== PROTECTED ROUTES ===============================
+// GET /api/v1/auth/me
+router.get('/me', protect, getMe)
+router.put('/profile', protect, validateRequest(updateProfileSchema), updateProfile);
+
 export default router;

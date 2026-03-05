@@ -1,8 +1,7 @@
 import bcrypt from "bcrypt";
-import jwt, { Secret } from "jsonwebtoken";
+import jwt, {Secret} from "jsonwebtoken";
 import prisma from "../config/database";
-// import { AppError } from '../middlewares/errorHandler';
-// todo add custom error handling
+import {AppError} from '../middlewares/errorHandler';
 
 const SALT_ROUNDS = 10;
 
@@ -39,7 +38,7 @@ export class AuthService {
     const expiresIn = process.env.JWT_EXPIRES_IN || "7d";
 
     if (!secret) {
-      throw new Error("JWT_SECRET is not defined in environment variables");
+      throw new AppError('JWT_SECRET is not defined in environment variables', 500);
     }
 
     // todo use the expiresIn variable, jwt.sign gives error when used
@@ -55,17 +54,15 @@ export class AuthService {
    */
   verifyToken(token: string): { userId: string } {
     if (!process.env.JWT_SECRET) {
-      throw new Error("JWT_SECRET is not defined in environment variables");
+        throw new AppError('JWT_SECRET is not defined in environment variables', 500);
     }
 
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET) as {
-        userId: string;
+        return jwt.verify(token, process.env.JWT_SECRET) as {
+          userId: string;
       };
-      return decoded;
     } catch (error) {
-      //   throw new AppError('Invalid or expired token', 401);
-      throw new Error("Invalid or expired token");
+        throw new AppError('Invalid or expired token', 401);
     }
   }
 
@@ -83,8 +80,7 @@ export class AuthService {
     });
 
     if (existingUser) {
-      // throw new AppError('User with this email already exists', 400);
-      throw new Error("User with this email already exists");
+      throw new AppError('User with this email already exists', 400);
     }
 
     // Hash password
@@ -115,6 +111,69 @@ export class AuthService {
       token,
     };
   }
+
+    /**
+     * Login an existing user
+     */
+    async login(email: string, password: string) {
+        // Find user by email
+        const user = await prisma.user.findUnique({
+            where: { email: email.toLowerCase() },
+        });
+
+        if (!user) {
+            throw new AppError('Invalid email or password', 401);
+        }
+
+        // Compare password
+        const isPasswordValid = await this.comparePassword(password, user.password);
+
+        if (!isPasswordValid) {
+            throw new AppError('Invalid email or password', 401);
+        }
+
+        // Generate token
+        const token = this.generateToken(user.id);
+
+        // Return user without password
+        const { password: _, ...userWithoutPassword } = user;
+
+        return {
+            user: userWithoutPassword,
+            token,
+        };
+    }
+
+    /**
+     * Update user profile
+     * @params userId ID of the user to update
+     * @params data Object containing fields to update (name and/or avatar)
+     *
+     * @returns Updated user object without password
+     */
+    async updateProfile(
+        userId: string,
+        data: { name?: string; avatar?: string }
+    ) {
+        // Update user and return updated user without password
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data: {
+                ...(data.name !== undefined && { name: data.name }),
+                ...(data.avatar !== undefined && { avatar: data.avatar }),
+            },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                avatar: true,
+                createdAt: true,
+                updatedAt: true,
+            },
+        });
+
+        return updatedUser;
+    }
 }
 
 export default new AuthService();
