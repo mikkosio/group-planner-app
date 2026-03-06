@@ -15,7 +15,7 @@ const LoginPage = () => {
                     flexDirection: "column",
                     alignItems: "center",
                     gap: 2,
-                    mt: 8,
+                    mt: 2,
                     p: 2,
                     borderRadius: 2
                 }}>
