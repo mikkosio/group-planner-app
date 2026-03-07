@@ -1,7 +1,6 @@
 import { alpha, AppBar, Box, Toolbar, Typography } from "@mui/material";
 import MenuButton from "./MenuButton";
 import { useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
 import NavDropdown from "./NavDropdown";
 
 const navbarInset = { left: 16, right: 16 };
@@ -16,13 +15,8 @@ const routes = [
 ]
 
 const Navbar = () => {
-    const location = useLocation();
-    const hideOn = ['/', '/login', '/signup'];
-
     const navbarRef = useRef<HTMLDivElement | null>(null);
     const [open, setOpen] = useState(false);
-    
-    if (hideOn.includes(location.pathname)) return null;
 
     return (
         <>
