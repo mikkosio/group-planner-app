@@ -21,8 +21,8 @@ const LoginFields = () => {
                     fullWidth
                     sx={{
                         "& .MuiOutlinedInput-root": {
-                            borderRadius: 3
-                        }
+                            borderRadius: 3,
+                        },
                     }}
                 />
 
@@ -35,13 +35,18 @@ const LoginFields = () => {
                     fullWidth
                     sx={{
                         "& .MuiOutlinedInput-root": {
-                            borderRadius: 3
-                        }
+                            borderRadius: 3,
+                        },
                     }}
                 />
 
                 {/* Submit button */}
-                <Button type="submit" variant="contained" fullWidth sx={{ backgroundColor: "#35c2f1" }}>
+                <Button
+                    type="submit"
+                    variant="contained"
+                    fullWidth
+                    sx={{ backgroundColor: "#35c2f1" }}
+                >
                     Sign In
                 </Button>
             </Stack>
