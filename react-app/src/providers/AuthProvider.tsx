@@ -201,7 +201,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         <AuthContext.Provider
             value={{ user, isLoading, authError, login, logout, register, updateProfile }}
         >
-            {isLoading ? <div>Loading...</div> : children}
+            {children}
         </AuthContext.Provider>
     );
 };
