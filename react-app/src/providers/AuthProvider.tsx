@@ -80,15 +80,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 setLoading(false);
             }
 
-            return () => {
-                // Clear logout timer on unmount
-                if (logoutTimerRef.current) {
-                    clearTimeout(logoutTimerRef.current);
-                };
-            }
         };
-
+        
         checkAuth();
+        
+        return () => {
+            // Clear logout timer on unmount
+            if (logoutTimerRef.current) {
+                clearTimeout(logoutTimerRef.current);
+            };
+        }
     }, []);
 
     /**
