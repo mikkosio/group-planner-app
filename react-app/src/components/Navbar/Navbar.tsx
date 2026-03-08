@@ -52,6 +52,7 @@ const Navbar = () => {
             <Box
                 onClick={() => setOpen(false)}
                 sx={{
+                    pointerEvents: open ? "auto" : "none",
                     position: "fixed",
                     inset: 0,
                     zIndex: navbarZIndex.backdrop,
