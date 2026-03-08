@@ -59,22 +59,30 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             }
 
             try {
-                const { exp } = jwtDecode<JwtPayload>(token);
+                let exp: number | undefined;
+                try {
+                    ({ exp } = jwtDecode<JwtPayload>(token));
+                } catch {
+                    // Malformed token — clear and bail out
+                    localStorage.removeItem("authToken");
+                    setLoading(false);
+                    return;
+                }
 
-                // Logout if token has no exp or expired
+                // Logout if token has no exp or is expired
                 if (!exp || Date.now() >= exp * 1000) {
                     logout();
                     return;
-                } else {
-                    // Token is valid, set auto timeout
-                    setLogoutTimer(exp);
                 }
+
+                // Token is valid — set auto-logout timer
+                setLogoutTimer(exp);
 
                 // Fetch current user from /me endpoint
                 const res = await authAPI.me();
                 setUser(res.data.user);
             } catch (error) {
-                // Token invalid or expired, remove it
+                // Token invalid or server rejected it — remove token
                 localStorage.removeItem("authToken");
             } finally {
                 setLoading(false);
@@ -84,7 +92,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         
         checkAuth();
 
+        // Auto-logout when axios receives a 401 (server-side token rejection)
+        window.addEventListener("auth:logout", logout);
+
         return () => {
+            window.removeEventListener("auth:logout", logout);
             // Clear logout timer on unmount
             if (logoutTimerRef.current) {
                 clearTimeout(logoutTimerRef.current);
