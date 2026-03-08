@@ -1,6 +1,6 @@
 import { useState, useEffect, createContext, useContext, useRef } from "react";
 import { authAPI } from "@/lib/auth";
-import type { User } from "@/types/models"
+import type { User } from "@/types/models";
 import { jwtDecode, type JwtPayload } from "jwt-decode";
 
 /**
@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         } else {
             logout();
         }
-    }
+    };
 
     /**
      * Check if user is already authenticated on mount
@@ -100,9 +100,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             } finally {
                 setLoading(false);
             }
-
         };
-        
+
         checkAuth();
 
         // Auto-logout when axios receives a 401 (server-side token rejection)
@@ -113,8 +112,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             // Clear logout timer on unmount
             if (logoutTimerRef.current) {
                 clearTimeout(logoutTimerRef.current);
-            };
-        }
+            }
+        };
     }, []);
 
     /**
@@ -192,14 +191,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         if (logoutTimerRef.current) {
             clearTimeout(logoutTimerRef.current);
             logoutTimerRef.current = null;
-        };
+        }
 
         localStorage.removeItem("authToken");
         setUser(null);
     };
 
     return (
-        <AuthContext.Provider value={{ user, isLoading, authError, login, logout, register, updateProfile }}>
+        <AuthContext.Provider
+            value={{ user, isLoading, authError, login, logout, register, updateProfile }}
+        >
             {isLoading ? <div>Loading...</div> : children}
         </AuthContext.Provider>
     );
