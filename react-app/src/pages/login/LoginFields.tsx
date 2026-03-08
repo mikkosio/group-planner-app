@@ -12,7 +12,7 @@ const LoginFields = () => {
         const email = formData.get("email")?.toString() || "";
         const password = formData.get("password")?.toString() || "";
         console.log("Sign in data:", { email, password });
-        
+
         try {
             await login(email, password);
             navigate("/home");
