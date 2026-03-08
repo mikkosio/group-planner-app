@@ -32,5 +32,15 @@ export const authAPI = {
      */
     async me(): Promise<ApiResponse<MeData>> {
         return api.get('/auth/me');
+    },
+
+    /**
+     * Update the authenticated user's profile
+     * @param name Optional display name
+     * @param avatar Optional avatar URL
+     * @returns API response with updated MeData
+     */
+    async updateProfile(name?: string, avatar?: string): Promise<ApiResponse<MeData>> {
+        return api.put('/auth/profile', { name, avatar });
     }
 };

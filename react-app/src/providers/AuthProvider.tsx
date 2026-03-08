@@ -13,6 +13,7 @@ interface AuthContextValue {
     login: (email: string, password: string) => Promise<void>;
     logout: () => void;
     register: (email: string, password: string, name?: string) => Promise<void>;
+    updateProfile: (name?: string, avatar?: string) => Promise<void>;
 }
 
 /** Props for AuthProvider component */
@@ -175,6 +176,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
 
     /**
+     * Update the current user's profile and sync state
+     * @param name Optional display name
+     * @param avatar Optional avatar URL
+     */
+    const updateProfile = async (name?: string, avatar?: string) => {
+        const res = await authAPI.updateProfile(name, avatar);
+        setUser(res.data.user);
+    };
+
+    /**
      * Log out the current user
      */
     const logout = () => {
@@ -188,7 +199,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, isLoading, authError, login, logout, register }}>
+        <AuthContext.Provider value={{ user, isLoading, authError, login, logout, register, updateProfile }}>
             {isLoading ? <div>Loading...</div> : children}
         </AuthContext.Provider>
     );
