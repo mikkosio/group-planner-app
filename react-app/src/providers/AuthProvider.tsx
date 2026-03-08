@@ -9,8 +9,10 @@ import { jwtDecode, type JwtPayload } from "jwt-decode";
 interface AuthContextValue {
     user: User | null;
     isLoading: boolean;
+    authError: string | null;
     login: (email: string, password: string) => Promise<void>;
     logout: () => void;
+    register: (email: string, password: string, name?: string) => Promise<void>;
 }
 
 /** Props for AuthProvider component */
@@ -27,6 +29,7 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setLoading] = useState<boolean>(true);
+    const [authError, setAuthError] = useState<string | null>(null);
     const logoutTimerRef = useRef<number | null>(null);
 
     /**
@@ -81,9 +84,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 // Fetch current user from /me endpoint
                 const res = await authAPI.me();
                 setUser(res.data.user);
-            } catch (error) {
-                // Token invalid or server rejected it — remove token
-                localStorage.removeItem("authToken");
+            } catch (error: unknown) {
+                // 401 means token is rejected by server — clear it
+                // Any other error (network, 5xx) — keep token, surface error
+                const status =
+                    error instanceof Object &&
+                    "response" in error &&
+                    (error as { response?: { status?: number } }).response?.status;
+                if (status === 401 || status === undefined) {
+                    localStorage.removeItem("authToken");
+                } else {
+                    setAuthError("Could not verify session. Please try again.");
+                }
             } finally {
                 setLoading(false);
             }
@@ -110,6 +122,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
      * @param password User password
      */
     const login = async (email: string, password: string) => {
+        setAuthError(null);
         const res = await authAPI.login(email, password);
         const { token, user: userData } = res.data;
 
@@ -134,6 +147,34 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
 
     /**
+     * Register a new user, store the auth token, and set the session
+     * @param email User email
+     * @param password User password
+     * @param name Optional display name
+     */
+    const register = async (email: string, password: string, name?: string) => {
+        setAuthError(null);
+        const res = await authAPI.register(email, password, name);
+        const { token, user: userData } = res.data;
+
+        localStorage.setItem("authToken", token);
+
+        setUser({
+            id: userData.id,
+            email: userData.email,
+            name: userData.name,
+            avatar: userData.avatar,
+            createdAt: userData.createdAt,
+            updatedAt: userData.updatedAt,
+        });
+
+        const { exp } = jwtDecode<JwtPayload>(token);
+        if (exp) {
+            setLogoutTimer(exp);
+        }
+    };
+
+    /**
      * Log out the current user
      */
     const logout = () => {
@@ -147,7 +188,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, isLoading, login, logout }}>
+        <AuthContext.Provider value={{ user, isLoading, authError, login, logout, register }}>
             {isLoading ? <div>Loading...</div> : children}
         </AuthContext.Provider>
     );
