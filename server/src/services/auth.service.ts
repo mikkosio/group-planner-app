@@ -142,6 +142,16 @@ export class AuthService {
     }
 
     /**
+     * Delete a user account permanently
+     * @param userId ID of the user to delete
+     */
+    async deleteUserById(userId: string): Promise<void> {
+        await prisma.user.delete({
+            where: { id: userId },
+        });
+    }
+
+    /**
      * Update user profile
      * @params userId ID of the user to update
      * @params data Object containing fields to update (name and/or avatar)
