@@ -8,8 +8,7 @@ import { AppError } from "../middlewares/errorHandler";
  * Register a new user
  * POST /api/v1/auth/register
  */
-export const register = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+export const register = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const { email, password, name } = req.body;
 
     logger.info(`Registration attempt for email: ${email}`);
@@ -19,60 +18,55 @@ export const register = asyncHandler(
     logger.info(`User registered successfully: ${user.id}`);
 
     res.status(201).json({
-      success: true,
-      message: "User registered successfully",
-      data: {
-        user,
-        token,
-      },
+        success: true,
+        message: "User registered successfully",
+        data: {
+            user,
+            token,
+        },
     });
-  },
-);
+});
 
 /**
  * Login an existing user
  * POST /api/v1/auth/login
  */
-export const login = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
-        const { email, password } = req.body;
+export const login = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const { email, password } = req.body;
 
-        logger.info(`Login attempt for email: ${email}`);
+    logger.info(`Login attempt for email: ${email}`);
 
-        const { user, token } = await authService.login(email, password);
+    const { user, token } = await authService.login(email, password);
 
-        logger.info(`User logged in successfully: ${user.id}`);
+    logger.info(`User logged in successfully: ${user.id}`);
 
-        res.status(200).json({
-            success: true,
-            message: 'Login successful',
-            data: {
-                user,
-                token,
-            },
-        });
-    }
-);
+    res.status(200).json({
+        success: true,
+        message: "Login successful",
+        data: {
+            user,
+            token,
+        },
+    });
+});
 
 /**
  * Get current logged in user (send User from Express.Request in authMiddleware)
  * GET /api/v1/auth/me
  */
-export const getMe = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
-        // User is already attached by protect middleware
-        const user = req.user;
+export const getMe = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    // User is already attached by protect middleware
+    const user = req.user;
 
-        logger.info(`User profile fetched: ${user?.id}`);
+    logger.info(`User profile fetched: ${user?.id}`);
 
-        res.status(200).json({
-            success: true,
-            data: {
-                user,
-            },
-        });
-    }
-);
+    res.status(200).json({
+        success: true,
+        data: {
+            user,
+        },
+    });
+});
 
 /**
  * Update current user's profile
@@ -82,7 +76,7 @@ export const updateProfile = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
         const userId = req.user?.id;
         if (!userId) {
-            throw new AppError('User not authenticated', 401);
+            throw new AppError("User not authenticated", 401);
         }
 
         const { name, avatar } = req.body;
@@ -95,10 +89,10 @@ export const updateProfile = asyncHandler(
         logger.info(`Profile updated successfully: ${userId}`);
         res.status(200).json({
             success: true,
-            message: 'Profile updated successfully',
+            message: "Profile updated successfully",
             data: {
                 user: updatedUser,
             },
         });
-    }
+    },
 );

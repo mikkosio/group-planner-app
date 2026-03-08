@@ -4,20 +4,24 @@ import AppleLogo from "../../../assets/apple-logo.svg";
 
 const AuthOptions = () => {
     return (
-        <Stack spacing={2} sx={{ width: "100%" }} >
+        <Stack spacing={2} sx={{ width: "100%" }}>
             <Button
                 variant="outlined"
-                startIcon={<Box component="img" src={GoogleLogo} alt="Google logo" sx={{ height: 20 }} />}
+                startIcon={
+                    <Box component="img" src={GoogleLogo} alt="Google logo" sx={{ height: 20 }} />
+                }
                 sx={{
                     color: "black",
-                    borderColor: "gray"
+                    borderColor: "gray",
                 }}
             >
                 Sign in with Google
             </Button>
             <Button
                 variant="outlined"
-                startIcon={<Box component="img" src={AppleLogo} alt="Google logo" sx={{ height: 24 }} />}
+                startIcon={
+                    <Box component="img" src={AppleLogo} alt="Google logo" sx={{ height: 24 }} />
+                }
                 sx={{
                     color: "black",
                     borderColor: "gray",
@@ -25,8 +29,8 @@ const AuthOptions = () => {
             >
                 Sign in with Apple
             </Button>
-        </Stack >
-    )
-}
+        </Stack>
+    );
+};
 
 export default AuthOptions;

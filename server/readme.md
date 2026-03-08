@@ -7,6 +7,7 @@ Backend API for the Gatherly - The Group Hangout Planner.
 - **Runtime**: Node.js v18+
 - **Framework**: Express + TypeScript
 - **Database**: PostgreSQL + Prisma ORM
+
 ---
 
 ## Getting Started
@@ -20,21 +21,25 @@ Backend API for the Gatherly - The Group Hangout Planner.
 ### Installation
 
 1. **Clone and navigate to the project**
+
 ```bash
    cd server
 ```
 
 2. **Install dependencies**
+
 ```bash
    npm install
 ```
 
 3. **Setup environment variables**
+
 ```bash
    cp .env.example .env
 ```
-   
-   Update `.env` with your database credentials:
+
+Update `.env` with your database credentials:
+
 ```env
    NODE_ENV=development
    PORT=3000
@@ -45,7 +50,8 @@ Backend API for the Gatherly - The Group Hangout Planner.
 
 4. **Setup database**
 
-   **Option A: Using Docker (Recommended)**
+    **Option A: Using Docker (Recommended)**
+
 ```bash
    # Start PostgreSQL container
    docker run -d \
@@ -56,42 +62,48 @@ Backend API for the Gatherly - The Group Hangout Planner.
      -p 5433:5432 \
      -v gatherly_postgres_data:/var/lib/postgresql/data \
      postgres:14-alpine
-   
+
    # Wait for database to be ready
    sleep 5
-   
+
    # Verify connection
    docker exec -it gatherly-db psql -U gatherly_user -d gatherly -c "SELECT version();"
 ```
-   **Option B: Using Local PostgreSQL**
+
+**Option B: Using Local PostgreSQL**
+
 ```bash
    # Create database
    createdb gatherly
-   
+
    # Update DATABASE_URL in .env to use port 5432
    DATABASE_URL="postgresql://your_user:your_password@localhost:5432/gatherly"
 ```
-   4.2 **Run Prisma migrations**
+
+4.2 **Run Prisma migrations**
+
 ```bash
    # Generate Prisma client
    npm run db:generate
-   
+
    # Create database tables
    npm run db:migrate
    # When prompted, name it: "init"
 ```
-   
-  4.3 **Verify setup (Optional)**
+
+4.3 **Verify setup (Optional)**
+
 ```bash
    # Open Prisma Studio to view database
    npm run db:studio
    # Opens at http://localhost:5555
-   
+
    # Or check with psql
    docker exec -it gatherly-db psql -U gatherly_user -d gatherly -c "\dt"
 ```
 
 5. **Start development server**
+
 ```bash
    npm run dev
 ```
@@ -102,21 +114,22 @@ Server runs at `http://localhost:3000`
 
 ## Available Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server with hot reload |
-| `npm run build` | Compile TypeScript to JavaScript |
-| `npm start` | Start production server |
-| `npm run db:generate` | Generate Prisma client |
-| `npm run db:migrate` | Run database migrations |
-| `npm run db:push` | Push schema changes (dev only) |
-| `npm run db:studio` | Open Prisma Studio (database GUI) |
+| Command               | Description                              |
+| --------------------- | ---------------------------------------- |
+| `npm run dev`         | Start development server with hot reload |
+| `npm run build`       | Compile TypeScript to JavaScript         |
+| `npm start`           | Start production server                  |
+| `npm run db:generate` | Generate Prisma client                   |
+| `npm run db:migrate`  | Run database migrations                  |
+| `npm run db:push`     | Push schema changes (dev only)           |
+| `npm run db:studio`   | Open Prisma Studio (database GUI)        |
 
 ---
 
 ## API Endpoints
 
 ### Health Checks
+
 ```
 POST  /auth/register      Register user with name, email, and password
 POST  /auth/login         Login user with email, and password
@@ -129,6 +142,7 @@ GET  /api/v1/unknown      Error 404 response
 ```
 
 **Example Success Response:**
+
 ```json
 {
   "success": true,
@@ -148,6 +162,7 @@ OR
 ---
 
 ## Project Structure
+
 ```
 server/
 ├── src/
@@ -171,21 +186,22 @@ server/
 
 ## Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `NODE_ENV` | Environment mode | `development` |
-| `PORT` | Server port | `3000` |
-| `API_VERSION` | API version prefix | `v1` |
-| `DATABASE_URL` | PostgreSQL connection string | Required |
-| `CORS_ORIGIN` | Allowed frontend origin | `http://localhost:5173` |
-|JWT_SECRET | 128-character hexadecimal string for hashing | Required
-|JWT_EXPIRES_IN | Token validity time | `7d`
+| Variable       | Description                                  | Default                 |
+| -------------- | -------------------------------------------- | ----------------------- |
+| `NODE_ENV`     | Environment mode                             | `development`           |
+| `PORT`         | Server port                                  | `3000`                  |
+| `API_VERSION`  | API version prefix                           | `v1`                    |
+| `DATABASE_URL` | PostgreSQL connection string                 | Required                |
+| `CORS_ORIGIN`  | Allowed frontend origin                      | `http://localhost:5173` |
+| JWT_SECRET     | 128-character hexadecimal string for hashing | Required                |
+| JWT_EXPIRES_IN | Token validity time                          | `7d`                    |
 
 ---
 
 ## Database Management
 
 ### Useful Commands
+
 ```bash
 # Generate Prisma client after schema changes
 npm run db:generate
@@ -204,6 +220,7 @@ npx prisma migrate reset
 ```
 
 ### Docker Database Commands
+
 ```bash
 # Start database
 docker start gatherly-db
@@ -223,10 +240,13 @@ docker exec gatherly-db pg_dump -U gatherly_user gatherly > backup.sql
 # Restore database
 docker exec -i gatherly-db psql -U gatherly_user -d gatherly < backup.sql
 ```
+
 ---
+
 ### Common Issues
 
 **Issue: Port 5432 already in use**
+
 ```bash
 # Check what's using the port
 lsof -i :5432
@@ -238,6 +258,7 @@ brew services stop postgresql
 ```
 
 **Issue: Database connection refused**
+
 ```bash
 # Check if Docker container is running
 docker ps
@@ -247,6 +268,7 @@ docker restart gatherly-db
 ```
 
 **Issue: Permission denied errors**
+
 ```bash
 # Reconnect to database and run
 docker exec -it gatherly-db psql -U gatherly_user -d gatherly

@@ -10,7 +10,7 @@ const Home = () => {
             <p>Welcome {user?.name}</p>
             <p>Email: {user?.email}</p>
         </div>
-    )
-}
+    );
+};
 
 export default Home;
