@@ -13,7 +13,7 @@ export const authAPI = {
      * @returns API response with AuthData
      */
     async register(email: string, password: string, name?: string): Promise<ApiResponse<AuthData>> {
-        return api.post('/auth/register', { email, password, name });
+        return api.post("/auth/register", { email, password, name });
     },
 
     /**
@@ -23,7 +23,7 @@ export const authAPI = {
      * @returns API response with AuthData
      */
     async login(email: string, password: string): Promise<ApiResponse<AuthData>> {
-        return api.post('/auth/login', { email, password });
+        return api.post("/auth/login", { email, password });
     },
 
     /**
@@ -31,6 +31,6 @@ export const authAPI = {
      * @returns API response with MeData
      */
     async me(): Promise<ApiResponse<MeData>> {
-        return api.get('/auth/me');
-    }
+        return api.get("/auth/me");
+    },
 };

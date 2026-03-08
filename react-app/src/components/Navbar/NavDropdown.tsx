@@ -11,14 +11,14 @@ interface NavDropdownProps {
     navbarRef: React.RefObject<HTMLDivElement | null>;
     open: boolean;
     setOpen: (open: boolean) => void;
-    inset: { left: number, right: number };
+    inset: { left: number; right: number };
     zIndex: number;
     routes: NavRoute[];
 }
 
 const NavDropdown = ({ navbarRef, open, setOpen, inset, zIndex, routes }: NavDropdownProps) => {
     const navigate = useNavigate();
-    const { logout } =  useAuth();
+    const { logout } = useAuth();
 
     return (
         <Paper
@@ -31,21 +31,33 @@ const NavDropdown = ({ navbarRef, open, setOpen, inset, zIndex, routes }: NavDro
                 zIndex: zIndex,
                 "& .MuiMenuItem-root": {
                     margin: 0.5,
-                    fontSize: 18
+                    fontSize: 18,
                 },
                 "& .MuiMenuItem-root.logout": {
                     color: "error.light",
-                    fontWeight: 900
-                }
+                    fontWeight: 900,
+                },
             }}
         >
             <Collapse in={open} timeout={300} easing="cubic-bezier(0.16, 1, 0.3, 1)">
                 {routes.map((route: NavRoute) => (
-                    <MenuItem key={route.path} onClick={() => { setOpen(false); navigate(route.path) }}>
+                    <MenuItem
+                        key={route.path}
+                        onClick={() => {
+                            setOpen(false);
+                            navigate(route.path);
+                        }}
+                    >
                         {route.label}
                     </MenuItem>
                 ))}
-                <MenuItem className="logout" onClick={() => { setOpen(false); logout(); }}>
+                <MenuItem
+                    className="logout"
+                    onClick={() => {
+                        setOpen(false);
+                        logout();
+                    }}
+                >
                     Logout
                 </MenuItem>
             </Collapse>

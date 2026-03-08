@@ -1,5 +1,5 @@
-import { createTheme } from '@mui/material/styles';
-import { lightBlue, cyan, amber } from '@mui/material/colors';
+import { createTheme } from "@mui/material/styles";
+import { lightBlue, cyan, amber } from "@mui/material/colors";
 
 const theme = createTheme({
     palette: {
@@ -7,7 +7,7 @@ const theme = createTheme({
             light: lightBlue[100],
             main: lightBlue[400],
             dark: lightBlue[900],
-            contrastText: '#fff',
+            contrastText: "#fff",
         },
         secondary: {
             light: cyan.A100,
@@ -19,11 +19,11 @@ const theme = createTheme({
             light: amber[300],
             main: amber.A200,
             dark: amber[900],
-            contrastText: '#7f3700',
+            contrastText: "#7f3700",
         },
         background: {
             default: lightBlue[50],
-            paper: '#fff',
+            paper: "#fff",
         },
         text: {
             primary: lightBlue[900],
@@ -42,11 +42,11 @@ const theme = createTheme({
             styleOverrides: {
                 root: {
                     borderRadius: 100,
-                    fontWeight: 800
+                    fontWeight: 800,
                 },
             },
         },
-    }
+    },
 });
 
 export default theme;

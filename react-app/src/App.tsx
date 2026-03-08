@@ -34,8 +34,22 @@ function App() {
                                 </GuestRoute>
                             }
                         />
-                        <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-                        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                        <Route
+                            path="/home"
+                            element={
+                                <ProtectedRoute>
+                                    <Home />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/profile"
+                            element={
+                                <ProtectedRoute>
+                                    <Profile />
+                                </ProtectedRoute>
+                            }
+                        />
                     </Routes>
                 </Layout>
             </Router>

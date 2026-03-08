@@ -6,20 +6,22 @@ interface MenuButtonProps {
 }
 
 const HamburgerIcon = ({ open }: { open: boolean }) => (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4.5px', width: 18 }}>
-        {[0, 1, 2].map(i => (
+    <Box sx={{ display: "flex", flexDirection: "column", gap: "4.5px", width: 18 }}>
+        {[0, 1, 2].map((i) => (
             <Box
                 key={i}
                 sx={{
-                    display: 'block',
+                    display: "block",
                     height: 2,
-                    bgcolor: 'secondary.light',
+                    bgcolor: "secondary.light",
                     borderRadius: 1,
                     width: i === 2 ? 12 : 18,
-                    transition: 'transform 0.22s ease, opacity 0.22s ease, width 0.22s ease',
-                    ...(open && i === 0 && { transform: 'translateY(6.5px) rotate(45deg)', width: 18 }),
+                    transition: "transform 0.22s ease, opacity 0.22s ease, width 0.22s ease",
+                    ...(open &&
+                        i === 0 && { transform: "translateY(6.5px) rotate(45deg)", width: 18 }),
                     ...(open && i === 1 && { opacity: 0 }),
-                    ...(open && i === 2 && { transform: 'translateY(-6.5px) rotate(-45deg)', width: 18 }),
+                    ...(open &&
+                        i === 2 && { transform: "translateY(-6.5px) rotate(-45deg)", width: 18 }),
                 }}
             />
         ))}
@@ -36,12 +38,12 @@ const MenuButton = ({ open, setOpen }: MenuButtonProps) => {
                     sx={{
                         background: "rgba(255,255,255,0.3)",
                         border: "1.5px solid",
-                        borderColor: 'rgba(255,255,255,0.3)',
+                        borderColor: "rgba(255,255,255,0.3)",
                         borderRadius: 10,
                         gap: 1,
                         pt: 0.5,
                         pb: 0.5,
-                        pl: 0.5
+                        pl: 0.5,
                     }}
                 >
                     <Avatar
@@ -58,11 +60,9 @@ const MenuButton = ({ open, setOpen }: MenuButtonProps) => {
                     />
                     <HamburgerIcon open={open} />
                 </Button>
-
-
             </Box>
         </>
-    )
-}
+    );
+};
 
 export default MenuButton;
