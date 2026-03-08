@@ -1,7 +1,7 @@
 import { Container, Paper, Typography, Box } from "@mui/material";
 import { Link } from "react-router-dom";
-import AuthOptions from "../../components/AuthOptions";
-import FormDivider from "../../components/FormDivider";
+import AuthOptions from "../../features/auth/components/AuthOptions";
+import FormDivider from "../../features/auth/components/FormDivider";
 import LoginFields from "./LoginFields";
 import GatherlyLogo from "../../assets/gatherlylogo.png";
 
