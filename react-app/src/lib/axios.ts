@@ -8,10 +8,16 @@ export const api = axios.create({
     headers: { "Content-Type": "application/json" },
 });
 
-/** Interceptor to unwrap `data` from Axios responses */
+/** Interceptor to unwrap `data` from Axios responses, and auto-logout on 401 */
 api.interceptors.response.use(
     (response) => response.data,
-    (error) => Promise.reject(error),
+    (error) => {
+        if (error.response?.status === 401) {
+            localStorage.removeItem("authToken");
+            window.dispatchEvent(new Event("auth:logout"));
+        }
+        return Promise.reject(error);
+    },
 );
 
 /** Interceptor to add Authorization header if token exists */
