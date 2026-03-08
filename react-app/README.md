@@ -4,27 +4,27 @@ Frontend app for Gatherly - The Group Hangout Planner.
 
 ## 🛠 Tech Stack
 
-- **Frontend Framework:** React  
-- **UI Library:** Material-UI (MUI)  
-- **Build Tool:** Vite  
+- **Frontend Framework:** React
+- **UI Library:** Material-UI (MUI)
+- **Build Tool:** Vite
 - **Language:** TypeScript
 
 ## Getting Started
 
-1. **Clone the repository**  
+1. **Clone the repository**
 
 ```bash
 git clone <repo-url>
 cd react-app
 ```
 
-2. **Install dependencies**  
+2. **Install dependencies**
 
 ```bash
 npm install
 ```
 
-3. **Start the development server**  
+3. **Start the development server**
 
 ```bash
 npm run dev
@@ -36,12 +36,12 @@ npm run dev
 
 ## 🚀 Available Routes
 
-| Route | Status | Description |
-| -------|-------- | ------------- |
-| `/` | ✅ Working | Landing page |
-| `/login` | ⚠️ Not Functional | Login page |
-| `/signup` | ⚠️ Not Functional | Sign-up page |
-| `/home` | ❌ Not implemented | Home page |
+| Route      | Status             | Description  |
+| ---------- | ------------------ | ------------ |
+| `/`        | ✅ Working         | Landing page |
+| `/login`   | ⚠️ Not Functional  | Login page   |
+| `/signup`  | ⚠️ Not Functional  | Sign-up page |
+| `/home`    | ❌ Not implemented | Home page    |
 | `/profile` | ❌ Not implemented | Profile page |
 
 ---
@@ -58,5 +58,5 @@ src/
  ├─ utils/          # Helper functions, constants, utilities
  ├─ App.tsx         # Main app routing
  └─ index.tsx       # App entry point
-  
+
 ```
