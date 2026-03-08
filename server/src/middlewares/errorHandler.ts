@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
-import { logger } from '../config/logger';
-import { ZodError } from 'zod';
-import { Prisma } from '@prisma/client';
+import { Request, Response, NextFunction } from "express";
+import { logger } from "../config/logger";
+import { ZodError } from "zod";
+import { Prisma } from "@prisma/client";
 
 /**
  * Custom error class for application-specific errors
@@ -21,7 +21,6 @@ export class AppError extends Error {
     }
 }
 
-
 /**
  * Global error handling middleware for Express.
  * @param err - The error object that was thrown in the application.
@@ -33,10 +32,10 @@ export const errorHandler = (
     err: Error | AppError,
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
 ) => {
     // Log error
-    logger.error('Error occurred:', {
+    logger.error("Error occurred:", {
         message: err.message,
         stack: err.stack,
         path: req.path,
@@ -45,7 +44,7 @@ export const errorHandler = (
 
     // Default error values
     let statusCode = 500;
-    let message = 'Internal Server Error';
+    let message = "Internal Server Error";
     let errors: any = undefined;
 
     // ==== Handle custom AppError ====
@@ -57,9 +56,9 @@ export const errorHandler = (
     // ==== Handle Zod validation errors ====
     else if (err instanceof ZodError) {
         statusCode = 400;
-        message = 'Validation Error';
+        message = "Validation Error";
         errors = err.issues.map((issue) => ({
-            field: issue.path.join('.'),
+            field: issue.path.join("."),
             message: issue.message,
         }));
     }
@@ -68,29 +67,29 @@ export const errorHandler = (
     else if (err instanceof Prisma.PrismaClientKnownRequestError) {
         statusCode = 400;
         switch (err.code) {
-            case 'P2002':
-                message = 'Unique constraint violation';
+            case "P2002":
+                message = "Unique constraint violation";
                 errors = {
-                    field: (err.meta?.target as string[])?.join(', '),
-                    message: 'A record with this value already exists',
+                    field: (err.meta?.target as string[])?.join(", "),
+                    message: "A record with this value already exists",
                 };
                 break;
-            case 'P2025':
-                message = 'Record not found';
+            case "P2025":
+                message = "Record not found";
                 statusCode = 404;
                 break;
-            case 'P2003':
-                message = 'Foreign key constraint violation';
+            case "P2003":
+                message = "Foreign key constraint violation";
                 break;
             default:
-                message = 'Database error';
+                message = "Database error";
         }
     }
 
     // ====  Handle Prisma validation errors ====
     else if (err instanceof Prisma.PrismaClientValidationError) {
         statusCode = 400;
-        message = 'Invalid data provided';
+        message = "Invalid data provided";
     }
 
     // Send error response
@@ -98,7 +97,7 @@ export const errorHandler = (
         success: false,
         message,
         ...(errors && { errors }),
-        ...(process.env.NODE_ENV === 'development' && {
+        ...(process.env.NODE_ENV === "development" && {
             stack: err.stack,
         }),
     };

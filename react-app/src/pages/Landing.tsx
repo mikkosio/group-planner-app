@@ -13,15 +13,10 @@ const LandingPage = () => {
                 justifyContent: "center",
                 minHeight: "80vh",
                 textAlign: "center",
-                gap: 1
+                gap: 1,
             }}
         >
-            <Box
-                component="img"
-                src={GatherlyLogo}
-                alt="Logo"
-                sx={{ height: 120 }}
-            />
+            <Box component="img" src={GatherlyLogo} alt="Logo" sx={{ height: 120 }} />
             <Typography variant="h2" sx={{ fontWeight: "bold" }}>
                 Gatherly
             </Typography>
@@ -30,7 +25,7 @@ const LandingPage = () => {
                 Spend less time planning and spend more time together.
             </Typography>
 
-            <Button 
+            <Button
                 variant="contained"
                 component={Link}
                 to="/signup"
@@ -42,14 +37,14 @@ const LandingPage = () => {
                     px: 3,
                     "&:hover": {
                         backgroundColor: lightBlue[800],
-                        boxShadow: ""
-                    }
+                        boxShadow: "",
+                    },
                 }}
             >
                 Join Gatherly for Free
             </Button>
         </Container>
-    )
-}
+    );
+};
 
 export default LandingPage;

@@ -12,10 +12,18 @@ const LoginFields = () => {
         const email = formData.get("email")?.toString() || "";
         const password = formData.get("password")?.toString() || "";
         console.log("Sign in data:", { email, password });
-
-        await login(email, password);
-
-        navigate("/home");
+        
+        try {
+            await login(email, password);
+            navigate("/home");
+        } catch (error: unknown) {
+            // log error for now, in future, have error message component to show user
+            if (error instanceof Error) {
+                console.error(error.message);
+            } else {
+                console.error("Login failed.");
+            }
+        }
     };
 
     return (
@@ -30,8 +38,8 @@ const LoginFields = () => {
                     fullWidth
                     sx={{
                         "& .MuiOutlinedInput-root": {
-                            borderRadius: 3
-                        }
+                            borderRadius: 3,
+                        },
                     }}
                 />
 
@@ -44,13 +52,18 @@ const LoginFields = () => {
                     fullWidth
                     sx={{
                         "& .MuiOutlinedInput-root": {
-                            borderRadius: 3
-                        }
+                            borderRadius: 3,
+                        },
                     }}
                 />
 
                 {/* Submit button */}
-                <Button type="submit" variant="contained" fullWidth sx={{ backgroundColor: "#35c2f1" }}>
+                <Button
+                    type="submit"
+                    variant="contained"
+                    fullWidth
+                    sx={{ backgroundColor: "#35c2f1" }}
+                >
                     Sign In
                 </Button>
             </Stack>

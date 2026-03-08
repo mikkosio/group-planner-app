@@ -9,7 +9,7 @@ import { jwtDecode, type JwtPayload } from "jwt-decode";
 interface AuthContextValue {
     user: User | null;
     isLoading: boolean;
-    login: (email: string, password: string) => void;
+    login: (email: string, password: string) => Promise<void>;
     logout: () => void;
 }
 
@@ -80,15 +80,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 setLoading(false);
             }
 
-            return () => {
-                // Clear logout timer on unmount
-                if (logoutTimerRef.current) {
-                    clearTimeout(logoutTimerRef.current);
-                };
-            }
         };
-
+        
         checkAuth();
+
+        return () => {
+            // Clear logout timer on unmount
+            if (logoutTimerRef.current) {
+                clearTimeout(logoutTimerRef.current);
+            };
+        }
     }, []);
 
     /**
@@ -112,6 +113,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             createdAt: userData.createdAt,
             updatedAt: userData.updatedAt,
         });
+
+        // Set auto logout timer
+        const { exp } = jwtDecode<JwtPayload>(token);
+        if (exp) {
+            setLogoutTimer(exp);
+        }
     };
 
     /**
