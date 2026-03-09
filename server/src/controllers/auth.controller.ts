@@ -1,14 +1,15 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import { asyncHandler } from "../utils/asyncHandler";
 import authService from "../services/auth.service";
 import { logger } from "../config/logger";
 import { AppError } from "../middlewares/errorHandler";
+import { ApiResponse } from "../types/api.types";
 
 /**
  * Register a new user
  * POST /api/v1/auth/register
  */
-export const register = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+export const register = asyncHandler(async (req: Request, res: Response) => {
     const { email, password, name } = req.body;
 
     logger.info(`Registration attempt for email: ${email}`);
@@ -31,7 +32,7 @@ export const register = asyncHandler(async (req: Request, res: Response, next: N
  * Login an existing user
  * POST /api/v1/auth/login
  */
-export const login = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+export const login = asyncHandler(async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
     logger.info(`Login attempt for email: ${email}`);
@@ -54,18 +55,18 @@ export const login = asyncHandler(async (req: Request, res: Response, next: Next
  * Get current logged in user (send User from Express.Request in authMiddleware)
  * GET /api/v1/auth/me
  */
-export const getMe = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    // User is already attached by protect middleware
+export const getMe = asyncHandler(async (req: Request, res: Response) => {
     const user = req.user;
 
     logger.info(`User profile fetched: ${user?.id}`);
 
-    res.status(200).json({
+    const response: ApiResponse<{ user: typeof user }> = {
         success: true,
-        data: {
-            user,
-        },
-    });
+        message: "User profile retrieved successfully",
+        data: { user },
+    };
+
+    res.status(200).json(response);
 });
 
 /**
@@ -73,7 +74,7 @@ export const getMe = asyncHandler(async (req: Request, res: Response, next: Next
  * DELETE /api/v1/auth/account
  */
 export const deleteAccount = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response) => {
         const userId = req.user?.id;
         if (!userId) {
             throw new AppError("User not authenticated", 401);
@@ -83,10 +84,7 @@ export const deleteAccount = asyncHandler(
         await authService.deleteUserById(userId);
         logger.info(`Account deleted successfully: ${userId}`);
 
-        res.status(200).json({
-            success: true,
-            message: "Account deleted successfully",
-        });
+        res.status(204).send();
     },
 );
 
@@ -95,7 +93,7 @@ export const deleteAccount = asyncHandler(
  * PUT /api/v1/auth/profile
  */
 export const updateProfile = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response) => {
         const userId = req.user?.id;
         if (!userId) {
             throw new AppError("User not authenticated", 401);

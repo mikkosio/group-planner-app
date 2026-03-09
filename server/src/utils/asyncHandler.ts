@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-type AsyncFunction = (req: Request, res: Response, next: NextFunction) => Promise<any>;
+type AsyncFunction = (req: Request, res: Response, next: NextFunction) => Promise<void>;
 
 /**
  * Wrapper for async route handlers to catch errors
