@@ -1,5 +1,11 @@
 import { Router } from "express";
-import { register, login, getMe, updateProfile, deleteAccount } from "../controllers/auth.controller";
+import {
+    register,
+    login,
+    getMe,
+    updateProfile,
+    deleteAccount,
+} from "../controllers/auth.controller";
 import { validateRequest } from "../middlewares/validateRequest";
 import { registerSchema, loginSchema, updateProfileSchema } from "../validators/auth.validator";
 import { protect } from "../middlewares/authMiddleware";
