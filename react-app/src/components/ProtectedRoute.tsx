@@ -1,3 +1,4 @@
+import { Box, CircularProgress } from "@mui/material";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";
 
@@ -6,7 +7,15 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-    const { user } = useAuth();
+    const { user, isLoading } = useAuth();
+
+    if (isLoading) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+                <CircularProgress />
+            </Box>
+        );
+    }
 
     if (!user) {
         return <Navigate to="/login" replace />;
