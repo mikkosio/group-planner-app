@@ -69,6 +69,28 @@ export const getMe = asyncHandler(async (req: Request, res: Response, next: Next
 });
 
 /**
+ * Delete the current user's account
+ * DELETE /api/v1/auth/account
+ */
+export const deleteAccount = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+        const userId = req.user?.id;
+        if (!userId) {
+            throw new AppError("User not authenticated", 401);
+        }
+
+        logger.info(`Account deletion request for user: ${userId}`);
+        await authService.deleteUserById(userId);
+        logger.info(`Account deleted successfully: ${userId}`);
+
+        res.status(200).json({
+            success: true,
+            message: "Account deleted successfully",
+        });
+    },
+);
+
+/**
  * Update current user's profile
  * PUT /api/v1/auth/profile
  */

@@ -43,4 +43,12 @@ export const authAPI = {
     async updateProfile(name?: string, avatar?: string): Promise<ApiResponse<MeData>> {
         return api.put("/auth/profile", { name, avatar });
     },
+
+    /**
+     * Delete the authenticated user's account permanently
+     * @returns API response with success message
+     */
+    async deleteAccount(): Promise<ApiResponse<{ message: string }>> {
+        return api.delete("/auth/account");
+    },
 };

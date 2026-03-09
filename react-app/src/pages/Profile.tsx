@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";
+import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 
 const ProfilePage = () => {
-    const { user, updateProfile, logout } = useAuth();
+    const { user, updateProfile, logout, deleteAccount } = useAuth();
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         name: user?.name ?? "",
@@ -11,6 +14,10 @@ const ProfilePage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
+
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [deleteError, setDeleteError] = useState<string | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -33,6 +40,23 @@ const ProfilePage = () => {
             }
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const handleDeleteConfirm = async () => {
+        setDeleteError(null);
+        setIsDeleting(true);
+        try {
+            await deleteAccount();
+            navigate("/");
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                setDeleteError(err.message);
+            } else {
+                setDeleteError("Failed to delete account. Please try again.");
+            }
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -78,6 +102,30 @@ const ProfilePage = () => {
             <button type="button" onClick={logout} style={{ marginTop: "1rem" }}>
                 Log out
             </button>
+
+            <hr style={{ marginTop: "2rem" }} />
+            <div>
+                <h2>Danger Zone</h2>
+                <p>Permanently delete your account and all associated data.</p>
+                <button
+                    type="button"
+                    onClick={() => {
+                        setDeleteError(null);
+                        setDeleteModalOpen(true);
+                    }}
+                    style={{ color: "red" }}
+                >
+                    Delete Account
+                </button>
+            </div>
+
+            <ConfirmDeleteModal
+                open={deleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+                onConfirm={handleDeleteConfirm}
+                loading={isDeleting}
+                error={deleteError}
+            />
         </div>
     );
 };

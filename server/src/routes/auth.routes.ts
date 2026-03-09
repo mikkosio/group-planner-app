@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { register, login, getMe, updateProfile } from "../controllers/auth.controller";
+import { register, login, getMe, updateProfile, deleteAccount } from "../controllers/auth.controller";
 import { validateRequest } from "../middlewares/validateRequest";
 import { registerSchema, loginSchema, updateProfileSchema } from "../validators/auth.validator";
 import { protect } from "../middlewares/authMiddleware";
@@ -17,5 +17,6 @@ router.post("/login", validateRequest(loginSchema), login);
 // GET /api/v1/auth/me
 router.get("/me", protect, getMe);
 router.put("/profile", protect, validateRequest(updateProfileSchema), updateProfile);
+router.delete("/account", protect, deleteAccount);
 
 export default router;

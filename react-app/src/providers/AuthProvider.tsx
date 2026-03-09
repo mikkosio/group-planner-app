@@ -14,6 +14,7 @@ interface AuthContextValue {
     logout: () => void;
     register: (email: string, password: string, name?: string) => Promise<void>;
     updateProfile: (name?: string, avatar?: string) => Promise<void>;
+    deleteAccount: () => Promise<void>;
 }
 
 /** Props for AuthProvider component */
@@ -185,6 +186,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
 
     /**
+     * Permanently delete the current user's account and log out
+     */
+    const deleteAccount = async () => {
+        await authAPI.deleteAccount();
+        logout();
+    };
+
+    /**
      * Log out the current user
      */
     const logout = () => {
@@ -199,7 +208,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     return (
         <AuthContext.Provider
-            value={{ user, isLoading, authError, login, logout, register, updateProfile }}
+            value={{ user, isLoading, authError, login, logout, register, updateProfile, deleteAccount }}
         >
             {children}
         </AuthContext.Provider>
