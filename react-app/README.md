@@ -41,7 +41,7 @@ npm run dev
 | `/`        | ✅ Working         | Landing page |
 | `/login`   | ⚠️ Not Functional  | Login page   |
 | `/signup`  | ⚠️ Not Functional  | Sign-up page |
-| `/home`    | ❌ Not implemented | Home page    |
+| `/home`    | ⚠️ Not Functional  | Home page    |
 | `/profile` | ❌ Not implemented | Profile page |
 
 ---
