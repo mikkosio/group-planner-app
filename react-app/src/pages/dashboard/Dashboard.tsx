@@ -49,8 +49,8 @@ const Dashboard = () => {
                         Navigation Menu
                     </Typography>
                     <AvatarGroup max={3} sx={{ "& .MuiAvatar-root": { width: 30, height: 30, fontSize: 14 } }}>
-                        <Avatar sx={{ bgcolor: "#90caf9" }}>U</Avatar>
-                        <Avatar sx={{ bgcolor: "#ce93d8" }}>U</Avatar>
+                        <Avatar alt="User 1" sx={{ bgcolor: "#90caf9" }}>U</Avatar>
+                        <Avatar alt="User 2" sx={{ bgcolor: "#ce93d8" }}>U</Avatar>
                     </AvatarGroup>
                 </Toolbar>
             </AppBar>
@@ -114,7 +114,7 @@ const Dashboard = () => {
                             }}
                         >
                             <ListItemAvatar>
-                                <Avatar sx={{ bgcolor: "#7e57c2" }}>A</Avatar>
+                                <Avatar aria-label={item.title} sx={{ bgcolor: "#7e57c2" }}>A</Avatar>
                             </ListItemAvatar>
                             <ListItemText
                                 primary={item.title}
@@ -122,12 +122,12 @@ const Dashboard = () => {
                             />
                             <ListItemSecondaryAction>
                                 <Stack>
-                                    <ArrowDropUpIcon fontSize="small" color="action" />
-                                    <ArrowDropDownIcon
-                                        fontSize="small"
-                                        color="action"
-                                        sx={{ mt: -1 }}
-                                    />
+                                    <IconButton size="small" edge="end" aria-label={`Move ${item.title} up`}>
+                                        <ArrowDropUpIcon fontSize="small" color="action" />
+                                    </IconButton>
+                                    <IconButton size="small" edge="end" aria-label={`Move ${item.title} down`} sx={{ mt: -1 }}>
+                                        <ArrowDropDownIcon fontSize="small" color="action" />
+                                    </IconButton>
                                 </Stack>
                             </ListItemSecondaryAction>
                         </ListItem>
