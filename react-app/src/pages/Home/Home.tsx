@@ -36,7 +36,8 @@ const actions = [
         title: "Create a Group",
         subhead: "Start a new group with friends",
         icon: PersonAddIcon,
-        onClick: () => console.log("Create Group clicked"), // replace with actual function
+        // Don't actually do it this way, it's just a quick fix.
+        onClick: () => (window.location.href = "/creategroup"),
     },
     {
         title: "Manage Preferences",
