@@ -27,20 +27,20 @@ const actions = [
     {
         title: "Create a Hangout Plan",
         subhead: "Plan your next group event",
-        icon: <EventIcon />,
+        icon: EventIcon,
         onClick: () => console.log("Create Hangout clicked"), // replace with actual function
     },
 
     {
         title: "Create a Group",
         subhead: "Start a new group with friends",
-        icon: <PersonAddIcon />,
+        icon: PersonAddIcon,
         onClick: () => console.log("Create Group clicked"), // replace with actual function
     },
     {
         title: "Manage Preferences",
         subhead: "Update your activity preferences",
-        icon: <SettingsIcon />,
+        icon: SettingsIcon,
         onClick: () => console.log("Manage Preferences clicked"), // replace with actual function
     },
 ];
@@ -102,25 +102,30 @@ const Home = () => {
                     width: "100%",
                 }}
             >
-                {actions.map((action) => (
-                    <ListItemButton
-                        key={action.title}
-                        onClick={action.onClick}
-                        sx={{
-                            bgcolor: "#fff",
-                            borderRadius: 2,
-                            py: 1.5,
-                            width: "100%",
-                            maxWidth: 300,
-                            boxShadow: 5,
-                        }}
-                    >
-                        <ListItemAvatar>
-                            <Avatar sx={{ bgcolor: "primary.main" }}>{action.icon}</Avatar>
-                        </ListItemAvatar>
-                        <ListItemText primary={action.title} secondary={action.subhead} />
-                    </ListItemButton>
-                ))}
+                {actions.map((action) => {
+                    const Icon = action.icon;
+                    return (
+                        <ListItemButton
+                            key={action.title}
+                            onClick={action.onClick}
+                            sx={{
+                                bgcolor: "#fff",
+                                borderRadius: 2,
+                                py: 1.5,
+                                width: "100%",
+                                maxWidth: 300,
+                                boxShadow: 5,
+                            }}
+                        >
+                            <ListItemAvatar>
+                                <Avatar sx={{ bgcolor: "primary.main" }}>
+                                    <Icon />
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary={action.title} secondary={action.subhead} />
+                        </ListItemButton>
+                    );
+                })}
             </List>
 
             <GroupsList />
