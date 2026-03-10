@@ -1,4 +1,4 @@
-import { formatUpcomingDate } from "@/utils/formatDate";
+import { formatUpcomingDate } from "@/utils/formatUpcomingDate";
 import { Group as GroupIcon } from "@mui/icons-material";
 import {
     Avatar,
