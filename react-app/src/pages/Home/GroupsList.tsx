@@ -78,7 +78,7 @@ const GroupsList = () => {
                     <ListItemButton
                         key={group.id}
                         sx={{
-                            bgcolor: "#fff",
+                            bgcolor: "background.paper",
                             borderRadius: 2,
                             py: 1.5,
                             width: "100%",

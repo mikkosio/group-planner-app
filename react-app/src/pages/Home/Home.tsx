@@ -113,7 +113,7 @@ const Home = () => {
                             key={action.title}
                             onClick={action.onClick}
                             sx={{
-                                bgcolor: "#fff",
+                                bgcolor: "background.paper",
                                 borderRadius: 2,
                                 py: 1.5,
                                 width: "100%",

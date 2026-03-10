@@ -13,8 +13,8 @@ export const formatUpcomingDate = (date: Date | null): string | null => {
     // Past event
     if (diffMs <= 0) return null;
 
-    const diffMins = Math.round(diffMs / (1000 * 60));
-    let diffHours = diffMs / (1000 * 60 * 60);
+    const diffMins = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffDays = diffMs / (1000 * 60 * 60 * 24);
 
     // Less than 1 hour, show minutes
@@ -24,7 +24,6 @@ export const formatUpcomingDate = (date: Date | null): string | null => {
 
     // Less than 24 hours, show hours
     if (diffDays < 1) {
-        diffHours = Math.round(diffHours);
         return `in ${diffHours} ${diffHours !== 1 ? "hours" : "hour"}`;
     }
 
