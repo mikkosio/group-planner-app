@@ -1,7 +1,8 @@
 /**
  * Format a date for display
  * @param date - Date to format or null
- * @returns Formatted string like "Today", "Tomorrow", or "Mar 15"
+ * @returns A relative or formatted string such as "in 5 minutes", "in 3 hours", "Tomorrow",
+ *          a weekday name (e.g. "Monday"), or a short date like "Mar 15"; null for past dates or null input.
  */
 export const formatUpcomingDate = (date: Date | null): string | null => {
     if (!date) return null;
