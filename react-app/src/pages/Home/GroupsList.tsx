@@ -1,6 +1,13 @@
 import { formatUpcomingDate } from "@/utils/formatDate";
 import { Group as GroupIcon } from "@mui/icons-material";
-import { Avatar, List, ListItemAvatar, ListItemButton, ListItemText, Typography } from "@mui/material";
+import {
+    Avatar,
+    List,
+    ListItemAvatar,
+    ListItemButton,
+    ListItemText,
+    Typography,
+} from "@mui/material";
 
 // temporary interface
 interface Group {
@@ -16,7 +23,7 @@ const groups = [
         id: "group-1",
         name: "Gamer boys",
         memberCount: 8,
-        nextHangoutDate: new Date("2026-03-15T14:00:00")
+        nextHangoutDate: new Date("2026-03-15T14:00:00"),
     },
     {
         id: "group-2",
@@ -29,7 +36,7 @@ const groups = [
         name: "Best Group 7",
         memberCount: 15,
         nextHangoutDate: new Date("2026-03-20T18:30:00"),
-    }
+    },
 ];
 
 /**
@@ -39,19 +46,16 @@ const groups = [
  */
 const getGroupSubtitle = (group: Group): React.ReactNode => {
     const memberText = `${group.memberCount} members`;
-    const nextHangout = group.nextHangoutDate 
-        ? formatUpcomingDate(group.nextHangoutDate) 
-        : null;
-    
+    const nextHangout = group.nextHangoutDate ? formatUpcomingDate(group.nextHangoutDate) : null;
+
     return (
         <>
             {memberText}
-            {
-                nextHangout && 
+            {nextHangout && (
                 <Typography component="span" color="warning.dark" variant="inherit">
                     {` • Next Hangout ${nextHangout}`}
                 </Typography>
-            }
+            )}
         </>
     );
 };

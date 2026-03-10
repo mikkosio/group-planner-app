@@ -24,24 +24,24 @@ const statistics = [
 ];
 
 const actions = [
-    { 
+    {
         title: "Create a Hangout Plan",
         subhead: "Plan your next group event",
         icon: <EventIcon />,
-        onClick: () => console.log("Create Hangout clicked") // replace with actual function
+        onClick: () => console.log("Create Hangout clicked"), // replace with actual function
     },
-        
-    { 
+
+    {
         title: "Create a Group",
         subhead: "Start a new group with friends",
         icon: <PersonAddIcon />,
-        onClick: () => console.log("Create Group clicked") // replace with actual function
+        onClick: () => console.log("Create Group clicked"), // replace with actual function
     },
     {
         title: "Manage Preferences",
         subhead: "Update your activity preferences",
         icon: <SettingsIcon />,
-        onClick: () => console.log("Manage Preferences clicked") // replace with actual function
+        onClick: () => console.log("Manage Preferences clicked"), // replace with actual function
     },
 ];
 

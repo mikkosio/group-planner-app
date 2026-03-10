@@ -5,7 +5,7 @@
  */
 export const formatUpcomingDate = (date: Date | null): string | null => {
     if (!date) return null;
-    
+
     const now = new Date();
     const diffMs = date.getTime() - now.getTime();
     const diffHours = Math.round(diffMs / (1000 * 60 * 60));
@@ -26,7 +26,7 @@ export const formatUpcomingDate = (date: Date | null): string | null => {
     if (diffHours < 24) {
         return `in ${diffHours} ${diffHours !== 1 ? "hours" : "hour"}`;
     }
-    
+
     // Check if tomorrow
     const tomorrow = new Date(now);
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -36,12 +36,12 @@ export const formatUpcomingDate = (date: Date | null): string | null => {
 
     // Check if within the next week
     if (diffDays < 7) {
-        return date.toLocaleDateString('en-US', { weekday: 'long' });
+        return date.toLocaleDateString("en-US", { weekday: "long" });
     }
-    
+
     // Otherwise show date
-    return date.toLocaleDateString('en-US', { 
-        month: 'short', 
-        day: 'numeric' 
+    return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
     });
 };
