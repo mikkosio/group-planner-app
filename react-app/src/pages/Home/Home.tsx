@@ -89,7 +89,7 @@ const Home = () => {
                             boxShadow: 5,
                         }}
                     >
-                        {card.label}
+                        <Typography variant="body1">{card.label}</Typography>
                     </Card>
                 ))}
             </Box>
