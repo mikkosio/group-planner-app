@@ -1,6 +1,6 @@
 # Gatherly - Backend
 
-Backend API for the Gatherly - The Group Hangout Planner.
+> REST API server for **Gatherly**, the group hangout planner. Built with Node.js, Express, TypeScript, and PostgreSQL via Prisma ORM.
 
 ## Tech Stack
 
@@ -119,6 +119,8 @@ Server runs at `http://localhost:3000`
 | `npm run dev`         | Start development server with hot reload |
 | `npm run build`       | Compile TypeScript to JavaScript         |
 | `npm start`           | Start production server                  |
+| `npm run lint`        | Lint source files with ESLint            |
+| `npm run lint:fix`    | Auto-fix lint issues                     |
 | `npm run db:generate` | Generate Prisma client                   |
 | `npm run db:migrate`  | Run database migrations                  |
 | `npm run db:push`     | Push schema changes (dev only)           |
@@ -128,34 +130,39 @@ Server runs at `http://localhost:3000`
 
 ## API Endpoints
 
-### Health Checks
+### Auth
 
-```
-POST  /auth/register      Register user with name, email, and password
-POST  /auth/login         Login user with email, and password
-GET   /auth/me            Retrieve authenticated user's profile
-PUT   /auth/profile       Update authenticated user's profile
+| Method   | Path                  | Auth     | Description                        |
+| -------- | --------------------- | -------- | ---------------------------------- |
+| `POST`   | `/api/v1/auth/register` | Public | Register with name, email, password |
+| `POST`   | `/api/v1/auth/login`    | Public | Login with email and password       |
+| `GET`    | `/api/v1/auth/me`       | Bearer | Get authenticated user's profile    |
+| `PUT`    | `/api/v1/auth/profile`  | Bearer | Update authenticated user's profile |
+| `DELETE` | `/api/v1/auth/account`  | Bearer | Delete authenticated user's account |
 
-GET  /health              Server health check
-GET  /api/v1/health       API health check
-GET  /api/v1/unknown      Error 404 response
-```
+### System
 
-**Example Success Response:**
+| Method | Path      | Description        |
+| ------ | --------- | ------------------ |
+| `GET`  | `/health` | Server health check |
+
+**Standard success response envelope:**
 
 ```json
 {
-  "success": true,
-  "message": "API is running",
-  "version": "v1"
+    "success": true,
+    "message": "Description of result",
+    "data": { }
 }
-OR
+```
+
+**Standard error response envelope:**
+
+```json
 {
-   "success":true,
-   "message":"User registered successfully",
-   "data":{
-      "key1" : "value"
-      "key2" : {...}
+    "success": false,
+    "message": "Error description",
+    "errors": [ { "field": "email", "message": "Invalid email" } ]
 }
 ```
 
@@ -171,6 +178,7 @@ server/
 │   ├── middlewares/     # Express middlewares
 │   ├── routes/          # API routes
 │   ├── services/        # Business logic
+│   ├── types/           # Shared TypeScript interfaces
 │   ├── utils/           # Helper functions
 │   ├── validators/      # Request validation schemas
 │   ├── app.ts           # Express app setup
@@ -193,8 +201,8 @@ server/
 | `API_VERSION`  | API version prefix                           | `v1`                    |
 | `DATABASE_URL` | PostgreSQL connection string                 | Required                |
 | `CORS_ORIGIN`  | Allowed frontend origin                      | `http://localhost:5173` |
-| JWT_SECRET     | 128-character hexadecimal string for hashing | Required                |
-| JWT_EXPIRES_IN | Token validity time                          | `7d`                    |
+| `JWT_SECRET`     | 128-character hex string for signing JWTs    | Required                |
+| `JWT_EXPIRES_IN` | Token validity duration                      | `7d`                    |
 
 ---
 

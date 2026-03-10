@@ -21,6 +21,16 @@ export class AppError extends Error {
     }
 }
 
+type ErrorDetail = { field: string; message: string };
+type ErrorDetails = ErrorDetail | ErrorDetail[];
+
+interface ErrorResponse {
+    success: false;
+    message: string;
+    errors?: ErrorDetails;
+    stack?: string;
+}
+
 /**
  * Global error handling middleware for Express.
  * @param err - The error object that was thrown in the application.
@@ -45,7 +55,7 @@ export const errorHandler = (
     // Default error values
     let statusCode = 500;
     let message = "Internal Server Error";
-    let errors: any = undefined;
+    let errors: ErrorDetails | undefined = undefined;
 
     // ==== Handle custom AppError ====
     if (err instanceof AppError) {
@@ -93,7 +103,7 @@ export const errorHandler = (
     }
 
     // Send error response
-    const response: any = {
+    const response: ErrorResponse = {
         success: false,
         message,
         ...(errors && { errors }),

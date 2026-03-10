@@ -38,10 +38,7 @@ export class AuthService {
             throw new AppError("JWT_SECRET is not defined in environment variables", 500);
         }
 
-        // todo use the expiresIn variable, jwt.sign gives error when used
-        return jwt.sign({ userId }, secret, {
-            expiresIn: "7d",
-        });
+        return jwt.sign({ userId }, secret, { expiresIn: expiresIn } as jwt.SignOptions);
     }
 
     /**
