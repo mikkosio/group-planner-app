@@ -14,6 +14,7 @@ import EventIcon from "@mui/icons-material/Event";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SettingsIcon from "@mui/icons-material/Settings";
 import GroupsList from "./GroupsList";
+import { useAuth } from "@/providers/AuthProvider";
 
 // hardcoded card statistics, replace in future
 const statistics = [
@@ -46,6 +47,7 @@ const actions = [
 ];
 
 const Home = () => {
+    const { user } = useAuth();
     return (
         <Container
             maxWidth={false}
@@ -56,7 +58,9 @@ const Home = () => {
                 gap: 3,
             }}
         >
-            <Typography variant="h4">Your Dashboard</Typography>
+            <Typography variant="h4">
+                Welcome to your Dashboard{user && `, ${user.name}`}
+            </Typography>
 
             {/* Card Statistics */}
             <Box
