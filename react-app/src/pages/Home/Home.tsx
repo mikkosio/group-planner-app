@@ -13,6 +13,7 @@ import { grey } from "@mui/material/colors";
 import EventIcon from "@mui/icons-material/Event";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SettingsIcon from "@mui/icons-material/Settings";
+import GroupsList from "./GroupsList";
 
 // hardcoded card statistics, replace in future
 const statistics = [
@@ -53,7 +54,6 @@ const Home = () => {
                 display: "flex",
                 flexDirection: "column",
                 gap: 3,
-                overflow: "hidden",
             }}
         >
             <Typography variant="h4">Your Dashboard</Typography>
@@ -94,9 +94,12 @@ const Home = () => {
             <List
                 sx={{
                     display: "flex",
-                    flexDirection: "column",
+                    flexWrap: "wrap",
                     gap: 2,
-                    alignItems: "center",
+                    alignItems: "stretch",
+                    justifyContent: "center",
+                    m: "auto",
+                    width: "100%",
                 }}
             >
                 {actions.map((action) => (
@@ -108,17 +111,19 @@ const Home = () => {
                             borderRadius: 2,
                             py: 1.5,
                             width: "100%",
-                            maxWidth: 800,
+                            maxWidth: 300,
                             boxShadow: 5,
                         }}
                     >
                         <ListItemAvatar>
-                            <Avatar sx={{ bgcolor: "#7e57c2" }}>{action.icon}</Avatar>
+                            <Avatar sx={{ bgcolor: "primary.main" }}>{action.icon}</Avatar>
                         </ListItemAvatar>
                         <ListItemText primary={action.title} secondary={action.subhead} />
                     </ListItemButton>
                 ))}
             </List>
+
+            <GroupsList />
         </Container>
     );
 };
