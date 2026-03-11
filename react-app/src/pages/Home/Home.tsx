@@ -25,7 +25,6 @@ const statistics = [
     { label: "Most Picked Activity" },
 ];
 
-
 const Home = () => {
     const { user } = useAuth();
     const [joinDialogOpen, setJoinDialogOpen] = useState(false);
@@ -43,7 +42,7 @@ const Home = () => {
             icon: GroupAdd,
             onClick: () => console.log("Create Group clicked"), // replace with actual function
         },
-    
+
         {
             title: "Manage Preferences",
             subhead: "Update your activity preferences",
@@ -138,7 +137,9 @@ const Home = () => {
 
             <GroupsList />
 
-            {joinDialogOpen && <InviteCodeDialog open={true} handleClose={() => setJoinDialogOpen(false)} />}
+            {joinDialogOpen && (
+                <InviteCodeDialog open={true} handleClose={() => setJoinDialogOpen(false)} />
+            )}
         </Container>
     );
 };
