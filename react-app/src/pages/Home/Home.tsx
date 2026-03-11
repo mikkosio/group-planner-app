@@ -14,6 +14,7 @@ import EventIcon from "@mui/icons-material/Event";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SettingsIcon from "@mui/icons-material/Settings";
 import GroupsList from "./GroupsList";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/providers/AuthProvider";
 
 // hardcoded card statistics, replace in future
@@ -29,26 +30,28 @@ const actions = [
         title: "Create a Hangout Plan",
         subhead: "Plan your next group event",
         icon: EventIcon,
+        to: null as string | null,
         onClick: () => console.log("Create Hangout clicked"), // replace with actual function
     },
-
     {
         title: "Create a Group",
         subhead: "Start a new group with friends",
         icon: PersonAddIcon,
-        // Don't actually do it this way, it's just a quick fix.
-        onClick: () => (window.location.href = "/creategroup"),
+        to: "/creategroup",
+        onClick: null as (() => void) | null,
     },
     {
         title: "Manage Preferences",
         subhead: "Update your activity preferences",
         icon: SettingsIcon,
+        to: null as string | null,
         onClick: () => console.log("Manage Preferences clicked"), // replace with actual function
     },
 ];
 
 const Home = () => {
     const { user } = useAuth();
+    const navigate = useNavigate();
     return (
         <Container
             maxWidth={false}
@@ -112,7 +115,7 @@ const Home = () => {
                     return (
                         <ListItemButton
                             key={action.title}
-                            onClick={action.onClick}
+                            onClick={action.to ? () => navigate(action.to!) : action.onClick ?? undefined}
                             sx={{
                                 bgcolor: "background.paper",
                                 borderRadius: 2,

@@ -1,5 +1,10 @@
+import type { FormEvent } from "react";
 import { useState } from "react";
 import { Alert, Box, Button, Container, TextField, Typography } from "@mui/material";
+
+interface FormErrors {
+    name?: string;
+}
 
 const CreateGroup = () => {
     const [name, setName] = useState("");
@@ -8,26 +13,19 @@ const CreateGroup = () => {
     const [errors, setErrors] = useState<FormErrors>({});
     const [submitted, setSubmitted] = useState(false);
 
-    interface FormErrors {
-        name?: string;
-        date?: string;
-    }
-
     const validate = () => {
         const nextErrors: FormErrors = {};
         const trimmedName = name.trim();
 
-        if (!trimmedName) nextErrors.name = "Group name is required ...";
+        if (!trimmedName) nextErrors.name = "Group name is required.";
         else if (trimmedName.length < 3)
-            nextErrors.name = "Group name must be at least 3 characters ... ";
+            nextErrors.name = "Group name must be at least 3 characters.";
 
         setErrors(nextErrors);
         return Object.keys(nextErrors).length === 0;
     };
 
-    // const generateInviteCode = () => Math.random().toString(36).slice(2, 8).toUpperCase();
-
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setSubmitted(false);
         if (!validate()) return;
