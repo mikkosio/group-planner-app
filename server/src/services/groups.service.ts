@@ -17,7 +17,20 @@ export class GroupService {
      * @param data - Group name and optional description
      */
     async createGroup(creatorId: string, data: { name: string; description?: string }) {
-        const inviteCode = generateInviteCode();
+        // Retry up to 5 times to guarantee a collision-free invite code before entering the transaction.
+        let inviteCode = "";
+        for (let attempt = 0; attempt < 5; attempt++) {
+            const candidate = generateInviteCode();
+            const taken = await prisma.group.findUnique({ where: { inviteCode: candidate } });
+            if (!taken) {
+                inviteCode = candidate;
+                break;
+            }
+        }
+
+        if (!inviteCode) {
+            throw new AppError("Failed to generate a unique invite code. Please try again.", 500);
+        }
 
         return prisma.$transaction(async (tx) => {
             const group = await tx.group.create({
@@ -166,6 +179,14 @@ export class GroupService {
 
         if (group.creatorId === userId) {
             throw new AppError("The creator cannot leave the group", 400);
+        }
+
+        const membership = await prisma.membership.findUnique({
+            where: { userId_groupId: { userId, groupId } },
+        });
+
+        if (!membership) {
+            throw new AppError("You are not a member of this group", 400);
         }
 
         await prisma.membership.delete({
