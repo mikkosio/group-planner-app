@@ -156,6 +156,15 @@ export class AuthService {
      * @returns Updated user object without password
      */
     async updateProfile(userId: string, data: { name?: string; email?: string; avatar?: string }) {
+        if (data.email !== undefined) {
+            const existingUser = await prisma.user.findUnique({
+                where: { email: data.email },
+            });
+            if (existingUser && existingUser.id !== userId) {
+                throw new AppError("User with this email already exists", 400);
+            }
+        }
+
         // Update user and return updated user without password
         const updatedUser = await prisma.user.update({
             where: { id: userId },
