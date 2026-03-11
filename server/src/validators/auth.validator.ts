@@ -32,12 +32,14 @@ export const loginSchema = z.object({
 
 export const updateProfileSchema = z.object({
     body: z.object({
+        email: z.string().email("Invalid email format").toLowerCase().trim().optional(),
         name: z
             .string()
             .min(2, "Name must be at least 2 characters")
             .max(100, "Name must not exceed 100 characters")
             .trim()
             .optional(),
+        bio: z.string().max(500, "Bio must not exceed 500 characters").trim().optional().nullable(),
         avatar: z.string().url("Avatar must be a valid URL").optional().nullable(),
     }),
 });

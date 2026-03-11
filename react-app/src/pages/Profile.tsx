@@ -9,6 +9,8 @@ const ProfilePage = () => {
 
     const [formData, setFormData] = useState({
         name: user?.name ?? "",
+        email: user?.email ?? "",
+        bio: user?.bio ?? "",
         avatar: user?.avatar ?? "",
     });
     const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +32,12 @@ const ProfilePage = () => {
         setSuccess(false);
         setIsLoading(true);
         try {
-            await updateProfile(formData.name || undefined, formData.avatar || undefined);
+            await updateProfile(
+                formData.name || undefined,
+                formData.email || undefined,
+                formData.bio || null,
+                formData.avatar || undefined,
+            );
             setSuccess(true);
         } catch (err: unknown) {
             if (err instanceof Error) {
@@ -77,6 +84,28 @@ const ProfilePage = () => {
                         value={formData.name}
                         onChange={handleChange}
                         placeholder="Your name"
+                    />
+                </div>
+                <div>
+                    <label htmlFor="email">Email</label>
+                    <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="you@example.com"
+                    />
+                </div>
+                <div>
+                    <label htmlFor="bio">Bio</label>
+                    <input
+                        id="bio"
+                        name="bio"
+                        type="text"
+                        value={formData.bio}
+                        onChange={handleChange}
+                        placeholder="Tell us about yourself"
                     />
                 </div>
                 <div>

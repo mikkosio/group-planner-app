@@ -73,46 +73,44 @@ export const getMe = asyncHandler(async (req: Request, res: Response) => {
  * Delete the current user's account
  * DELETE /api/v1/auth/account
  */
-export const deleteAccount = asyncHandler(
-    async (req: Request, res: Response) => {
-        const userId = req.user?.id;
-        if (!userId) {
-            throw new AppError("User not authenticated", 401);
-        }
+export const deleteAccount = asyncHandler(async (req: Request, res: Response) => {
+    const userId = req.user?.id;
+    if (!userId) {
+        throw new AppError("User not authenticated", 401);
+    }
 
-        logger.info(`Account deletion request for user: ${userId}`);
-        await authService.deleteUserById(userId);
-        logger.info(`Account deleted successfully: ${userId}`);
+    logger.info(`Account deletion request for user: ${userId}`);
+    await authService.deleteUserById(userId);
+    logger.info(`Account deleted successfully: ${userId}`);
 
-        res.status(204).send();
-    },
-);
+    res.status(204).send();
+});
 
 /**
  * Update current user's profile
  * PUT /api/v1/auth/profile
  */
-export const updateProfile = asyncHandler(
-    async (req: Request, res: Response) => {
-        const userId = req.user?.id;
-        if (!userId) {
-            throw new AppError("User not authenticated", 401);
-        }
+export const updateProfile = asyncHandler(async (req: Request, res: Response) => {
+    const userId = req.user?.id;
+    if (!userId) {
+        throw new AppError("User not authenticated", 401);
+    }
 
-        const { name, avatar } = req.body;
-        logger.info(`Profile update attempt for user: ${userId}`);
-        const updatedUser = await authService.updateProfile(userId, {
-            name,
-            avatar,
-        });
+    const { name, email, bio, avatar } = req.body;
+    logger.info(`Profile update attempt for user: ${userId}`);
+    const updatedUser = await authService.updateProfile(userId, {
+        name,
+        email,
+        bio,
+        avatar,
+    });
 
-        logger.info(`Profile updated successfully: ${userId}`);
-        res.status(200).json({
-            success: true,
-            message: "Profile updated successfully",
-            data: {
-                user: updatedUser,
-            },
-        });
-    },
-);
+    logger.info(`Profile updated successfully: ${userId}`);
+    res.status(200).json({
+        success: true,
+        message: "Profile updated successfully",
+        data: {
+            user: updatedUser,
+        },
+    });
+});
