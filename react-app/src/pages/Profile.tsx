@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Alert, Box, Button, Container, Paper, Stack, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
@@ -9,6 +10,7 @@ const ProfilePage = () => {
 
     const [formData, setFormData] = useState({
         name: user?.name ?? "",
+        email: user?.email ?? "",
         avatar: user?.avatar ?? "",
     });
     const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +32,11 @@ const ProfilePage = () => {
         setSuccess(false);
         setIsLoading(true);
         try {
-            await updateProfile(formData.name || undefined, formData.avatar || undefined);
+            await updateProfile(
+                formData.name || undefined,
+                formData.email || undefined,
+                formData.avatar || undefined,
+            );
             setSuccess(true);
         } catch (err: unknown) {
             if (err instanceof Error) {
@@ -61,63 +67,90 @@ const ProfilePage = () => {
     };
 
     return (
-        <div>
-            <h1>Profile</h1>
-            <p>
-                <strong>Email:</strong> {user?.email}
-            </p>
+        <Container maxWidth="sm" sx={{ py: 3 }}>
+            <Paper
+                elevation={5}
+                sx={{
+                    p: 3,
+                    borderRadius: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
+                }}
+            >
+                <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                    Profile
+                </Typography>
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="name">Display Name</label>
-                    <input
-                        id="name"
-                        name="name"
-                        type="text"
-                        value={formData.name}
-                        onChange={handleChange}
-                        placeholder="Your name"
-                    />
-                </div>
-                <div>
-                    <label htmlFor="avatar">Avatar URL</label>
-                    <input
-                        id="avatar"
-                        name="avatar"
-                        type="url"
-                        value={formData.avatar}
-                        onChange={handleChange}
-                        placeholder="https://example.com/avatar.png"
-                    />
-                </div>
+                <Typography variant="body2" color="text.secondary">
+                    Update your account details
+                </Typography>
 
-                {error && <p style={{ color: "red" }}>{error}</p>}
-                {success && <p style={{ color: "green" }}>Profile updated!</p>}
+                <Box component="form" onSubmit={handleSubmit}>
+                    <Stack spacing={2}>
+                        <TextField
+                            label="Display Name"
+                            name="name"
+                            type="text"
+                            value={formData.name}
+                            onChange={handleChange}
+                            fullWidth
+                            sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+                        />
 
-                <button type="submit" disabled={isLoading}>
-                    {isLoading ? "Saving..." : "Save Changes"}
-                </button>
-            </form>
+                        <TextField
+                            label="Email"
+                            name="email"
+                            type="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            fullWidth
+                            sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+                        />
 
-            <button type="button" onClick={logout} style={{ marginTop: "1rem" }}>
-                Log out
-            </button>
+                        <TextField
+                            label="Avatar URL"
+                            name="avatar"
+                            type="url"
+                            value={formData.avatar}
+                            onChange={handleChange}
+                            fullWidth
+                            sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+                        />
 
-            <hr style={{ marginTop: "2rem" }} />
-            <div>
-                <h2>Danger Zone</h2>
-                <p>Permanently delete your account and all associated data.</p>
-                <button
+                        {error && <Alert severity="error">{error}</Alert>}
+                        {success && <Alert severity="success">Profile updated!</Alert>}
+
+                        <Button type="submit" variant="contained" disabled={isLoading} fullWidth>
+                            {isLoading ? "Saving..." : "Save Changes"}
+                        </Button>
+                    </Stack>
+                </Box>
+
+                <Button type="button" variant="outlined" onClick={logout} fullWidth>
+                    Log out
+                </Button>
+            </Paper>
+
+            <Paper elevation={2} sx={{ mt: 2, p: 3, borderRadius: 2 }}>
+                <Typography variant="h6" color="error" sx={{ mb: 1 }}>
+                    Danger Zone
+                </Typography>
+                <Typography variant="body2" sx={{ mb: 2 }}>
+                    Permanently delete your account and all associated data.
+                </Typography>
+                <Button
                     type="button"
+                    color="error"
+                    variant="contained"
                     onClick={() => {
                         setDeleteError(null);
                         setDeleteModalOpen(true);
                     }}
-                    style={{ color: "red" }}
                 >
                     Delete Account
-                </button>
-            </div>
+                </Button>
+            </Paper>
 
             <ConfirmDeleteModal
                 open={deleteModalOpen}
@@ -126,7 +159,7 @@ const ProfilePage = () => {
                 loading={isDeleting}
                 error={deleteError}
             />
-        </div>
+        </Container>
     );
 };
 
