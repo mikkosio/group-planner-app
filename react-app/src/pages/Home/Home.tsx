@@ -10,12 +10,13 @@ import {
     Typography,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import EventIcon from "@mui/icons-material/Event";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SettingsIcon from "@mui/icons-material/Settings";
 import GroupsList from "./GroupsList";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/providers/AuthProvider";
+import InviteCodeDialog from "./InviteCodeDialog";
+import { useState } from "react";
+import { GroupAdd, Input } from "@mui/icons-material";
 
 // hardcoded card statistics, replace in future
 const statistics = [
@@ -25,33 +26,33 @@ const statistics = [
     { label: "Most Picked Activity" },
 ];
 
-const actions = [
-    {
-        title: "Create a Hangout Plan",
-        subhead: "Plan your next group event",
-        icon: EventIcon,
-        to: null as string | null,
-        onClick: () => console.log("Create Hangout clicked"), // replace with actual function
-    },
-    {
-        title: "Create a Group",
-        subhead: "Start a new group with friends",
-        icon: PersonAddIcon,
-        to: "/creategroup",
-        onClick: null as (() => void) | null,
-    },
-    {
-        title: "Manage Preferences",
-        subhead: "Update your activity preferences",
-        icon: SettingsIcon,
-        to: null as string | null,
-        onClick: () => console.log("Manage Preferences clicked"), // replace with actual function
-    },
-];
-
 const Home = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
+    const [joinDialogOpen, setJoinDialogOpen] = useState(false);
+
+    const actions = [
+        {
+            title: "Join a Group",
+            subhead: "Enter a code to join an existing group",
+            icon: Input,
+            onClick: () => setJoinDialogOpen(true),
+        },
+        {
+            title: "Create a Group",
+            subhead: "Start a new group with friends",
+            icon: GroupAdd,
+            onClick: () => navigate("/creategroup"), // replace with actual function
+        },
+
+        {
+            title: "Manage Preferences",
+            subhead: "Update your activity preferences",
+            icon: SettingsIcon,
+            onClick: () => console.log("Manage Preferences clicked"), // replace with actual function
+        },
+    ];
+
     return (
         <Container
             maxWidth={false}
@@ -115,7 +116,7 @@ const Home = () => {
                     return (
                         <ListItemButton
                             key={action.title}
-                            onClick={action.to ? () => navigate(action.to!) : action.onClick ?? undefined}
+                            onClick={action.onClick}
                             sx={{
                                 bgcolor: "background.paper",
                                 borderRadius: 2,
@@ -137,6 +138,10 @@ const Home = () => {
             </List>
 
             <GroupsList />
+
+            {joinDialogOpen && (
+                <InviteCodeDialog open={true} handleClose={() => setJoinDialogOpen(false)} />
+            )}
         </Container>
     );
 };
