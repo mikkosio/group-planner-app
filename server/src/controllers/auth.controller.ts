@@ -96,12 +96,11 @@ export const updateProfile = asyncHandler(async (req: Request, res: Response) =>
         throw new AppError("User not authenticated", 401);
     }
 
-    const { name, email, bio, avatar } = req.body;
+    const { name, email, avatar } = req.body;
     logger.info(`Profile update attempt for user: ${userId}`);
     const updatedUser = await authService.updateProfile(userId, {
         name,
         email,
-        bio,
         avatar,
     });
 

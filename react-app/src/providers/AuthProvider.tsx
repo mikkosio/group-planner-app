@@ -13,7 +13,7 @@ interface AuthContextValue {
     login: (email: string, password: string) => Promise<void>;
     logout: () => void;
     register: (email: string, password: string, name?: string) => Promise<void>;
-    updateProfile: (name?: string, email?: string, bio?: string | null, avatar?: string) => Promise<void>;
+    updateProfile: (name?: string, email?: string, avatar?: string) => Promise<void>;
     deleteAccount: () => Promise<void>;
 }
 
@@ -135,7 +135,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             id: userData.id,
             email: userData.email,
             name: userData.name,
-            bio: userData.bio,
             avatar: userData.avatar,
             createdAt: userData.createdAt,
             updatedAt: userData.updatedAt,
@@ -165,7 +164,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             id: userData.id,
             email: userData.email,
             name: userData.name,
-            bio: userData.bio,
             avatar: userData.avatar,
             createdAt: userData.createdAt,
             updatedAt: userData.updatedAt,
@@ -181,11 +179,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
      * Update the current user's profile and sync state
      * @param name Optional display name
      * @param email Optional email
-     * @param bio Optional bio
      * @param avatar Optional avatar URL
      */
-    const updateProfile = async (name?: string, email?: string, bio?: string | null, avatar?: string) => {
-        const res = await authAPI.updateProfile(name, email, bio, avatar);
+    const updateProfile = async (name?: string, email?: string, avatar?: string) => {
+        const res = await authAPI.updateProfile(name, email, avatar);
         setUser(res.data.user);
     };
 

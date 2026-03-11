@@ -43,10 +43,9 @@ export const authAPI = {
     async updateProfile(
         name?: string,
         email?: string,
-        bio?: string | null,
         avatar?: string,
     ): Promise<ApiResponse<MeData>> {
-        return api.put("/auth/profile", { name, email, bio, avatar });
+        return api.put("/auth/profile", { name, email, avatar });
     },
 
     /**

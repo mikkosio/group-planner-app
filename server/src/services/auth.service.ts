@@ -91,10 +91,8 @@ export class AuthService {
                 id: true,
                 email: true,
                 name: true,
-                bio: true,
                 avatar: true,
                 createdAt: true,
-                updatedAt: true,
                 // Don't return password
             },
         });
@@ -153,28 +151,23 @@ export class AuthService {
     /**
      * Update user profile
      * @params userId ID of the user to update
-    * @params data Object containing fields to update (name, email, bio and/or avatar)
+     * @params data Object containing fields to update (name and/or avatar)
      *
      * @returns Updated user object without password
      */
-    async updateProfile(
-        userId: string,
-        data: { name?: string; email?: string; bio?: string | null; avatar?: string },
-    ) {
+    async updateProfile(userId: string, data: { name?: string; email?: string; avatar?: string }) {
         // Update user and return updated user without password
         const updatedUser = await prisma.user.update({
             where: { id: userId },
             data: {
                 ...(data.name !== undefined && { name: data.name }),
                 ...(data.email !== undefined && { email: data.email }),
-                ...(data.bio !== undefined && { bio: data.bio }),
                 ...(data.avatar !== undefined && { avatar: data.avatar }),
             },
             select: {
                 id: true,
                 email: true,
                 name: true,
-                bio: true,
                 avatar: true,
                 createdAt: true,
                 updatedAt: true,

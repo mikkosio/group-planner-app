@@ -39,7 +39,6 @@ export const updateProfileSchema = z.object({
             .max(100, "Name must not exceed 100 characters")
             .trim()
             .optional(),
-        bio: z.string().max(500, "Bio must not exceed 500 characters").trim().optional().nullable(),
         avatar: z.string().url("Avatar must be a valid URL").optional().nullable(),
     }),
 });
