@@ -132,13 +132,32 @@ Server runs at `http://localhost:3000`
 
 ### Auth
 
-| Method   | Path                  | Auth     | Description                        |
-| -------- | --------------------- | -------- | ---------------------------------- |
+| Method   | Path                    | Auth   | Description                         |
+| -------- | ----------------------- | ------ | ----------------------------------- |
 | `POST`   | `/api/v1/auth/register` | Public | Register with name, email, password |
 | `POST`   | `/api/v1/auth/login`    | Public | Login with email and password       |
 | `GET`    | `/api/v1/auth/me`       | Bearer | Get authenticated user's profile    |
 | `PUT`    | `/api/v1/auth/profile`  | Bearer | Update authenticated user's profile |
 | `DELETE` | `/api/v1/auth/account`  | Bearer | Delete authenticated user's account |
+
+### Groups
+
+All group endpoints require a Bearer token. Routes marked **Creator only** additionally require the authenticated user to be the group's creator.
+
+| Method   | Path                       | Access        | Description                                          |
+| -------- | -------------------------- | ------------- | ---------------------------------------------------- |
+| `POST`   | `/api/v1/groups`           | Bearer        | Create a group; creator is auto-enrolled as Admin    |
+| `GET`    | `/api/v1/groups`           | Bearer        | List all groups the authenticated user is a member of |
+| `GET`    | `/api/v1/groups/:id`       | Member        | Get full group details including members list        |
+| `PUT`    | `/api/v1/groups/:id`       | Creator only  | Update group name and/or description                 |
+| `DELETE` | `/api/v1/groups/:id`       | Creator only  | Delete the group                                     |
+| `POST`   | `/api/v1/groups/:id/join`  | Bearer        | Join a group using its invite code                   |
+| `POST`   | `/api/v1/groups/:id/unjoin`| Member        | Leave a group (creator cannot leave their own group) |
+
+**Join group request body:**
+```json
+{ "inviteCode": "A1B2C3" }
+```
 
 ### System
 

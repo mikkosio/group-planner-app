@@ -10,7 +10,12 @@ import {
     createGroup,
     getMyGroups,
     getGroupById,
+    updateGroup,
+    deleteGroup,
+    joinGroup,
+    unjoinGroup,
 } from "../controllers/groups.controller";
+import { isGroupMember, isGroupCreator } from "../middlewares/groupMiddleware";
 
 const router = Router();
 
@@ -22,11 +27,11 @@ router.post("/", validateRequest(createGroupSchema), createGroup);
 router.get("/", getMyGroups);
 router.get("/:id", getGroupById);
 
-//=============================== TODO: PRIVILEGED ENDPOINTS ===============================
-// PUT    /api/v1/groups/:id      — Update group name/description (creator only)
-// DELETE /api/v1/groups/:id      — Delete group (creator only)
-// POST   /api/v1/groups/:id/join   — Join group via invite code
-// POST   /api/v1/groups/:id/unjoin — Leave group (creator blocked)
+//=============================== PRIVILEGED ENDPOINTS ===============================
+router.put("/:id",         isGroupMember, isGroupCreator, validateRequest(updateGroupSchema), updateGroup);
+router.delete("/:id",      isGroupMember, isGroupCreator, deleteGroup);
+router.post("/:id/join",   validateRequest(joinGroupSchema), joinGroup);   // no isGroupMember — user isn't a member yet
+router.post("/:id/unjoin", isGroupMember, unjoinGroup);
 
 export { createGroupSchema, updateGroupSchema, joinGroupSchema };
 export default router;
