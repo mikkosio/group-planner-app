@@ -6,16 +6,21 @@ import {
     updateGroupSchema,
     joinGroupSchema,
 } from "../validators/groups.validator";
+import {
+    createGroup,
+    getMyGroups,
+    getGroupById,
+} from "../controllers/groups.controller";
 
 const router = Router();
 
 // All group routes require authentication (only member can view their own groups)
 router.use(protect);
 
-//=============================== TODO: CORE ENDPOINTS ===============================
-// POST   /api/v1/groups          — Create group (+ auto-enrol creator as Admin)
-// GET    /api/v1/groups          — List all groups the user is a member of
-// GET    /api/v1/groups/:id      — Get full group details (members only)
+//=============================== CORE ENDPOINTS ===============================
+router.post("/", validateRequest(createGroupSchema), createGroup);
+router.get("/", getMyGroups);
+router.get("/:id", getGroupById);
 
 //=============================== TODO: PRIVILEGED ENDPOINTS ===============================
 // PUT    /api/v1/groups/:id      — Update group name/description (creator only)
