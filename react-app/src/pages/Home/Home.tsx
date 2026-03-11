@@ -12,6 +12,7 @@ import {
 import { grey } from "@mui/material/colors";
 import SettingsIcon from "@mui/icons-material/Settings";
 import GroupsList from "./GroupsList";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/providers/AuthProvider";
 import InviteCodeDialog from "./InviteCodeDialog";
 import { useState } from "react";
@@ -27,6 +28,7 @@ const statistics = [
 
 const Home = () => {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [joinDialogOpen, setJoinDialogOpen] = useState(false);
 
     const actions = [
@@ -40,7 +42,7 @@ const Home = () => {
             title: "Create a Group",
             subhead: "Start a new group with friends",
             icon: GroupAdd,
-            onClick: () => console.log("Create Group clicked"), // replace with actual function
+            onClick: () => navigate("/creategroup"), // replace with actual function
         },
 
         {

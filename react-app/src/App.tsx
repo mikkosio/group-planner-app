@@ -5,6 +5,7 @@ import Login from "./pages/login/Login";
 import SignUp from "./pages/signup/SignUp";
 import Profile from "./pages/Profile";
 import Landing from "./pages/Landing";
+import CreateGroup from "./pages/groups/CreateGroup";
 import { AuthProvider } from "./providers/AuthProvider";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
@@ -32,6 +33,14 @@ function App() {
                                 <GuestRoute>
                                     <SignUp />
                                 </GuestRoute>
+                            }
+                        />
+                        <Route
+                            path="/creategroup"
+                            element={
+                                <ProtectedRoute>
+                                    <CreateGroup />
+                                </ProtectedRoute>
                             }
                         />
                         <Route

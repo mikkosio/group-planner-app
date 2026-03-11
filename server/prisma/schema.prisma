@@ -16,5 +16,35 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  createdGroups Group[]      @relation("GroupCreator")
+  memberships   Membership[]
+
   @@map("users")
+}
+
+model Group {
+  id           String    @id @default(uuid())
+  name         String    @db.VarChar(255)
+  description  String?
+  inviteCode   String    @unique @db.VarChar(10)
+  creatorId    String
+  status       String    @default("WIP") @db.VarChar(20)
+  createdAt    DateTime  @default(now())
+
+  creator     User         @relation("GroupCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+  memberships Membership[]
+
+  @@map("groups")
+}
+
+model Membership {
+  userId  String
+  groupId String
+  role    String @default("Member") @db.VarChar(20)
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@id([userId, groupId])
+  @@map("memberships")
 }
