@@ -56,6 +56,8 @@ export const getGroupById = asyncHandler(async (req: Request, res: Response) => 
     const userId = req.user!.id;
     const groupId = req.params.id as string;
 
+    logger.info(`Fetching group ${groupId} for user: ${userId}`);
+
     const group = await groupService.getGroupById(groupId, userId);
 
     logger.info(`Group retrieved: ${groupId}`);
@@ -118,14 +120,13 @@ export const deleteGroup = asyncHandler(async (req: Request, res: Response) => {
  */
 export const joinGroup = asyncHandler(async (req: Request, res: Response) => {
     const userId = req.user!.id;
-    const groupId = req.params.id as string;
     const { inviteCode } = req.body;
 
-    logger.info(`Join group attempt: ${groupId} by user: ${userId}`);
+    logger.info(`Join group attempt with invite code by user: ${userId}`);
 
-    const membership = await groupService.joinGroup(groupId, userId, inviteCode);
+    const membership = await groupService.joinGroup(userId, inviteCode);
 
-    logger.info(`User ${userId} joined group: ${groupId}`);
+    logger.info(`User ${userId} joined group: ${membership.groupId}`);
 
     const response: ApiResponse<{ membership: typeof membership }> = {
         success: true,
