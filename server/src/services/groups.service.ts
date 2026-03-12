@@ -137,23 +137,18 @@ export class GroupService {
 
     /**
      * Add a user to a group after verifying the invite code matches.
-     * @param groupId - ID of the group to join
      * @param userId - ID of the user joining
-     * @param inviteCode - Invite code provided by the user
+     * @param inviteCode - Invite code provided by the user, invite code is the sole group identifier
      */
-    async joinGroup(groupId: string, userId: string, inviteCode: string) {
-        const group = await prisma.group.findUnique({ where: { id: groupId } });
+    async joinGroup(userId: string, inviteCode: string) {
+        const group = await prisma.group.findUnique({ where: { inviteCode } });
 
         if (!group) {
-            throw new AppError("Group not found", 404);
-        }
-
-        if (group.inviteCode !== inviteCode) {
             throw new AppError("Invalid invite code", 400);
         }
 
         const existing = await prisma.membership.findUnique({
-            where: { userId_groupId: { userId, groupId } },
+            where: { userId_groupId: { userId, groupId: group.id } },
         });
 
         if (existing) {
@@ -161,7 +156,7 @@ export class GroupService {
         }
 
         return prisma.membership.create({
-            data: { userId, groupId, role: "Member" },
+            data: { userId, groupId: group.id, role: "Member" },
         });
     }
 

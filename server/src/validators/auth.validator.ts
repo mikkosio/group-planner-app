@@ -32,6 +32,7 @@ export const loginSchema = z.object({
 
 export const updateProfileSchema = z.object({
     body: z.object({
+        email: z.string().email("Invalid email format").toLowerCase().trim().optional(),
         name: z
             .string()
             .min(2, "Name must be at least 2 characters")

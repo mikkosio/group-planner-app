@@ -40,8 +40,12 @@ export const authAPI = {
      * @param avatar Optional avatar URL
      * @returns API response with updated MeData
      */
-    async updateProfile(name?: string, avatar?: string): Promise<ApiResponse<MeData>> {
-        return api.put("/auth/profile", { name, avatar });
+    async updateProfile(
+        name?: string,
+        email?: string,
+        avatar?: string,
+    ): Promise<ApiResponse<MeData>> {
+        return api.put("/auth/profile", { name, email, avatar });
     },
 
     /**

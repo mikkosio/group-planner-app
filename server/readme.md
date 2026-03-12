@@ -151,7 +151,7 @@ All group endpoints require a Bearer token. Routes marked **Creator only** addit
 | `GET`    | `/api/v1/groups/:id`       | Member        | Get full group details including members list        |
 | `PUT`    | `/api/v1/groups/:id`       | Creator only  | Update group name and/or description                 |
 | `DELETE` | `/api/v1/groups/:id`       | Creator only  | Delete the group                                     |
-| `POST`   | `/api/v1/groups/:id/join`  | Bearer        | Join a group using its invite code                   |
+| `POST`   | `/api/v1/groups/join`      | Bearer        | Join a group using its invite code                   |
 | `POST`   | `/api/v1/groups/:id/unjoin`| Member        | Leave a group (creator cannot leave their own group) |
 
 **Join group request body:**

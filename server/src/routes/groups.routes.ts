@@ -23,14 +23,14 @@ const router = Router();
 router.use(protect);
 
 //=============================== CORE ENDPOINTS ===============================
-router.post("/", validateRequest(createGroupSchema), createGroup);
-router.get("/", getMyGroups);
-router.get("/:id", getGroupById);
+router.post("/",     validateRequest(createGroupSchema), createGroup);
+router.get("/",      getMyGroups);
+router.post("/join", validateRequest(joinGroupSchema), joinGroup);
+router.get("/:id",   isGroupMember, getGroupById);
 
 //=============================== PRIVILEGED ENDPOINTS ===============================
 router.put("/:id",         isGroupMember, isGroupCreator, validateRequest(updateGroupSchema), updateGroup);
 router.delete("/:id",      isGroupMember, isGroupCreator, deleteGroup);
-router.post("/:id/join",   validateRequest(joinGroupSchema), joinGroup);   // no isGroupMember — user isn't a member yet
 router.post("/:id/unjoin", isGroupMember, unjoinGroup);
 
 export { createGroupSchema, updateGroupSchema, joinGroupSchema };
