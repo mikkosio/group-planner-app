@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Alert, Box, Button, Container, Paper, Stack, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../providers/AuthProvider";
-import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
+import { useAuth } from "@/providers/AuthProvider";
+import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
 
 const ProfilePage = () => {
     const { user, updateProfile, logout, deleteAccount } = useAuth();

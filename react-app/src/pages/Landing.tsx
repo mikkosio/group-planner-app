@@ -1,5 +1,5 @@
 import { Container, Typography, Box, Button } from "@mui/material";
-import GatherlyLogo from "../assets/gatherlylogo.png";
+import GatherlyLogo from "@/assets/gatherlylogo.png";
 import { Link } from "react-router-dom";
 import { lightBlue } from "@mui/material/colors";
 

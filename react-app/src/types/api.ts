@@ -1,4 +1,4 @@
-import type { User } from "./models";
+import type { Membership, User } from "./models";
 
 export type ApiResponse<T> = {
     success: boolean;
@@ -13,4 +13,8 @@ export type AuthData = {
 
 export type MeData = {
     user: User;
+};
+
+export type MembershipData = {
+  membership: Membership;
 };

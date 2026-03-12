@@ -1,6 +1,6 @@
+import { useRef, useState } from "react";
 import { alpha, AppBar, Box, Toolbar, Typography } from "@mui/material";
 import MenuButton from "./MenuButton";
-import { useRef, useState } from "react";
 import NavDropdown from "./NavDropdown";
 
 const navbarInset = { left: 16, right: 16 };
