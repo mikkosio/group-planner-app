@@ -132,7 +132,7 @@ const ProfilePage = () => {
                 </Button>
             </Paper>
 
-            <Paper elevation={2} sx={{ mt: 2, p: 3, borderRadius: 2 }}>
+            <Paper elevation={5} sx={{ mt: 2, p: 3, borderRadius: 2 }}>
                 <Typography variant="h6" color="error" sx={{ mb: 1 }}>
                     Danger Zone
                 </Typography>
