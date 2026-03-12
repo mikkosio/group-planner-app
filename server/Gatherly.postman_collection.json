@@ -211,7 +211,7 @@
                             { "key": "Authorization", "value": "Bearer {{token}}" },
                             { "key": "Content-Type", "value": "application/json" }
                         ],
-                        "url": "{{baseUrl}}/groups/{{groupId}}/join",
+                        "url": "{{baseUrl}}/groups/join",
                         "body": {
                             "mode": "raw",
                             "raw": "{\n    \"inviteCode\": \"{{inviteCode}}\"\n}"
