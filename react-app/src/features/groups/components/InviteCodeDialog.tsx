@@ -43,6 +43,7 @@ const InviteCodeDialog = ({ open, handleClose }: JoinGroupDialogProps) => {
 
             if (!res.success) {
                 setError(res.message || "Failed to join group.");
+                return;
             }
 
             handleClose();
@@ -51,7 +52,7 @@ const InviteCodeDialog = ({ open, handleClose }: JoinGroupDialogProps) => {
             alert("Join success");
 
             // Redirect to group page
-            console.log(res.data)
+            console.log(res.data);
         } catch (err) {
             if (axios.isAxiosError(err)) {
                 const message = err.response?.data?.message || "Failed to join group";
