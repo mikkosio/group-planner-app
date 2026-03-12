@@ -8,6 +8,8 @@ import {
     Typography,
 } from "@mui/material";
 import { useState } from "react";
+import { joinGroup } from "@/features/groups/api/join-group";
+import axios from "axios";
 
 /**
  * Props for InviteCodeDialog
@@ -23,6 +25,7 @@ interface JoinGroupDialogProps {
 const InviteCodeDialog = ({ open, handleClose }: JoinGroupDialogProps) => {
     const [code, setCode] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string>("");
 
     // Control user input in text field
     const handleChange = (
@@ -35,15 +38,31 @@ const InviteCodeDialog = ({ open, handleClose }: JoinGroupDialogProps) => {
     const handleJoin = async () => {
         setLoading(true);
 
-        // simulate post request, replace in the future
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        try {
+            const res = await joinGroup(code);
 
-        // Display modal or some success message after successful join
-        handleClose();
-        setLoading(false);
-        alert("Join success");
+            if (!res.success) {
+                setError(res.message || "Failed to join group.");
+                return;
+            }
 
-        console.log(code);
+            handleClose();
+
+            // Display modal or some success message after successful join
+            alert("Join success");
+
+            // Redirect to group page
+            console.log(res.data);
+        } catch (err) {
+            if (axios.isAxiosError(err)) {
+                const message = err.response?.data?.message || "Failed to join group";
+                setError(message);
+            } else {
+                setError("Unexpected error");
+            }
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -75,6 +94,8 @@ const InviteCodeDialog = ({ open, handleClose }: JoinGroupDialogProps) => {
                     label="Invite Code"
                     placeholder="e.g. Y7VN1M"
                     value={code}
+                    error={!!error}
+                    helperText={error}
                     slotProps={{
                         htmlInput: {
                             maxLength: 6,

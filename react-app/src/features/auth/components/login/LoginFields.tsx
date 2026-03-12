@@ -1,5 +1,5 @@
 import { Stack, TextField, Button } from "@mui/material";
-import { useAuth } from "../../providers/AuthProvider";
+import { useAuth } from "@/providers/AuthProvider";
 import { useNavigate } from "react-router-dom";
 
 const LoginFields = () => {

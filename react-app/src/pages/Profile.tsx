@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Alert, Box, Button, Container, Paper, Stack, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../providers/AuthProvider";
-import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
+import { useAuth } from "@/providers/AuthProvider";
+import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
 
 const ProfilePage = () => {
     const { user, updateProfile, logout, deleteAccount } = useAuth();
@@ -132,7 +132,7 @@ const ProfilePage = () => {
                 </Button>
             </Paper>
 
-            <Paper elevation={2} sx={{ mt: 2, p: 3, borderRadius: 2 }}>
+            <Paper elevation={5} sx={{ mt: 2, p: 3, borderRadius: 2 }}>
                 <Typography variant="h6" color="error" sx={{ mb: 1 }}>
                     Danger Zone
                 </Typography>
