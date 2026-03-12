@@ -11,10 +11,10 @@ import {
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import SettingsIcon from "@mui/icons-material/Settings";
-import GroupsList from "./GroupsList";
+import GroupsList from "@/features/groups/components/GroupsList";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/providers/AuthProvider";
-import InviteCodeDialog from "./InviteCodeDialog";
+import InviteCodeDialog from "@/features/groups/components/InviteCodeDialog";
 import { useState } from "react";
 import { GroupAdd, Input } from "@mui/icons-material";
 
