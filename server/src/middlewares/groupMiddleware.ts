@@ -26,17 +26,17 @@ export const isGroupMember = asyncHandler(async (req: Request, res: Response, ne
     const groupId = req.params.id as string;
     const userId = req.user!.id;
 
+    const group = await prisma.group.findUnique({ where: { id: groupId } });
+
+    if (!group) {
+        throw new AppError("You are not a member of this group", 403);
+    }
+
     const membership = await prisma.membership.findUnique({
         where: { userId_groupId: { userId, groupId } },
     });
 
     if (!membership) {
-        throw new AppError("You are not a member of this group", 403);
-    }
-
-    const group = await prisma.group.findUnique({ where: { id: groupId } });
-
-    if (!group) {
         throw new AppError("You are not a member of this group", 403);
     }
 
