@@ -6,3 +6,21 @@ export type User = {
     createdAt: string;
     updatedAt: string;
 };
+
+export type Group = {
+    id: string;
+    name: string;
+    description?: string | null;
+    inviteCode: string;
+    creatorId: string;
+    status?: string;
+    createdAt: string;
+};
+
+export type Membership = {
+    userId: string;
+    groupId: string;
+    role?: string;
+    user?: User;
+    group?: Group;
+};
