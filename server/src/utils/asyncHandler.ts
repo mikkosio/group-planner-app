@@ -1,10 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-type AsyncFunction = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => Promise<any>;
+type AsyncFunction = (req: Request, res: Response, next: NextFunction) => Promise<void>;
 
 /**
  * Wrapper for async route handlers to catch errors
@@ -20,7 +16,7 @@ type AsyncFunction = (
  * @return Wrapped function with error handling
  */
 export const asyncHandler = (fn: AsyncFunction) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    Promise.resolve(fn(req, res, next)).catch(next);
-  };
+    return (req: Request, res: Response, next: NextFunction) => {
+        Promise.resolve(fn(req, res, next)).catch(next);
+    };
 };
