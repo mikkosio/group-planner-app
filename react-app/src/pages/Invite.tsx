@@ -1,5 +1,4 @@
 import { joinGroup } from "@/features/groups/api/join-group";
-import { useAuth } from "@/providers/AuthProvider";
 import { Close, Home } from "@mui/icons-material";
 import { Box, Button, CircularProgress, Container, Paper, Typography } from "@mui/material";
 import axios from "axios";
@@ -9,16 +8,17 @@ import { useNavigate, useParams } from "react-router-dom";
 const InvitePage = () => {
     const navigate = useNavigate();
     const { code } = useParams<{ code: string }>();
-    const { user } = useAuth();
     
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState("");
     
     useEffect(() => {
+
         if (!code) {
             setError("Invalid invite link!");
             return;
         }
+
         // Handle post request to join a group
         const handleJoin = async () => {
             setLoading(true);
@@ -36,6 +36,7 @@ const InvitePage = () => {
 
                 // Redirect to group page
                 console.log(res.data);
+                navigate("/home")
             } catch (err) {
                 if (axios.isAxiosError(err)) {
                     const message = err.response?.data?.message || "Failed to join group";
@@ -49,7 +50,7 @@ const InvitePage = () => {
         };
         
         handleJoin();
-    }, [user, code]);
+    }, [code, navigate]);
     
     return (
         <Container 
