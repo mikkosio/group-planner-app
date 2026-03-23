@@ -1,0 +1,232 @@
+{
+    "info": {
+        "name": "Gatherly API",
+        "_postman_id": "gatherly-api-collection",
+        "description": "REST API for Gatherly — the group hangout planner.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:3000/api/v1",
+            "type": "string"
+        },
+        {
+            "key": "token",
+            "value": "",
+            "type": "string",
+            "description": "JWT — auto-set by Login and Register test scripts"
+        },
+        {
+            "key": "groupId",
+            "value": "",
+            "type": "string",
+            "description": "Auto-set by Create Group test script"
+        },
+        {
+            "key": "inviteCode",
+            "value": "",
+            "type": "string",
+            "description": "Auto-set by Create Group test script"
+        }
+    ],
+    "item": [
+        {
+            "name": "System",
+            "item": [
+                {
+                    "name": "Health Check",
+                    "request": {
+                        "method": "GET",
+                        "url": "http://localhost:3000/health"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Register",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "const res = pm.response.json();",
+                                    "if (res.data && res.data.token) {",
+                                    "    pm.collectionVariables.set('token', res.data.token);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [{ "key": "Content-Type", "value": "application/json" }],
+                        "url": "{{baseUrl}}/auth/register",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Jane Doe\",\n    \"email\": \"jane@example.com\",\n    \"password\": \"Password1\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Login",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "const res = pm.response.json();",
+                                    "if (res.data && res.data.token) {",
+                                    "    pm.collectionVariables.set('token', res.data.token);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [{ "key": "Content-Type", "value": "application/json" }],
+                        "url": "{{baseUrl}}/auth/login",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"jane@example.com\",\n    \"password\": \"Password1\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Get Me",
+                    "request": {
+                        "method": "GET",
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": "{{baseUrl}}/auth/me"
+                    }
+                },
+                {
+                    "name": "Update Profile",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            { "key": "Authorization", "value": "Bearer {{token}}" },
+                            { "key": "Content-Type", "value": "application/json" }
+                        ],
+                        "url": "{{baseUrl}}/auth/profile",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Jane Smith\",\n    \"avatar\": \"https://example.com/avatar.png\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Account",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": "{{baseUrl}}/auth/account"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Groups",
+            "item": [
+                {
+                    "name": "Create Group",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "const res = pm.response.json();",
+                                    "if (res.data && res.data.group) {",
+                                    "    pm.collectionVariables.set('groupId', res.data.group.id);",
+                                    "    pm.collectionVariables.set('inviteCode', res.data.group.inviteCode);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            { "key": "Authorization", "value": "Bearer {{token}}" },
+                            { "key": "Content-Type", "value": "application/json" }
+                        ],
+                        "url": "{{baseUrl}}/groups",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Weekend Hikers\",\n    \"description\": \"Planning weekend hikes together\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Get My Groups",
+                    "request": {
+                        "method": "GET",
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": "{{baseUrl}}/groups"
+                    }
+                },
+                {
+                    "name": "Get Group By ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": "{{baseUrl}}/groups/{{groupId}}"
+                    }
+                },
+                {
+                    "name": "Update Group",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            { "key": "Authorization", "value": "Bearer {{token}}" },
+                            { "key": "Content-Type", "value": "application/json" }
+                        ],
+                        "url": "{{baseUrl}}/groups/{{groupId}}",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Weekend Hikers (Updated)\",\n    \"description\": \"New description\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Group",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": "{{baseUrl}}/groups/{{groupId}}"
+                    }
+                },
+                {
+                    "name": "Join Group",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            { "key": "Authorization", "value": "Bearer {{token}}" },
+                            { "key": "Content-Type", "value": "application/json" }
+                        ],
+                        "url": "{{baseUrl}}/groups/join",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"inviteCode\": \"{{inviteCode}}\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Unjoin Group",
+                    "request": {
+                        "method": "POST",
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": "{{baseUrl}}/groups/{{groupId}}/unjoin"
+                    }
+                }
+            ]
+        }
+    ]
+}
