@@ -1,6 +1,7 @@
 import type { FormEvent } from "react";
 import { useState } from "react";
 import { Alert, Box, Button, Container, TextField, Typography } from "@mui/material";
+import { createGroup } from "@/features/groups/api/create-group";
 
 interface FormErrors {
     name?: string;
@@ -11,7 +12,9 @@ const CreateGroup = () => {
     const [description, setDescription] = useState("");
     // const [inviteCode] = useState(generateInviteCode);
     const [errors, setErrors] = useState<FormErrors>({});
-    const [submitted, setSubmitted] = useState(false);
+    const [apiError, setApiError] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
 
     const validate = () => {
         const nextErrors: FormErrors = {};
@@ -25,17 +28,39 @@ const CreateGroup = () => {
         return Object.keys(nextErrors).length === 0;
     };
 
-    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        setSubmitted(false);
+        setSuccessMessage(null);
+        setApiError(null);
+
         if (!validate()) return;
 
-        console.log("Create group", {
-            name: name.trim(),
-            description: description.trim() || undefined,
-            status: "ACTIVE",
-        });
-        setSubmitted(true);
+        try {
+            setLoading(true);
+
+            const response = await createGroup(name.trim(), description.trim() || undefined);
+
+            setSuccessMessage(
+                `Group created successfully. Invite code: ${response.data.group.inviteCode}`,
+            );
+            setName("");
+            setDescription("");
+            setErrors({});
+        } catch (error: unknown) {
+            const message =
+                typeof error === "object" &&
+                error !== null &&
+                "response" in error &&
+                typeof (error as { response?: { data?: { message?: unknown } } }).response?.data
+                    ?.message === "string"
+                    ? (error as { response?: { data?: { message?: string } } }).response?.data
+                          ?.message
+                    : "Failed to create group. Please try again.";
+
+            setApiError(message ?? "Failed to create group. Please try again.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -68,14 +93,16 @@ const CreateGroup = () => {
                     fullWidth
                 />
 
-                <Button type="submit" variant="contained">
-                    Create Group
+                <Button type="submit" variant="contained" disabled={loading}>
+                    {loading ? "Creating..." : "Create Group"}
                 </Button>
             </Box>
 
-            {submitted && (
+            {apiError && <Alert severity="error">{apiError}</Alert>}
+
+            {successMessage && (
                 <Alert severity="success" sx={{ mt: 2 }}>
-                    Group form is valid and ready to submit ...
+                    {successMessage}
                 </Alert>
             )}
         </Container>
