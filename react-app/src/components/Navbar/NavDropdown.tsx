@@ -34,7 +34,7 @@ const NavDropdown = ({ navbarRef, open, setOpen, inset, zIndex, routes }: NavDro
                     fontSize: 18,
                 },
                 "& .MuiMenuItem-root.logout": {
-                    color: "error.light",
+                    color: "error.main",
                     fontWeight: 900,
                 },
             }}

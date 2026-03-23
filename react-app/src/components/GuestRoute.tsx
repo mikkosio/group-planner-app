@@ -1,5 +1,5 @@
 import { Box, CircularProgress } from "@mui/material";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/providers/AuthProvider";
 
 interface GuestRouteProps {
@@ -8,6 +8,7 @@ interface GuestRouteProps {
 
 const GuestRoute = ({ children }: GuestRouteProps) => {
     const { user, isLoading } = useAuth();
+    const location = useLocation();
 
     if (isLoading) {
         return (
@@ -17,7 +18,7 @@ const GuestRoute = ({ children }: GuestRouteProps) => {
         );
     }
 
-    if (user) {
+    if (user && !location.state?.from) {
         return <Navigate to="/home" replace />;
     }
 
