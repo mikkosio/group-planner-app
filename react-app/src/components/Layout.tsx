@@ -4,8 +4,8 @@ import Navbar from "./Navbar/Navbar";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
     const location = useLocation();
-    const hideNavOn = ["/", "/login", "/signup"];
-    const showNav = !hideNavOn.includes(location.pathname);
+    const hideNavOn = ["/login", "/signup", "/invite"];
+    const showNav = !hideNavOn.some(path => location.pathname.startsWith(path)) || location.pathname == "/";
     return (
         <>
             {showNav && <Navbar />}
