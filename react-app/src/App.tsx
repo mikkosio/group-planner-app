@@ -10,6 +10,7 @@ import { AuthProvider } from "./providers/AuthProvider";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
 import Layout from "./components/Layout";
+import InvitePage from "./pages/Invite";
 
 function App() {
     return (
@@ -36,14 +37,6 @@ function App() {
                             }
                         />
                         <Route
-                            path="/creategroup"
-                            element={
-                                <ProtectedRoute>
-                                    <CreateGroup />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
                             path="/home"
                             element={
                                 <ProtectedRoute>
@@ -56,6 +49,22 @@ function App() {
                             element={
                                 <ProtectedRoute>
                                     <Profile />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/creategroup"
+                            element={
+                                <ProtectedRoute>
+                                    <CreateGroup />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/invite/:code"
+                            element={
+                                <ProtectedRoute>
+                                    <InvitePage />
                                 </ProtectedRoute>
                             }
                         />

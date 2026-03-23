@@ -1,10 +1,12 @@
 import { Stack, TextField, Button } from "@mui/material";
 import { useAuth } from "@/providers/AuthProvider";
-import { useNavigate } from "react-router-dom";
 
-const LoginFields = () => {
+interface LoginFieldsProps {
+    handleSuccess: () => void;
+}
+
+const LoginFields = ({ handleSuccess }: LoginFieldsProps) => {
     const { login } = useAuth();
-    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -15,7 +17,7 @@ const LoginFields = () => {
 
         try {
             await login(email, password);
-            navigate("/home");
+            handleSuccess();
         } catch (error: unknown) {
             // log error for now, in future, have error message component to show user
             if (error instanceof Error) {

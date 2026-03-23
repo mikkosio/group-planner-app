@@ -1,11 +1,21 @@
 import { Container, Paper, Typography, Box } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import AuthOptions from "@/features/auth/components/AuthOptions";
 import FormDivider from "@/features/auth/components/FormDivider";
 import LoginFields from "@/features/auth/components/login/LoginFields";
 import GatherlyLogo from "@/assets/gatherlylogo.png";
 
 const LoginPage = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const dest = location.state?.from || "/home";
+
+    const handleSuccess = () => {
+        console.log(dest);
+        
+        navigate(dest, { replace: true });
+    }
+
     return (
         <Container maxWidth="sm">
             <Paper
@@ -43,12 +53,16 @@ const LoginPage = () => {
                 <FormDivider text="or" />
 
                 {/* Input Fields */}
-                <LoginFields />
+                <LoginFields handleSuccess={handleSuccess} />
 
                 {/* Redirect to sign-up */}
                 <Typography variant="body2">
                     New to Gatherly?{" "}
-                    <Link to="/signup" style={{ textDecoration: "none", fontWeight: "bold" }}>
+                    <Link 
+                        to={`/signup`} 
+                        style={{ textDecoration: "none", fontWeight: "bold" }}
+                        state={{ from: dest }}
+                    >
                         Create account
                     </Link>
                 </Typography>
