@@ -16,5 +16,5 @@ export type MeData = {
 };
 
 export type MembershipData = {
-  membership: Membership;
+    membership: Membership;
 };

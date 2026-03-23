@@ -12,9 +12,9 @@ const LoginPage = () => {
 
     const handleSuccess = () => {
         console.log(dest);
-        
+
         navigate(dest, { replace: true });
-    }
+    };
 
     return (
         <Container maxWidth="sm">
@@ -58,8 +58,8 @@ const LoginPage = () => {
                 {/* Redirect to sign-up */}
                 <Typography variant="body2">
                     New to Gatherly?{" "}
-                    <Link 
-                        to={`/signup`} 
+                    <Link
+                        to={`/signup`}
                         style={{ textDecoration: "none", fontWeight: "bold" }}
                         state={{ from: dest }}
                     >

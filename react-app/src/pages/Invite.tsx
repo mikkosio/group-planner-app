@@ -8,12 +8,11 @@ import { useNavigate, useParams } from "react-router-dom";
 const InvitePage = () => {
     const navigate = useNavigate();
     const { code } = useParams<{ code: string }>();
-    
+
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState("");
-    
-    useEffect(() => {
 
+    useEffect(() => {
         if (!code) {
             setError("Invalid invite link!");
             return;
@@ -36,7 +35,7 @@ const InvitePage = () => {
 
                 // Redirect to group page
                 console.log(res.data);
-                navigate("/home")
+                navigate("/home");
             } catch (err) {
                 if (axios.isAxiosError(err)) {
                     const message = err.response?.data?.message || "Failed to join group";
@@ -48,19 +47,19 @@ const InvitePage = () => {
                 setLoading(false);
             }
         };
-        
+
         handleJoin();
     }, [code, navigate]);
-    
+
     return (
-        <Container 
+        <Container
             maxWidth="sm"
             sx={{
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                minHeight: "90vh"
+                minHeight: "90vh",
             }}
         >
             <Paper
@@ -68,13 +67,13 @@ const InvitePage = () => {
                 sx={{
                     p: 6,
                     borderRadius: 4,
-                    textAlign: "center"
+                    textAlign: "center",
                 }}
             >
                 {loading ? (
                     <Box sx={{ py: 2 }}>
                         <CircularProgress size={50} />
-                        <Typography variant="h5" sx={{ mt: 3}}>
+                        <Typography variant="h5" sx={{ mt: 3 }}>
                             Joining group…
                         </Typography>
                         <Typography variant="body1" color="text.secondary" sx={{ mt: 1 }}>
@@ -84,25 +83,22 @@ const InvitePage = () => {
                 ) : (
                     <>
                         <Box
-                        sx={{
-                            width: 60,
-                            height: 60,
-                            borderRadius: 10,
-                            backgroundColor: "error.light",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            mx: "auto",
-                            mb: 2
-                        }}
+                            sx={{
+                                width: 60,
+                                height: 60,
+                                borderRadius: 10,
+                                backgroundColor: "error.light",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                mx: "auto",
+                                mb: 2,
+                            }}
                         >
                             <Close color="error" sx={{ fontSize: 38 }} />
                         </Box>
 
-                        <Typography
-                            variant="h4"
-                            gutterBottom={true}
-                        >
+                        <Typography variant="h4" gutterBottom={true}>
                             Oops!
                         </Typography>
 
@@ -131,7 +127,7 @@ const InvitePage = () => {
                                 py: 1.5,
                                 textTransform: "none",
                                 "&:hover": {
-                                    backgroundColor: "error.main"
+                                    backgroundColor: "error.main",
                                 },
                             }}
                         >
@@ -142,6 +138,6 @@ const InvitePage = () => {
             </Paper>
         </Container>
     );
-}
+};
 
 export default InvitePage;

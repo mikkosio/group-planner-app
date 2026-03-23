@@ -18,7 +18,7 @@ const theme = createTheme({
         error: {
             light: red[50],
             main: red[500],
-            dark: red[900]
+            dark: red[900],
         },
         warning: {
             light: amber[300],

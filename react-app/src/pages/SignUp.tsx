@@ -12,9 +12,9 @@ const SignUpPage = () => {
 
     const handleSuccess = () => {
         console.log(dest);
-        
+
         navigate(dest, { replace: true });
-    }
+    };
 
     return (
         <Container maxWidth="sm">
