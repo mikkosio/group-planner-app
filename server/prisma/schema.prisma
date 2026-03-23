@@ -18,6 +18,7 @@ model User {
 
   createdGroups Group[]      @relation("GroupCreator")
   memberships   Membership[]
+  activities    Activity[]
 
   @@map("users")
 }
@@ -33,6 +34,7 @@ model Group {
 
   creator     User         @relation("GroupCreator", fields: [creatorId], references: [id], onDelete: Cascade)
   memberships Membership[]
+  activities  Activity[]
 
   @@map("groups")
 }
@@ -47,4 +49,19 @@ model Membership {
 
   @@id([userId, groupId])
   @@map("memberships")
+}
+
+model Activity {
+  id           String   @id @default(uuid())
+  groupId      String
+  userId       String
+  title        String   @db.VarChar(255)
+  description  String?
+  proposedTime DateTime
+  isWinner     Boolean  @default(false)
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@map("activities")
 }
