@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "@/lib/axios";
-import { getGroupDetails } from "@/features/groups/api/group-details";
 import { Group as GroupIcon } from "@mui/icons-material";
 import {
     Alert,
@@ -18,6 +17,7 @@ import type { ApiResponse } from "@/types/api";
 type MyGroupBase = {
     id: string;
     name: string;
+    memberCount: number;
 };
 
 type MyGroupsData = {
@@ -45,18 +45,13 @@ const GroupsList = () => {
                 const res = (await api.get("/groups")) as ApiResponse<MyGroupsData>;
                 const baseGroups = res.data.groups;
 
-                const groupsWithCounts = await Promise.all(
-                    baseGroups.map(async (group) => {
-                        const detail = await getGroupDetails(group.id);
-                        return {
-                            id: group.id,
-                            name: group.name,
-                            memberCount: detail.data.group.memberships.length,
-                        };
-                    }),
+                setGroups(
+                    baseGroups.map((group) => ({
+                        id: group.id,
+                        name: group.name,
+                        memberCount: group.memberCount,
+                    })),
                 );
-
-                setGroups(groupsWithCounts);
             } catch (err: unknown) {
                 const message =
                     typeof err === "object" &&
