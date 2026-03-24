@@ -1,6 +1,6 @@
 import { joinGroup } from "@/features/groups/api/join-group";
-import { Close, Home } from "@mui/icons-material";
-import { Box, Button, CircularProgress, Container, Paper, Typography } from "@mui/material";
+import { CheckCircle, Close, Home } from "@mui/icons-material";
+import { Alert, Box, Button, CircularProgress, Container, Paper, Snackbar, Typography } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -10,7 +10,17 @@ const InvitePage = () => {
     const { code } = useParams<{ code: string }>();
 
     const [loading, setLoading] = useState<boolean>(false);
+    const [success, setSuccess] = useState<boolean>(false);
     const [error, setError] = useState("");
+    const [snackbar, setSnackbar] = useState<{
+        open: boolean;
+        message: string;
+        severity: "success" | "info";
+    }>({
+        open: false,
+        message: "",
+        severity: "success",
+    });
 
     useEffect(() => {
         if (!code) {
@@ -30,16 +40,29 @@ const InvitePage = () => {
                     return;
                 }
 
-                // Display modal or some success message after successful join
-                alert("Join success");
+                // Show success state (no snackbar needed - UI shows it)
+                setSuccess(true);
 
-                // Redirect to group page
-                console.log(res.data);
-                navigate("/home");
+                // Redirect after showing success message
+                setTimeout(() => {
+                    navigate("/home");
+                }, 3000);
             } catch (err) {
                 if (axios.isAxiosError(err)) {
                     const message = err.response?.data?.message || "Failed to join group";
-                    setError(message);
+
+                    // Special handling for "already a member"
+                    if (message.toLowerCase().includes("already a member")) {
+                        setSuccess(true);
+                        setSnackbar({
+                            open: true,
+                            message: "You're already in this group!",
+                            severity: "info",
+                        });
+                        setTimeout(() => navigate("/home"), 2500);
+                    } else {
+                        setError(message);
+                    }
                 } else {
                     setError("Unexpected error");
                 }
@@ -79,6 +102,45 @@ const InvitePage = () => {
                         <Typography variant="body1" color="text.secondary" sx={{ mt: 1 }}>
                             Hang tight, we're getting you in.
                         </Typography>
+                    </Box>
+                ) : success ? (
+                    <Box sx={{ py: 2 }}>
+                        <Box
+                            sx={{
+                                width: 60,
+                                height: 60,
+                                borderRadius: 10,
+                                backgroundColor: "success.light",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                mx: "auto",
+                                mb: 2,
+                            }}
+                        >
+                            <CheckCircle color="success" sx={{ fontSize: 38 }} />
+                        </Box>
+
+                        <Typography variant="h4" gutterBottom>
+                            Welcome!
+                        </Typography>
+
+                        <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+                            Redirecting you to your groups...
+                        </Typography>
+
+                        <Button
+                            variant="contained"
+                            startIcon={<Home />}
+                            onClick={() => navigate("/home")}
+                            sx={{
+                                px: 4,
+                                py: 1.5,
+                                textTransform: "none",
+                            }}
+                        >
+                            View My Groups Now
+                        </Button>
                     </Box>
                 ) : (
                     <>
@@ -136,6 +198,22 @@ const InvitePage = () => {
                     </>
                 )}
             </Paper>
+
+            {/* Snackbar for success/info notifications only */}
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={6000}
+                onClose={() => setSnackbar({ ...snackbar, open: false })}
+                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+            >
+                <Alert
+                    onClose={() => setSnackbar({ ...snackbar, open: false })}
+                    severity={snackbar.severity}
+                    sx={{ width: "100%", maxWidth: "400px" }}
+                >
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </Container>
     );
 };

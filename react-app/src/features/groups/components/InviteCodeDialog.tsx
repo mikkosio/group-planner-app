@@ -1,9 +1,11 @@
 import {
+    Alert,
     Button,
     Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
+    Snackbar,
     TextField,
     Typography,
 } from "@mui/material";
@@ -26,6 +28,13 @@ const InviteCodeDialog = ({ open, handleClose }: JoinGroupDialogProps) => {
     const [code, setCode] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
+    const [snackbar, setSnackbar] = useState<{
+        open: boolean;
+        message: string;
+    }>({
+        open: false,
+        message: "",
+    });
 
     // Control user input in text field
     const handleChange = (
@@ -37,22 +46,31 @@ const InviteCodeDialog = ({ open, handleClose }: JoinGroupDialogProps) => {
     // Handle post request to join a group
     const handleJoin = async () => {
         setLoading(true);
+        setError(""); // Clear any previous errors
 
         try {
             const res = await joinGroup(code);
 
             if (!res.success) {
-                setError(res.message || "Failed to join group.");
+                const message = res.message || "Failed to join group.";
+                setError(message);
                 return;
             }
 
-            handleClose();
+            // Show success snackbar
+            setSnackbar({
+                open: true,
+                message: "Successfully joined the group!",
+            });
 
-            // Display modal or some success message after successful join
-            alert("Join success");
+            setCode(""); // Clear input
+            setError(""); // Clear any errors
 
-            // Redirect to group page
-            console.log(res.data);
+            // Close dialog after brief delay
+            setTimeout(() => {
+                handleClose();
+                setSnackbar({ open: false, message: "" });
+            }, 1500);
         } catch (err) {
             if (axios.isAxiosError(err)) {
                 const message = err.response?.data?.message || "Failed to join group";
@@ -125,6 +143,22 @@ const InviteCodeDialog = ({ open, handleClose }: JoinGroupDialogProps) => {
                     {loading ? "Joining..." : "Join"}
                 </Button>
             </DialogActions>
+
+            {/* Snackbar for success notifications only */}
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={6000}
+                onClose={() => setSnackbar({ ...snackbar, open: false })}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            >
+                <Alert
+                    onClose={() => setSnackbar({ ...snackbar, open: false })}
+                    severity="success"
+                    sx={{ width: "100%" }}
+                >
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </Dialog>
     );
 };
