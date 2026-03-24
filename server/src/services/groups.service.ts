@@ -77,7 +77,7 @@ export class GroupService {
             return {
                 ...groupData,
                 role,
-                memberCount: _count.memberships,
+                memberCount: _count?.memberships ?? 0,
             };
         });
     }

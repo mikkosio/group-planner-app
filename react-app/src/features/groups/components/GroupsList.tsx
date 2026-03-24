@@ -45,13 +45,14 @@ const GroupsList = () => {
                 const res = (await api.get("/groups")) as ApiResponse<MyGroupsData>;
                 const baseGroups = res.data.groups;
 
-                setGroups(
-                    baseGroups.map((group) => ({
+                const mappedGroups = baseGroups.map((group) => {
+                    return {
                         id: group.id,
                         name: group.name,
                         memberCount: group.memberCount,
-                    })),
-                );
+                    };
+                });
+                setGroups(mappedGroups);
             } catch (err: unknown) {
                 const message =
                     typeof err === "object" &&
