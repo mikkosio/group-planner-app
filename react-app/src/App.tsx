@@ -11,6 +11,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
 import Layout from "./components/Layout";
 import InvitePage from "./pages/Invite";
+import GroupDetails from "./pages/GroupDetails";
 
 function App() {
     return (
@@ -65,6 +66,14 @@ function App() {
                             element={
                                 <ProtectedRoute>
                                     <InvitePage />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/groups/:id"
+                            element={
+                                <ProtectedRoute>
+                                    <GroupDetails />
                                 </ProtectedRoute>
                             }
                         />
