@@ -76,8 +76,7 @@ const GroupsList = () => {
 
         void loadGroups();
     }, []);
-    // Contemplating centering the Group Name and member count since it looks off in desktop view
-    // but is fine for mobile.
+
     return (
         <>
             <Typography variant="h5">Your Groups</Typography>
