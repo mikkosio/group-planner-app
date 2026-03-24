@@ -16,6 +16,7 @@ import {
     unjoinGroup,
 } from "../controllers/groups.controller";
 import { isGroupMember, isGroupCreator } from "../middlewares/groupMiddleware";
+import activitiesRouter from "./activities.routes";
 
 const router = Router();
 
@@ -32,6 +33,9 @@ router.get("/:id",   isGroupMember, getGroupById);
 router.put("/:id",         isGroupMember, isGroupCreator, validateRequest(updateGroupSchema), updateGroup);
 router.delete("/:id",      isGroupMember, isGroupCreator, deleteGroup);
 router.post("/:id/unjoin", isGroupMember, unjoinGroup);
+
+// Mount activities routes
+router.use("/:id/activities", activitiesRouter);
 
 export { createGroupSchema, updateGroupSchema, joinGroupSchema };
 export default router;
