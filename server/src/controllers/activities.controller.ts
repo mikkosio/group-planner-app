@@ -65,7 +65,7 @@ export const deleteActivity = asyncHandler(async (req: Request, res: Response) =
 
     const response: ApiResponse = {
         success: true,
-        message: "Activity updated successfully",
+        message: "Activity deleted successfully",
     };
 
     res.status(200).json(response);
