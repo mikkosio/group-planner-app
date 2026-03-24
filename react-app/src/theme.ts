@@ -1,5 +1,5 @@
 import { createTheme } from "@mui/material/styles";
-import { lightBlue, cyan, amber, red, blue } from "@mui/material/colors";
+import { lightBlue, cyan, amber, red, blue, green } from "@mui/material/colors";
 
 const theme = createTheme({
     palette: {
@@ -19,6 +19,12 @@ const theme = createTheme({
             light: blue[100],
             main: blue[500],
             dark: blue[900],
+            contrastText: "#fff",
+        },
+        success: {
+            light: green[50],
+            main: green[500],
+            dark: green[900],
             contrastText: "#fff",
         },
         error: {
