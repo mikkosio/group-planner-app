@@ -18,7 +18,7 @@ declare global {
  * Fetches the activity and attaches it to req.activity for downstream handlers.
  */
 export const isActivityInGroup = asyncHandler(async (req: Request, _res: Response, next: NextFunction) => {
-    const groupId = req.params.id as string;
+    const groupId = req.group!.id;
     const activityId = req.params.activityId as string;
 
     const activity = await prisma.activity.findUnique({ where: {id: activityId }});
