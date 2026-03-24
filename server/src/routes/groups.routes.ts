@@ -35,7 +35,7 @@ router.delete("/:id",      isGroupMember, isGroupCreator, deleteGroup);
 router.post("/:id/unjoin", isGroupMember, unjoinGroup);
 
 // Mount activities routes
-router.use("/:id/activities", activitiesRouter);
+router.use("/:id/activities", isGroupMember, activitiesRouter); // require user to be group member
 
 export { createGroupSchema, updateGroupSchema, joinGroupSchema };
 export default router;

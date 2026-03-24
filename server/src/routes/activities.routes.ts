@@ -15,12 +15,8 @@ import {
     isActivityCreator,
     isGroupCreatorOrActivityCreator,
 } from "../middlewares/activitiesMiddleware"
-import { isGroupMember } from "../middlewares/groupMiddleware";
 
 const router = Router();
-
-router.use(protect);       // require auth
-router.use(isGroupMember); // require to be group member
 
 //=============================== ENDPOINTS ===============================
 router.post("/", validateRequest(createActivitySchema), createActivity);
