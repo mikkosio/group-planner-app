@@ -32,4 +32,4 @@ export const updateActivitySchema = z.object({
 });
 
 export type CreateActivityInput = z.infer<typeof createActivitySchema>["body"];
-export type UpdateActivityInput = z.infer<typeof updateActivitySchema>["body"];;
+export type UpdateActivityInput = z.infer<typeof updateActivitySchema>["body"];

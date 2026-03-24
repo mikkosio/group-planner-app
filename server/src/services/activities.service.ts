@@ -13,7 +13,7 @@ export class ActivityService {
         const proposedTime = new Date(input.proposedTime);
 
         if (proposedTime < new Date()) {
-            throw new AppError("Proposed time can't be in the past", 400)
+            throw new AppError("Proposed time cannot be in the past", 400)
         }
 
         return prisma.activity.create({
@@ -38,7 +38,7 @@ export class ActivityService {
             const proposedTime = new Date(input.proposedTime);
 
             if (proposedTime < new Date()) {
-                throw new AppError("Proposed time can't be in the past", 400)
+                throw new AppError("Proposed time cannot be in the past", 400)
             }
         }
 

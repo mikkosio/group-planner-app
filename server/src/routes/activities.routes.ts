@@ -15,7 +15,7 @@ import {
     isGroupCreatorOrActivityCreator,
 } from "../middlewares/activitiesMiddleware"
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 //=============================== ENDPOINTS ===============================
 router.post("/", validateRequest(createActivitySchema), createActivity);

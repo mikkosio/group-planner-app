@@ -21,7 +21,7 @@ export const isActivityInGroup = asyncHandler(async (req: Request, _res: Respons
     const groupId = req.group!.id;
     const activityId = req.params.activityId as string;
 
-    const activity = await prisma.activity.findUnique({ where: {id: activityId }});
+    const activity = await prisma.activity.findUnique({ where: { id: activityId }});
     if (!activity || activity.groupId !== groupId) {
         throw new AppError("Activity not found in this group", 404);
     }
