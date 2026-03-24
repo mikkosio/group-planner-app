@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { protect } from "../middlewares/authMiddleware";
 import { validateRequest } from "../middlewares/validateRequest";
 import {
     createActivitySchema,
