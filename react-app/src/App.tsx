@@ -5,12 +5,13 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Profile from "./pages/Profile";
 import Landing from "./pages/Landing";
-import CreateGroup from "./pages/groups/CreateGroup";
+import CreateGroup from "./pages/CreateGroup";
 import { AuthProvider } from "./providers/AuthProvider";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
 import Layout from "./components/Layout";
 import InvitePage from "./pages/Invite";
+import GroupDetails from "./pages/GroupDetails";
 
 function App() {
     return (
@@ -65,6 +66,14 @@ function App() {
                             element={
                                 <ProtectedRoute>
                                     <InvitePage />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/groups/:id"
+                            element={
+                                <ProtectedRoute>
+                                    <GroupDetails />
                                 </ProtectedRoute>
                             }
                         />

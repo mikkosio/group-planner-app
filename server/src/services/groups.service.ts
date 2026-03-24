@@ -62,14 +62,24 @@ export class GroupService {
         const memberships = await prisma.membership.findMany({
             where: { userId },
             include: {
-                group: true,
+                group: {
+                    include: {
+                        _count: {
+                            select: { memberships: true },
+                        },
+                    },
+                },
             },
         });
 
-        return memberships.map((m) => ({
-            ...m.group,
-            role: m.role,
-        }));
+        return memberships.map(({ role, group }) => {
+            const { _count, ...groupData } = group;
+            return {
+                ...groupData,
+                role,
+                memberCount: _count?.memberships ?? 0,
+            };
+        });
     }
 
     /**
