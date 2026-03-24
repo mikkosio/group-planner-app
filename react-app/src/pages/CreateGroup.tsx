@@ -1,4 +1,3 @@
-import type { FormEvent } from "react";
 import { useState } from "react";
 import { Alert, Box, Button, Container, TextField, Typography } from "@mui/material";
 import { createGroup } from "@/features/groups/api/create-group";
@@ -10,7 +9,6 @@ interface FormErrors {
 const CreateGroup = () => {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
-    // const [inviteCode] = useState(generateInviteCode);
     const [errors, setErrors] = useState<FormErrors>({});
     const [apiError, setApiError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -28,7 +26,7 @@ const CreateGroup = () => {
         return Object.keys(nextErrors).length === 0;
     };
 
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
         event.preventDefault();
         setSuccessMessage(null);
         setApiError(null);

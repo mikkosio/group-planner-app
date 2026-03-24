@@ -5,7 +5,7 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Profile from "./pages/Profile";
 import Landing from "./pages/Landing";
-import CreateGroup from "./pages/groups/CreateGroup";
+import CreateGroup from "./pages/CreateGroup";
 import { AuthProvider } from "./providers/AuthProvider";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
