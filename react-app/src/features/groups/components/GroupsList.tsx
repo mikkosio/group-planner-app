@@ -1,99 +1,128 @@
-import type React from "react";
-import { formatUpcomingDate } from "@/utils/formatUpcomingDate";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { api } from "@/lib/axios";
+import { getGroupDetails } from "@/features/groups/api/group-details";
 import { Group as GroupIcon } from "@mui/icons-material";
 import {
+    Alert,
     Avatar,
+    CircularProgress,
     List,
     ListItemAvatar,
     ListItemButton,
     ListItemText,
     Typography,
 } from "@mui/material";
+import type { ApiResponse } from "@/types/api";
 
-// temporary interface
-interface Group {
+type MyGroupBase = {
+    id: string;
+    name: string;
+};
+
+type MyGroupsData = {
+    groups: MyGroupBase[];
+};
+
+type GroupListItem = {
     id: string;
     name: string;
     memberCount: number;
-    nextHangoutDate: Date | null;
-}
-
-// Hardcoded groups for temp placeholder
-const groups = [
-    {
-        id: "group-1",
-        name: "Gamer boys",
-        memberCount: 8,
-        nextHangoutDate: new Date("2026-03-15T14:00:00"),
-    },
-    {
-        id: "group-2",
-        name: "The Brokies",
-        memberCount: 12,
-        nextHangoutDate: null,
-    },
-    {
-        id: "group-3",
-        name: "Best Group 7",
-        memberCount: 15,
-        nextHangoutDate: new Date("2026-03-20T18:30:00"),
-    },
-];
-
-/**
- * Create Subtitle for Group item.
- * @param group - temp interface for Group, don't know what Group object looks like yet
- * @returns JSX Element containing number of members and upcoming hangout time
- */
-const getGroupSubtitle = (group: Group): React.ReactNode => {
-    const memberText = `${group.memberCount} members`;
-    const nextHangout = group.nextHangoutDate ? formatUpcomingDate(group.nextHangoutDate) : null;
-
-    return (
-        <>
-            {memberText}
-            {nextHangout && (
-                <Typography component="span" color="warning.dark" variant="inherit">
-                    {` • Next Hangout ${nextHangout}`}
-                </Typography>
-            )}
-        </>
-    );
 };
 
 const GroupsList = () => {
+    const navigate = useNavigate();
+    const [groups, setGroups] = useState<GroupListItem[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const loadGroups = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+
+                const res = (await api.get("/groups")) as ApiResponse<MyGroupsData>;
+                const baseGroups = res.data.groups;
+
+                const groupsWithCounts = await Promise.all(
+                    baseGroups.map(async (group) => {
+                        const detail = await getGroupDetails(group.id);
+                        return {
+                            id: group.id,
+                            name: group.name,
+                            memberCount: detail.data.group.memberships.length,
+                        };
+                    }),
+                );
+
+                setGroups(groupsWithCounts);
+            } catch (err: unknown) {
+                const message =
+                    typeof err === "object" &&
+                    err !== null &&
+                    "response" in err &&
+                    typeof (err as { response?: { data?: { message?: unknown } } }).response?.data
+                        ?.message === "string"
+                        ? (err as { response?: { data?: { message?: string } } }).response?.data
+                              ?.message
+                        : "Failed to load groups.";
+
+                setError(message ?? "Failed to load groups.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        void loadGroups();
+    }, []);
+    // Contemplating centering the Group Name and member count since it looks off in desktop view
+    // but is fine for mobile.
     return (
         <>
-            {/* Groups List */}
             <Typography variant="h5">Your Groups</Typography>
-            <List
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 2,
-                    alignItems: "center",
-                }}
-            >
-                {groups.map((group) => (
-                    <ListItemButton
-                        key={group.id}
-                        sx={{
-                            bgcolor: "background.paper",
-                            borderRadius: 2,
-                            py: 1.5,
-                            width: "100%",
-                            boxShadow: 5,
-                        }}
-                    >
-                        <ListItemAvatar>
-                            <Avatar sx={{ bgcolor: "primary.main" }}>
-                                <GroupIcon />
-                            </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText primary={group.name} secondary={getGroupSubtitle(group)} />
-                    </ListItemButton>
-                ))}
-            </List>
+
+            {loading && <CircularProgress size={24} />}
+            {error && <Alert severity="error">{error}</Alert>}
+
+            {!loading && !error && groups.length === 0 && (
+                <Typography color="text.secondary">You’re not in any groups yet.</Typography>
+            )}
+
+            {!loading && !error && groups.length > 0 && (
+                <List
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 2,
+                        alignItems: "center",
+                    }}
+                >
+                    {groups.map((group) => (
+                        <ListItemButton
+                            key={group.id}
+                            onClick={() => navigate(`/groups/${group.id}`)}
+                            sx={{
+                                bgcolor: "background.paper",
+                                borderRadius: 2,
+                                py: 1.5,
+                                width: "100%",
+                                boxShadow: 5,
+                            }}
+                        >
+                            <ListItemAvatar>
+                                <Avatar sx={{ bgcolor: "primary.main" }}>
+                                    <GroupIcon />
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary={group.name}
+                                secondary={`${group.memberCount} members`}
+                            />
+                        </ListItemButton>
+                    ))}
+                </List>
+            )}
         </>
     );
 };

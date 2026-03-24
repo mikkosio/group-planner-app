@@ -1,0 +1,121 @@
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+    Alert,
+    Avatar,
+    Button,
+    CircularProgress,
+    Container,
+    List,
+    ListItem,
+    ListItemAvatar,
+    ListItemText,
+    Paper,
+    Typography,
+} from "@mui/material";
+import { getGroupDetails } from "@/features/groups/api/group-details";
+import type { GroupDetailsData } from "@/features/groups/api/group-details";
+
+const GroupDetails = () => {
+    const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
+    const [group, setGroup] = useState<GroupDetailsData["group"] | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!id) {
+            setError("Missing group id.");
+            setLoading(false);
+            return;
+        }
+
+        const load = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                const res = await getGroupDetails(id);
+                setGroup(res.data.group);
+            } catch (err: unknown) {
+                const message =
+                    typeof err === "object" &&
+                    err !== null &&
+                    "response" in err &&
+                    typeof (err as { response?: { data?: { message?: unknown } } }).response?.data
+                        ?.message === "string"
+                        ? (err as { response?: { data?: { message?: string } } }).response?.data
+                              ?.message
+                        : "Failed to load group details.";
+                setError(message ?? "Failed to load group details.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        void load();
+    }, [id]);
+
+    if (loading) {
+        return (
+            <Container maxWidth="md" sx={{ py: 4, textAlign: "center" }}>
+                <CircularProgress />
+            </Container>
+        );
+    }
+
+    if (error) {
+        return (
+            <Container maxWidth="md" sx={{ py: 4 }}>
+                <Alert severity="error">{error}</Alert>
+            </Container>
+        );
+    }
+
+    if (!group) return null;
+
+    return (
+        <Container maxWidth="md" sx={{ py: 4 }}>
+            <Typography variant="h4" sx={{ mb: 1 }}>
+                {group.name}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                Created on {new Date(group.createdAt).toLocaleDateString()}
+            </Typography>
+
+            <Paper sx={{ p: 2, mb: 3 }}>
+                <Typography variant="h6" sx={{ mb: 1 }}>
+                    Activities
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                    Placeholder. Insert Activities here.
+                </Typography>
+            </Paper>
+
+            <Paper sx={{ p: 2 }}>
+                <Typography variant="h6" sx={{ mb: 1 }}>
+                    Members ({group.memberships.length})
+                </Typography>
+                <List>
+                    {group.memberships.map((membership) => (
+                        <ListItem key={membership.userId}>
+                            <ListItemAvatar>
+                                <Avatar src={membership.user.avatar ?? undefined}>
+                                    {membership.user.name?.[0] ?? "U"}
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary={membership.user.name ?? membership.user.email}
+                                secondary={`${membership.user.email} • ${membership.role ?? "Member"}`}
+                            />
+                        </ListItem>
+                    ))}
+                </List>
+            </Paper>
+            <Button variant="contained" onClick={() => navigate("/home")} sx={{ my: 2, mb: 2 }}>
+                Back to Groups
+            </Button>
+        </Container>
+    );
+};
+
+export default GroupDetails;
