@@ -2,6 +2,7 @@ import { useState, useEffect, createContext, useContext, useRef } from "react";
 import { authAPI } from "@/lib/auth";
 import type { User } from "@/types/models";
 import { jwtDecode, type JwtPayload } from "jwt-decode";
+import axios from "axios";
 
 /**
  * Shape of the AuthContext
@@ -89,10 +90,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             } catch (error: unknown) {
                 // 401 means token is rejected by server — clear it
                 // Any other error (network, 5xx) — keep token, surface error
-                const status =
-                    error instanceof Object &&
-                    "response" in error &&
-                    (error as { response?: { status?: number } }).response?.status;
+                const status = axios.isAxiosError(error) ? error.response?.status : undefined;
+                
                 if (status === 401 || status === undefined) {
                     localStorage.removeItem("authToken");
                 } else {

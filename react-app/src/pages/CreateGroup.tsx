@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Alert, Box, Button, Container, TextField, Typography } from "@mui/material";
 import { createGroup } from "@/features/groups/api/create-group";
+import axios from "axios";
 
 interface FormErrors {
     name?: string;
@@ -45,17 +46,13 @@ const CreateGroup = () => {
             setDescription("");
             setErrors({});
         } catch (error: unknown) {
-            const message =
-                typeof error === "object" &&
-                error !== null &&
-                "response" in error &&
-                typeof (error as { response?: { data?: { message?: unknown } } }).response?.data
-                    ?.message === "string"
-                    ? (error as { response?: { data?: { message?: string } } }).response?.data
-                          ?.message
-                    : "Failed to create group. Please try again.";
+            let message = "Failed to create group. Please try again.";
+            
+            if (axios.isAxiosError(error) && error.response?.data?.message) {
+                message = error.response.data.message;
+            }
 
-            setApiError(message ?? "Failed to create group. Please try again.");
+            setApiError(message);
         } finally {
             setLoading(false);
         }
