@@ -76,6 +76,6 @@ model Vote {
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, activityId])
+  @@id([userId, activityId])
   @@map("votes")
 }
