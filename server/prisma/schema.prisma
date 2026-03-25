@@ -19,6 +19,7 @@ model User {
   createdGroups Group[]      @relation("GroupCreator")
   memberships   Membership[]
   activities    Activity[]
+  votes         Vote[]
 
   @@map("users")
 }
@@ -62,6 +63,19 @@ model Activity {
 
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  votes Vote[]
 
   @@map("activities")
+}
+
+model Vote {
+  userId     String
+  activityId String
+  createdAt  DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+
+  @@id([userId, activityId])
+  @@map("votes")
 }
