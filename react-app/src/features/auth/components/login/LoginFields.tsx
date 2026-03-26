@@ -1,5 +1,7 @@
-import { Stack, TextField, Button } from "@mui/material";
+import { useState } from "react";
+import { Stack, TextField, Button, Alert } from "@mui/material";
 import { useAuth } from "@/providers/AuthProvider";
+import axios from "axios";
 
 interface LoginFieldsProps {
     handleSuccess: () => void;
@@ -7,30 +9,42 @@ interface LoginFieldsProps {
 
 const LoginFields = ({ handleSuccess }: LoginFieldsProps) => {
     const { login } = useAuth();
+    const [error, setError] = useState<string | null>(null);
 
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setError(null);
+        
         const formData = new FormData(e.currentTarget);
         const email = formData.get("email")?.toString() || "";
         const password = formData.get("password")?.toString() || "";
-        console.log("Sign in data:", { email, password });
 
         try {
             await login(email, password);
             handleSuccess();
         } catch (error: unknown) {
-            // log error for now, in future, have error message component to show user
-            if (error instanceof Error) {
-                console.error(error.message);
-            } else {
-                console.error("Login failed.");
+            let message = "Login failed. Please try again.";
+            
+            if (axios.isAxiosError(error) && error.response?.data?.message) {
+                message = error.response.data.message;
+            } else if (error instanceof Error) {
+                message = error.message;
             }
+            
+            setError(message);
         }
     };
 
     return (
         <form onSubmit={handleSubmit} style={{ width: "100%" }}>
             <Stack spacing={2}>
+                {/* Error Alert */}
+                {error && (
+                    <Alert severity="error" onClose={() => setError(null)}>
+                        {error}
+                    </Alert>
+                )}
+
                 {/* Email field */}
                 <TextField
                     label="Email"

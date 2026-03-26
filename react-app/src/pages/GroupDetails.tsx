@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { getGroupDetails } from "@/features/groups/api/group-details";
 import type { GroupDetailsData } from "@/features/groups/api/group-details";
+import axios from "axios";
 
 const GroupDetails = () => {
     const { id } = useParams<{ id: string }>();
@@ -37,16 +38,13 @@ const GroupDetails = () => {
                 const res = await getGroupDetails(id);
                 setGroup(res.data.group);
             } catch (err: unknown) {
-                const message =
-                    typeof err === "object" &&
-                    err !== null &&
-                    "response" in err &&
-                    typeof (err as { response?: { data?: { message?: unknown } } }).response?.data
-                        ?.message === "string"
-                        ? (err as { response?: { data?: { message?: string } } }).response?.data
-                              ?.message
-                        : "Failed to load group details.";
-                setError(message ?? "Failed to load group details.");
+                let message = "Failed to load group details.";
+                
+                if (axios.isAxiosError(err) && err.response?.data?.message) {
+                    message = err.response.data.message;
+                }
+                
+                setError(message);
             } finally {
                 setLoading(false);
             }
