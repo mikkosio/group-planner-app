@@ -8,6 +8,10 @@ import {
     createActivity,
     updateActivity,
     deleteActivity,
+    getGroupActivities,
+    getWinnerActivity,
+    setWinnerActivity,
+    getActivityById,
 } from "../controllers/activities.controller";
 import {
     addVote,
@@ -17,13 +21,19 @@ import {
     isActivityInGroup,
     isActivityCreator,
     isGroupCreatorOrActivityCreator,
-} from "../middlewares/activitiesMiddleware"
+} from "../middlewares/activitiesMiddleware";
+import { isGroupCreator } from "../middlewares/groupMiddleware";
 
 const router = Router({ mergeParams: true });
 
 //=============================== ENDPOINTS ===============================
+router.get( "/", getGroupActivities);
 router.post("/", validateRequest(createActivitySchema), createActivity);
 
+router.get("/winner", getWinnerActivity);
+router.post("/:activityId/set-winner", isActivityInGroup, isGroupCreator, setWinnerActivity);
+
+router.get(   "/:activityId", isActivityInGroup, getActivityById);
 router.put(   "/:activityId", isActivityInGroup, isActivityCreator, validateRequest(updateActivitySchema), updateActivity);
 router.delete("/:activityId", isActivityInGroup, isGroupCreatorOrActivityCreator, deleteActivity);
 

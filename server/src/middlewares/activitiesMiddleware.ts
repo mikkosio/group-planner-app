@@ -45,7 +45,6 @@ export const isActivityCreator = asyncHandler(async (req: Request, _res: Respons
     next();
 });
 
-
 /**
  * Middleware to verify the authenticated user is the creator of req.activity or req.group.
  * Must always be chained after isActivityInGroup and isGroupMember (relies on req.activity and req.group being set).
