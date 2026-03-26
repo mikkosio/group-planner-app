@@ -60,6 +60,7 @@ model Activity {
   description  String?
   proposedTime DateTime
   isWinner     Boolean  @default(false)
+  createdAt    DateTime  @default(now())
 
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
