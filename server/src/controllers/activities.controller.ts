@@ -7,7 +7,7 @@ import { ApiResponse } from "../types/api.types";
 
 /**
  * List all activities in the group.
- * POST /api/v1/groups/:id/activities
+ * GET /api/v1/groups/:id/activities
  */
 export const getGroupActivities = asyncHandler(async (req: Request, res: Response) => {
     const groupId = req.group!.id;
@@ -76,7 +76,7 @@ export const getWinnerActivity = asyncHandler(async (req: Request, res: Response
 
 /**
  * Set the winner activity of a group.
- * GET /api/v1/groups/:id/activities/:activityId/set-winner
+ * POST /api/v1/groups/:id/activities/:activityId/set-winner
  */
 export const setWinnerActivity = asyncHandler(async (req: Request, res: Response) => {
     const groupId = req.group!.id;
