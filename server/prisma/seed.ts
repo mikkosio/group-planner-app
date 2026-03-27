@@ -157,7 +157,8 @@ async function main() {
                 title: "Grouse Grind Challenge",
                 description: "Classic Vancouver hike. Bring water and snacks!",
                 proposedTime: new Date("2026-04-05T09:00:00Z"),
-                isWinner: false
+                isWinner: false,
+                createdAt: new Date("2026-03-15T10:30:00Z")
             },
             { 
                 groupId: hikers.id, 
@@ -165,7 +166,8 @@ async function main() {
                 title: "Lynn Canyon Suspension Bridge",
                 description: "Beautiful forest trails and free suspension bridge.",
                 proposedTime: new Date("2026-04-05T10:00:00Z"),
-                isWinner: false
+                isWinner: false,
+                createdAt: new Date("2026-03-16T14:20:00Z")
             },
             { 
                 groupId: hikers.id, 
@@ -173,7 +175,8 @@ async function main() {
                 title: "Lighthouse Park Trail",
                 description: "Easy coastal hike with stunning ocean views.",
                 proposedTime: new Date("2026-04-12T09:30:00Z"),
-                isWinner: true
+                isWinner: true,
+                createdAt: new Date("2026-03-18T09:15:00Z")
             },
 
             // Book Club — Carol's group
@@ -183,7 +186,8 @@ async function main() {
                 title: "April Book Discussion",
                 description: "Discussing 'Project Hail Mary' by Andy Weir",
                 proposedTime: new Date("2026-04-15T19:00:00Z"),
-                isWinner: true
+                isWinner: true,
+                createdAt: new Date("2026-03-10T16:45:00Z")
             },
             { 
                 groupId: bookclub.id, 
@@ -191,7 +195,8 @@ async function main() {
                 title: "Coffee Shop Meetup",
                 description: "Casual chat at Revolver Coffee on Cambie",
                 proposedTime: new Date("2026-04-08T14:00:00Z"),
-                isWinner: false
+                isWinner: false,
+                createdAt: new Date("2026-03-12T11:30:00Z")
             },
             { 
                 groupId: bookclub.id, 
@@ -199,7 +204,8 @@ async function main() {
                 title: "Book Swap & Brunch",
                 description: "Bring books to trade, brunch at The Oakwood",
                 proposedTime: new Date("2026-04-22T11:00:00Z"),
-                isWinner: false
+                isWinner: false,
+                createdAt: new Date("2026-03-20T13:00:00Z")
             },
 
             // Foodies Vancouver — Bob's group
@@ -209,7 +215,8 @@ async function main() {
                 title: "Dim Sum Tour - Chinatown",
                 description: "Hit 3 best dim sum spots in one afternoon!",
                 proposedTime: new Date("2026-03-30T12:00:00Z"),
-                isWinner: false
+                isWinner: false,
+                createdAt: new Date("2026-03-08T15:20:00Z")
             },
             { 
                 groupId: foodies.id, 
@@ -217,7 +224,8 @@ async function main() {
                 title: "Sushi Making Workshop",
                 description: "Learn to roll sushi at home. BYOB!",
                 proposedTime: new Date("2026-04-10T18:00:00Z"),
-                isWinner: true
+                isWinner: true,
+                createdAt: new Date("2026-03-14T12:10:00Z")
             },
             { 
                 groupId: foodies.id, 
@@ -225,7 +233,8 @@ async function main() {
                 title: "Food Truck Friday",
                 description: "Sampling the best food trucks at Olympic Village",
                 proposedTime: new Date("2026-04-03T17:30:00Z"),
-                isWinner: false
+                isWinner: false,
+                createdAt: new Date("2026-03-11T19:45:00Z")
             },
             { 
                 groupId: foodies.id, 
@@ -233,7 +242,8 @@ async function main() {
                 title: "Italian Cooking Night",
                 description: "Making fresh pasta from scratch at my place",
                 proposedTime: new Date("2026-04-17T19:00:00Z"),
-                isWinner: false
+                isWinner: false,
+                createdAt: new Date("2026-03-22T10:30:00Z")
             },
 
             // Dev Study Group — David's group
@@ -243,7 +253,8 @@ async function main() {
                 title: "React 19 Deep Dive",
                 description: "Exploring new features and migration strategies",
                 proposedTime: new Date("2026-03-28T18:00:00Z"),
-                isWinner: true
+                isWinner: true,
+                createdAt: new Date("2026-03-05T14:00:00Z")
             },
             { 
                 groupId: devStudy.id, 
@@ -251,7 +262,8 @@ async function main() {
                 title: "Leetcode Practice Session",
                 description: "Team coding session - medium difficulty problems",
                 proposedTime: new Date("2026-04-04T19:00:00Z"),
-                isWinner: false
+                isWinner: false,
+                createdAt: new Date("2026-03-13T17:25:00Z")
             },
             { 
                 groupId: devStudy.id, 
@@ -259,7 +271,8 @@ async function main() {
                 title: "TypeScript Best Practices",
                 description: "Review our group project's TS code together",
                 proposedTime: new Date("2026-04-11T18:30:00Z"),
-                isWinner: false
+                isWinner: false,
+                createdAt: new Date("2026-03-19T08:50:00Z")
             },
             { 
                 groupId: devStudy.id, 
@@ -267,7 +280,8 @@ async function main() {
                 title: "Database Design Workshop",
                 description: "Postgres optimization and indexing strategies",
                 proposedTime: new Date("2026-04-18T17:00:00Z"),
-                isWinner: false
+                isWinner: false,
+                createdAt: new Date("2026-03-24T11:15:00Z")
             },
 
             // Photography Club — Emma's group
@@ -277,7 +291,8 @@ async function main() {
                 title: "Golden Hour at Sunset Beach",
                 description: "Capture the perfect sunset. Bring wide-angle lens!",
                 proposedTime: new Date("2026-04-02T19:00:00Z"),
-                isWinner: false
+                isWinner: false,
+                createdAt: new Date("2026-03-07T16:30:00Z")
             },
             { 
                 groupId: photography.id, 
@@ -285,7 +300,8 @@ async function main() {
                 title: "Street Photography Walk - Gastown",
                 description: "Exploring historic streets and urban scenes",
                 proposedTime: new Date("2026-04-09T14:00:00Z"),
-                isWinner: true
+                isWinner: true,
+                createdAt: new Date("2026-03-09T13:40:00Z")
             },
             { 
                 groupId: photography.id, 
@@ -293,7 +309,8 @@ async function main() {
                 title: "Portrait Lighting Workshop",
                 description: "Learn 3-point lighting setup at my studio",
                 proposedTime: new Date("2026-04-16T10:00:00Z"),
-                isWinner: false
+                isWinner: false,
+                createdAt: new Date("2026-03-17T15:10:00Z")
             },
             { 
                 groupId: photography.id, 
@@ -301,7 +318,8 @@ async function main() {
                 title: "Cherry Blossom Photo Walk",
                 description: "VanDusen Garden's peak bloom season!",
                 proposedTime: new Date("2026-04-06T10:00:00Z"),
-                isWinner: false
+                isWinner: false,
+                createdAt: new Date("2026-03-21T09:25:00Z")
             },
         ],
     });
