@@ -3,9 +3,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import {
     Alert,
     Avatar,
+    Box,
     Button,
     CircularProgress,
     Container,
+    IconButton,
     List,
     ListItem,
     ListItemAvatar,
@@ -76,17 +78,18 @@ const GroupDetails = () => {
 
     return (
         <Container maxWidth="md" sx={{ py: 4 }}>
-            <Typography variant="h4" sx={{ mb: 1 }}>
-                {group.name}
-            </Typography>
-            <Button
-                variant="outlined"
-                startIcon={<ShareOutlined />}
-                onClick={() => setShareDialogOpen(true)}
-                sx={{ mb: 2 }}
-            >
-                Share Invite
-            </Button>
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+                <Typography variant="h4">
+                    {group.name}
+                </Typography>
+                <IconButton
+                    onClick={() => setShareDialogOpen(true)}
+                    aria-label="share invite"
+                    color="primary"
+                >
+                    <ShareOutlined />
+                </IconButton>
+            </Box>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
                 Created on {new Date(group.createdAt).toLocaleDateString()}
             </Typography>
