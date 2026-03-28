@@ -13,8 +13,10 @@ import {
     Paper,
     Typography,
 } from "@mui/material";
+import { ShareOutlined } from "@mui/icons-material";
 import { getGroupDetails } from "@/features/groups/api/group-details";
 import type { GroupDetailsData } from "@/features/groups/api/group-details";
+import ShareInviteDialog from "@/features/groups/components/ShareInviteDialog";
 import axios from "axios";
 
 const GroupDetails = () => {
@@ -23,6 +25,7 @@ const GroupDetails = () => {
     const [group, setGroup] = useState<GroupDetailsData["group"] | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
     useEffect(() => {
         if (!id) {
@@ -76,6 +79,14 @@ const GroupDetails = () => {
             <Typography variant="h4" sx={{ mb: 1 }}>
                 {group.name}
             </Typography>
+            <Button
+                variant="outlined"
+                startIcon={<ShareOutlined />}
+                onClick={() => setShareDialogOpen(true)}
+                sx={{ mb: 2 }}
+            >
+                Share Invite
+            </Button>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
                 Created on {new Date(group.createdAt).toLocaleDateString()}
             </Typography>
@@ -112,6 +123,13 @@ const GroupDetails = () => {
             <Button variant="contained" onClick={() => navigate("/home")} sx={{ my: 2, mb: 2 }}>
                 Back to Groups
             </Button>
+
+            {/* Share Invite Dialog */}
+            <ShareInviteDialog
+                open={shareDialogOpen}
+                onClose={() => setShareDialogOpen(false)}
+                inviteCode={group.inviteCode}
+            />
         </Container>
     );
 };
