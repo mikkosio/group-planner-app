@@ -24,7 +24,19 @@ cd react-app
 npm install
 ```
 
-3. **Start the development server**
+3. **Configure environment variables**
+
+Create a `.env` file in the `react-app` directory (or copy from `.env.example`):
+
+```bash
+cp .env.example .env
+```
+
+Required environment variables:
+- `VITE_API_URL` - Backend API base URL (default: `http://localhost:3000/api/v1`)
+- `VITE_APP_URL` - Frontend application base URL for generating invite links (default: `http://localhost:5173`)
+
+4. **Start the development server**
 
 ```bash
 npm run dev

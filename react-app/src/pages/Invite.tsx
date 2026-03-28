@@ -1,5 +1,5 @@
 import { joinGroup } from "@/features/groups/api/join-group";
-import { Check, CheckCircle, Close, Home } from "@mui/icons-material";
+import { Check, Close, Home } from "@mui/icons-material";
 import { Alert, Box, Button, CircularProgress, Container, Paper, Snackbar, Typography } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";

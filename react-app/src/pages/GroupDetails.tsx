@@ -3,9 +3,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import {
     Alert,
     Avatar,
+    Box,
     Button,
     CircularProgress,
     Container,
+    IconButton,
     List,
     ListItem,
     ListItemAvatar,
@@ -13,8 +15,10 @@ import {
     Paper,
     Typography,
 } from "@mui/material";
+import { ShareOutlined } from "@mui/icons-material";
 import { getGroupDetails } from "@/features/groups/api/group-details";
 import type { GroupDetailsData } from "@/features/groups/api/group-details";
+import ShareInviteDialog from "@/features/groups/components/ShareInviteDialog";
 import axios from "axios";
 
 const GroupDetails = () => {
@@ -23,6 +27,7 @@ const GroupDetails = () => {
     const [group, setGroup] = useState<GroupDetailsData["group"] | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
     useEffect(() => {
         if (!id) {
@@ -73,9 +78,18 @@ const GroupDetails = () => {
 
     return (
         <Container maxWidth="md" sx={{ py: 4 }}>
-            <Typography variant="h4" sx={{ mb: 1 }}>
-                {group.name}
-            </Typography>
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+                <Typography variant="h4">
+                    {group.name}
+                </Typography>
+                <IconButton
+                    onClick={() => setShareDialogOpen(true)}
+                    aria-label="share invite"
+                    color="primary"
+                >
+                    <ShareOutlined />
+                </IconButton>
+            </Box>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
                 Created on {new Date(group.createdAt).toLocaleDateString()}
             </Typography>
@@ -112,6 +126,13 @@ const GroupDetails = () => {
             <Button variant="contained" onClick={() => navigate("/home")} sx={{ my: 2, mb: 2 }}>
                 Back to Groups
             </Button>
+
+            {/* Share Invite Dialog */}
+            <ShareInviteDialog
+                open={shareDialogOpen}
+                onClose={() => setShareDialogOpen(false)}
+                inviteCode={group.inviteCode}
+            />
         </Container>
     );
 };
