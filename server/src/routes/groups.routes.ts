@@ -5,6 +5,7 @@ import {
     createGroupSchema,
     updateGroupSchema,
     joinGroupSchema,
+    finalizeGroupSchema,
 } from "../validators/groups.validator";
 import {
     createGroup,
@@ -14,8 +15,9 @@ import {
     deleteGroup,
     joinGroup,
     unjoinGroup,
+    finalizeGroup,
 } from "../controllers/groups.controller";
-import { isGroupMember, isGroupCreator } from "../middlewares/groupMiddleware";
+import { isGroupMember, isGroupCreator, preventFinalizedModifications } from "../middlewares/groupMiddleware";
 import activitiesRouter from "./activities.routes";
 
 const router = Router();
@@ -33,9 +35,11 @@ router.get("/:id",   isGroupMember, getGroupById);
 router.put("/:id",         isGroupMember, isGroupCreator, validateRequest(updateGroupSchema), updateGroup);
 router.delete("/:id",      isGroupMember, isGroupCreator, deleteGroup);
 router.post("/:id/unjoin", isGroupMember, unjoinGroup);
+router.patch("/:id/finalize", isGroupMember, isGroupCreator, validateRequest(finalizeGroupSchema), finalizeGroup);
 
-// Mount activities routes
-router.use("/:id/activities", isGroupMember, activitiesRouter); // require user to be group member
+// Mount activities routes with finalization check
+// GET requests allowed on finalized groups, but POST/PUT/DELETE are blocked
+router.use("/:id/activities", isGroupMember, activitiesRouter);
 
-export { createGroupSchema, updateGroupSchema, joinGroupSchema };
+export { createGroupSchema, updateGroupSchema, joinGroupSchema, finalizeGroupSchema };
 export default router;
