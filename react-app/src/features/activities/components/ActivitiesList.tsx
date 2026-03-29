@@ -47,7 +47,7 @@ const ActivitiesList = ({ groupId }: ActivitiesListProps) => {
         };
 
         loadActivities(groupId);
-    }, []);
+    }, [groupId]);
 
     return (
         <>
