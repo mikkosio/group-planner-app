@@ -38,6 +38,16 @@ export const joinGroupSchema = z.object({
     }),
 });
 
+/**
+ * Zod schema for finalizing a group and selecting a winner activity.
+ */
+export const finalizeGroupSchema = z.object({
+    body: z.object({
+        activityId: z.string().uuid("Invalid activity ID format"),
+    }),
+});
+
 export type CreateGroupInput = z.infer<typeof createGroupSchema>["body"];
 export type UpdateGroupInput = z.infer<typeof updateGroupSchema>["body"];
 export type JoinGroupInput = z.infer<typeof joinGroupSchema>["body"];
+export type FinalizeGroupInput = z.infer<typeof finalizeGroupSchema>["body"];

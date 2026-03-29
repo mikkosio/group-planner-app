@@ -198,6 +198,61 @@ export class GroupService {
             where: { userId_groupId: { userId, groupId } },
         });
     }
+
+    /**
+     * Finalize a group by selecting a winner activity and updating group status.
+     * This combines two operations: setting the winner and finalizing the group.
+     * @param groupId - ID of the group to finalize
+     * @param activityId - ID of the activity to mark as winner
+     * @returns Updated group with status "Finalized"
+     */
+    async finalizeGroup(groupId: string, activityId: string) {
+        return prisma.$transaction(async (tx) => {
+            // Verify the activity exists and belongs to this group
+            const activity = await tx.activity.findUnique({
+                where: { id: activityId },
+            });
+
+            if (!activity) {
+                throw new AppError("Activity not found", 404);
+            }
+
+            if (activity.groupId !== groupId) {
+                throw new AppError("Activity does not belong to this group", 400);
+            }
+
+            // Verify the group exists and is not already finalized
+            const group = await tx.group.findUnique({
+                where: { id: groupId },
+            });
+
+            if (!group) {
+                throw new AppError("Group not found", 404);
+            }
+
+            if (group.status === "Finalized") {
+                throw new AppError("Group is already finalized", 400);
+            }
+
+            // Reset all activities' isWinner to false in this group
+            await tx.activity.updateMany({
+                where: { groupId, isWinner: true },
+                data: { isWinner: false },
+            });
+
+            // Set the specified activity as winner
+            await tx.activity.update({
+                where: { id: activityId },
+                data: { isWinner: true },
+            });
+
+            // Update group status to Finalized
+            return tx.group.update({
+                where: { id: groupId },
+                data: { status: "Finalized" },
+            });
+        });
+    }
 }
 
 export default new GroupService();

@@ -19,10 +19,13 @@ export const getGroupActivities = asyncHandler(async (req: Request, res: Respons
 
     logger.info(`Retrieved ${activities.length} activity(s) for user: ${userId}`);
 
-    const response: ApiResponse<{ activities: typeof activities }> = {
+    const response: ApiResponse<{ activities: typeof activities; groupStatus: string }> = {
         success: true,
         message: "Activities retrieved successfully",
-        data: { activities },
+        data: { 
+            activities,
+            groupStatus: req.group!.status // Include group status for frontend
+        },
     };
 
     res.status(200).json(response);
