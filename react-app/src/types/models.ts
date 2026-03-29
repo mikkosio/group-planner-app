@@ -24,3 +24,14 @@ export type Membership = {
     user?: User;
     group?: Group;
 };
+
+export type Activity = {
+    id: string;
+    groupId: string;
+    userId: string;
+    title: string;
+    description?: string;
+    proposedTime: string;
+    isWinner: string;
+    createdAt: string;
+}
