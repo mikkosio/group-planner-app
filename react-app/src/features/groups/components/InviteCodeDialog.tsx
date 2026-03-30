@@ -12,6 +12,7 @@ import {
 import { useState } from "react";
 import { joinGroup } from "@/features/groups/api/join-group";
 import axios from "axios";
+import FeedbackSnackbar from "@/components/FeedbackSnackbar";
 
 /**
  * Props for InviteCodeDialog
@@ -145,20 +146,13 @@ const InviteCodeDialog = ({ open, handleClose }: JoinGroupDialogProps) => {
             </DialogActions>
 
             {/* Snackbar for success notifications only */}
-            <Snackbar
+            <FeedbackSnackbar
                 open={snackbar.open}
+                message={snackbar.message}
+                severity="success" 
                 autoHideDuration={6000}
                 onClose={() => setSnackbar({ ...snackbar, open: false })}
-                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            >
-                <Alert
-                    onClose={() => setSnackbar({ ...snackbar, open: false })}
-                    severity="success"
-                    sx={{ width: "100%" }}
-                >
-                    {snackbar.message}
-                </Alert>
-            </Snackbar>
+            />
         </Dialog>
     );
 };

@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { ContentCopy } from "@mui/icons-material";
 import { useState } from "react";
+import FeedbackSnackbar from "@/components/FeedbackSnackbar";
 
 /**
  * Props for ShareInviteDialog
@@ -164,20 +165,13 @@ const ShareInviteDialog = ({ open, onClose, inviteCode }: ShareInviteDialogProps
             </Dialog>
 
             {/* Snackbar for copy feedback */}
-            <Snackbar
+            <FeedbackSnackbar
                 open={snackbar.open}
+                message={snackbar.message}
+                severity="success"
                 autoHideDuration={3000}
                 onClose={() => setSnackbar({ ...snackbar, open: false })}
-                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            >
-                <Alert
-                    onClose={() => setSnackbar({ ...snackbar, open: false })}
-                    severity="success"
-                    sx={{ width: "100%" }}
-                >
-                    {snackbar.message}
-                </Alert>
-            </Snackbar>
+            />
         </>
     );
 };

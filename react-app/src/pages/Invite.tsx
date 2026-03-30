@@ -1,3 +1,4 @@
+import FeedbackSnackbar from "@/components/FeedbackSnackbar";
 import { joinGroup } from "@/features/groups/api/join-group";
 import { Check, Close, Home } from "@mui/icons-material";
 import { Alert, Box, Button, CircularProgress, Container, Paper, Snackbar, Typography } from "@mui/material";
@@ -200,20 +201,13 @@ const InvitePage = () => {
             </Paper>
 
             {/* Snackbar for success/info notifications only */}
-            <Snackbar
+            <FeedbackSnackbar
                 open={snackbar.open}
+                message={snackbar.message}
+                severity={snackbar.severity}
                 autoHideDuration={6000}
                 onClose={() => setSnackbar({ ...snackbar, open: false })}
-                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-            >
-                <Alert
-                    onClose={() => setSnackbar({ ...snackbar, open: false })}
-                    severity={snackbar.severity}
-                    sx={{ width: "100%", maxWidth: "400px" }}
-                >
-                    {snackbar.message}
-                </Alert>
-            </Snackbar>
+            />
         </Container>
     );
 };
