@@ -15,7 +15,7 @@ import {
     Paper,
     Typography,
 } from "@mui/material";
-import { ShareOutlined } from "@mui/icons-material";
+import { Add, ShareOutlined } from "@mui/icons-material";
 import { getGroupDetails } from "@/features/groups/api/group-details";
 import type { GroupDetailsData } from "@/features/groups/api/group-details";
 import ShareInviteDialog from "@/features/groups/components/ShareInviteDialog";
@@ -23,6 +23,7 @@ import AdminControls from "@/features/groups/components/AdminControls";
 import axios from "axios";
 import ActivitiesList from "@/features/activities/components/ActivitiesList";
 import { useAuth } from "@/providers/AuthProvider";
+import CreateActivityDialog from "@/features/activities/components/CreateActivityDialog";
 
 const GroupDetails = () => {
     const { id } = useParams<{ id: string }>();
@@ -36,6 +37,26 @@ const GroupDetails = () => {
     const [selectedActivityTitle, setSelectedActivityTitle] = useState<string | null>(null);
     const [groupStatus, setGroupStatus] = useState<string>("WIP");
     const [finalizationLoading, setFinalizationLoading] = useState(false);
+    const [createActivityOpen, setCreateActivityOpen] = useState(false);
+
+    const loadGroupDetails = async (groupId: string) => {
+        try {
+            setLoading(true);
+            setError(null);
+            const res = await getGroupDetails(groupId);
+            setGroup(res.data.group);
+        } catch (err: unknown) {
+            let message = "Failed to load group details.";
+
+            if (axios.isAxiosError(err) && err.response?.data?.message) {
+                message = err.response.data.message;
+            }
+
+            setError(message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
         if (!id) {
@@ -43,28 +64,7 @@ const GroupDetails = () => {
             setLoading(false);
             return;
         }
-
-        const load = async () => {
-            try {
-                setLoading(true);
-                setError(null);
-                const res = await getGroupDetails(id);
-                setGroup(res.data.group);
-                setGroupStatus(res.data.group.status || "WIP");
-            } catch (err: unknown) {
-                let message = "Failed to load group details.";
-                
-                if (axios.isAxiosError(err) && err.response?.data?.message) {
-                    message = err.response.data.message;
-                }
-                
-                setError(message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        void load();
+        void loadGroupDetails(id);
     }, [id]);
 
     const handleActivitySelect = useCallback((activityId: string, activityTitle: string) => {
@@ -82,9 +82,9 @@ const GroupDetails = () => {
     const handleFinalized = useCallback(async () => {
         // Reload group details after finalization
         if (!id) return;
-        
+
         setFinalizationLoading(true);
-        
+
         try {
             const res = await getGroupDetails(id);
             setGroup(res.data.group);
@@ -120,10 +120,15 @@ const GroupDetails = () => {
 
     return (
         <Container maxWidth="md" sx={{ py: 4 }}>
-            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
-                <Typography variant="h4">
-                    {group.name}
-                </Typography>
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    mb: 1,
+                }}
+            >
+                <Typography variant="h4">{group.name}</Typography>
                 <IconButton
                     onClick={() => setShareDialogOpen(true)}
                     aria-label="share invite"
@@ -136,12 +141,35 @@ const GroupDetails = () => {
                 Created on {new Date(group.createdAt).toLocaleDateString()}
             </Typography>
 
-            <Paper sx={{ p: 2, mb: 3 }}>
-                <Typography variant="h6" sx={{ mb: 1 }}>
-                    Proposed Activities
-                </Typography>
-                <ActivitiesList 
-                    groupId={group.id} 
+            {/* Proposed Activities List */}
+            <Paper
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    p: 2,
+                    mb: 3,
+                }}
+            >
+                <Box sx={{ display: "flex", mb: 1 }}>
+                    <Typography variant="h6" sx={{ flex: 1 }}>
+                        Proposed Activities
+                    </Typography>
+                    <Button
+                        variant="contained"
+                        onClick={() => setCreateActivityOpen(true)}
+                        startIcon={<Add sx={{ width: 22, height: 22 }} />}
+                        size="small"
+                        sx={{
+                            "& .MuiButton-startIcon": { margin: 0 },
+                            minWidth: 0,
+                            minHeight: 0,
+                            width: 40,
+                            height: 40,
+                        }}
+                    />
+                </Box>
+                <ActivitiesList
+                    groupId={group.id}
                     onActivitySelect={isCreator && !finalizationLoading ? handleActivitySelect : undefined}
                     selectedActivityId={selectedActivityId}
                     onGroupStatusChange={handleGroupStatusChange}
@@ -150,11 +178,11 @@ const GroupDetails = () => {
 
             {/* Admin Controls - Only visible to creator */}
             {isCreator && (
-                <Paper 
-                    sx={{ 
-                        p: 0, 
+                <Paper
+                    sx={{
+                        p: 0,
                         mb: 3,
-                        '& *:focus': { 
+                        '& *:focus': {
                             scrollMargin: 0,
                             outline: 'none',
                         }
@@ -172,6 +200,7 @@ const GroupDetails = () => {
                 </Paper>
             )}
 
+            {/* Members List */}
             <Paper sx={{ p: 2 }}>
                 <Typography variant="h6" sx={{ mb: 1 }}>
                     Members ({group.memberships.length})
@@ -201,6 +230,14 @@ const GroupDetails = () => {
                 open={shareDialogOpen}
                 onClose={() => setShareDialogOpen(false)}
                 inviteCode={group.inviteCode}
+            />
+
+            {/* Create Activity Dialog */}
+            <CreateActivityDialog
+                open={createActivityOpen}
+                onClose={() => setCreateActivityOpen(false)}
+                groupId={group.id}
+                loadGroupDetails={loadGroupDetails}
             />
         </Container>
     );
