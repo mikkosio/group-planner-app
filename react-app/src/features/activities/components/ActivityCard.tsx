@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Divider } from "@mui/material";
+import { Card, CardContent, Typography, Divider, Tooltip } from "@mui/material";
 import { formatDate } from "@/utils/formatDate";
 import type { Activity } from "@/types/models";
 import { ThumbUp } from "@mui/icons-material";
@@ -31,18 +31,25 @@ const ActivityCard = ({ activity }: ActivityCardProps) => {
 
             <Divider sx={{ borderBottomWidth: 2.5, my: 1, bgcolor: "background.default" }} /> 
             <CardContent sx={{ p: 0, m: 0, position: "relative", "&:last-child": { pb: 0 } }}>
-                <Typography
-                    variant="caption"
-                    sx={{
-                        color: "info.main",
-                        fontStyle: "italic",
-                        position: "absolute",
-                        bottom: 0,
-                        right: 0,
-                    }}
-                >
-                    proposed by {activity.user.name}
-                </Typography>
+                <Tooltip title={activity.user.name} arrow>
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            color: "info.main",
+                            fontStyle: "italic",
+                            position: "absolute",
+                            bottom: 0,
+                            right: 3,
+                            maxWidth: 150,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            cursor: "default",
+                        }}
+                    >
+                        proposed by {activity.user.name}
+                    </Typography>
+                </Tooltip>
                 
                 {activity.description && (
                     <Typography variant="body2" color="text.secondary">
