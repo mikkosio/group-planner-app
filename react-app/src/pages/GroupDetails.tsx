@@ -32,33 +32,32 @@ const GroupDetails = () => {
     const [shareDialogOpen, setShareDialogOpen] = useState(false);
     const [createActivityOpen, setCreateActivityOpen] = useState(false);
 
+    const loadGroupDetails = async (groupId: string) => {
+        try {
+            setLoading(true);
+            setError(null);
+            const res = await getGroupDetails(groupId);
+            setGroup(res.data.group);
+        } catch (err: unknown) {
+            let message = "Failed to load group details.";
+
+            if (axios.isAxiosError(err) && err.response?.data?.message) {
+                message = err.response.data.message;
+            }
+
+            setError(message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
         if (!id) {
             setError("Missing group id.");
             setLoading(false);
             return;
         }
-
-        const load = async () => {
-            try {
-                setLoading(true);
-                setError(null);
-                const res = await getGroupDetails(id);
-                setGroup(res.data.group);
-            } catch (err: unknown) {
-                let message = "Failed to load group details.";
-
-                if (axios.isAxiosError(err) && err.response?.data?.message) {
-                    message = err.response.data.message;
-                }
-
-                setError(message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        void load();
+        void loadGroupDetails(id);
     }, [id]);
 
     if (loading) {
@@ -169,6 +168,7 @@ const GroupDetails = () => {
                 open={createActivityOpen}
                 onClose={() => setCreateActivityOpen(false)}
                 groupId={group.id}
+                loadGroupDetails={loadGroupDetails}
             />
         </Container>
     );

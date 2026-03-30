@@ -4,22 +4,32 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createActivity } from "../api/create-activity";
 import axios from "axios";
+import FeedbackSnackbar from "@/components/FeedbackSnackbar";
 
 interface CreateActivityDialogProps {
     open: boolean;
     onClose: () => void;
     groupId: string;
+    loadGroupDetails: (groupId: string) => Promise<void>;
 }
 
-const CreateActivityDialog = ({ open, onClose, groupId }: CreateActivityDialogProps) => {
-    const [successMessage, setSuccessMessage] = useState("");
+const CreateActivityDialog = ({ open, onClose, groupId, loadGroupDetails }: CreateActivityDialogProps) => {
+    const [disabled, setDisabled] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState("");
     const [titleError, setTitleError] = useState("");
     const [dateError, setDateError] = useState("");
     const [timeError, setTimeError] = useState("");
+    const [snackbar, setSnackbar] = useState<{
+        open: boolean;
+        message: string;
+    }>({
+        open: false,
+        message: "",
+    });
 
     const validate = (title: string, date: Dayjs, time: Dayjs) => {
         let valid = true;
@@ -55,6 +65,7 @@ const CreateActivityDialog = ({ open, onClose, groupId }: CreateActivityDialogPr
 
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setLoading(true);
         setError("");
         setTitleError("");
         setDateError("");
@@ -87,10 +98,19 @@ const CreateActivityDialog = ({ open, onClose, groupId }: CreateActivityDialogPr
                 setError(message);
                 return;
             }
-            setSuccessMessage("Activity proposal created successfully!")
+            
+            setDisabled(true);
+            setSnackbar({
+                open: true,
+                message: "Activity proposal created successfully!"
+            })
 
             // Close dialog after brief delay
-            setTimeout(() => onClose(), 1500);
+            setTimeout(() => {
+                onClose();
+                setSnackbar({ open: false, message: "" });
+                loadGroupDetails(groupId); // refetch activities
+            }, 1500);
         } catch (error) {
             let message = "Failed to create activity. Please try again.";
             
@@ -99,8 +119,15 @@ const CreateActivityDialog = ({ open, onClose, groupId }: CreateActivityDialogPr
             }
 
             setError(message);
+        } finally {
+            setLoading(false);
         }
     }
+
+    // Reenable submit button
+    useEffect(() => {
+        if (open) setDisabled(false)
+    }, [open])
 
     return (
         <Dialog 
@@ -117,13 +144,16 @@ const CreateActivityDialog = ({ open, onClose, groupId }: CreateActivityDialogPr
                 },
             }}
         >
+            {/* Title */}
             <DialogTitle>Suggest an Activity</DialogTitle>
 
+            {/* Dialog Form */}
             <Box
                 component="form"
                 onSubmit={handleSubmit}
             >
                 <DialogContent>
+                    {/* Title */}
                     <TextField
                         label="Title"
                         name="title"
@@ -134,6 +164,8 @@ const CreateActivityDialog = ({ open, onClose, groupId }: CreateActivityDialogPr
                         required
                         autoFocus
                     />
+
+                    {/* Date and Time */}
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             label="Date"
@@ -163,6 +195,8 @@ const CreateActivityDialog = ({ open, onClose, groupId }: CreateActivityDialogPr
                             }}
                         />
                     </LocalizationProvider>
+
+                    {/* Description */}
                     <TextField
                         label="Description"
                         name="description"
@@ -172,22 +206,30 @@ const CreateActivityDialog = ({ open, onClose, groupId }: CreateActivityDialogPr
                         margin="normal"
                     />
                 </DialogContent>
-
+                
+                {/* Dialog Buttons */}
                 <DialogActions sx={{ justifyContent: "space-between", alignItems: "center" }}>
                     <Box>
                         {error && <Alert severity="error">{error}</Alert>}
-                        {successMessage && <Alert severity="success">{successMessage}</Alert>}
                     </Box>
 
                     <Box>
                         <Button onClick={onClose}>Cancel</Button>
-                        <Button type="submit" variant="contained">
-                        Submit
+                        <Button type="submit" variant="contained" disabled={loading || disabled}>
+                            {loading ? "Creating..." : "Create"}
                         </Button>
                     </Box>
                 </DialogActions>
             </Box>
 
+            {/* Snackbar for success notifications only */}
+            <FeedbackSnackbar
+                open={snackbar.open}
+                message={snackbar.message}
+                severity="success" 
+                autoHideDuration={6000}
+                onClose={() => setSnackbar({ ...snackbar, open: false })}
+            />
         </Dialog>
     );
 };
