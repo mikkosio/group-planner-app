@@ -16,9 +16,12 @@ import ActivityCard from "./ActivityCard";
 
 interface ActivitiesListProps {
     groupId: string;
+    onActivitySelect?: (activityId: string, activityTitle: string) => void;
+    selectedActivityId?: string | null;
+    onGroupStatusChange?: (status: string) => void;
 }
 
-const ActivitiesList = ({ groupId }: ActivitiesListProps) => {
+const ActivitiesList = ({ groupId, onActivitySelect, selectedActivityId, onGroupStatusChange }: ActivitiesListProps) => {
     const [activities, setActivities] = useState<Activity[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -31,8 +34,13 @@ const ActivitiesList = ({ groupId }: ActivitiesListProps) => {
 
                 const res = await getAllActivities(groupId);
                 const activities = res.data.activities;
+                const groupStatus = (res.data as any).groupStatus;
 
                 setActivities(activities);
+                
+                if (onGroupStatusChange && groupStatus) {
+                    onGroupStatusChange(groupStatus);
+                }
             } catch (err: unknown) {
                 let message = "Failed to fetch activities.";
                 
@@ -47,7 +55,7 @@ const ActivitiesList = ({ groupId }: ActivitiesListProps) => {
         };
 
         loadActivities(groupId);
-    }, [groupId]);
+    }, [groupId, onGroupStatusChange]);
 
     return (
         <>
@@ -67,25 +75,64 @@ const ActivitiesList = ({ groupId }: ActivitiesListProps) => {
                         alignItems: "center",
                     }}
                 >
-                    {activities.map((activity) => (
-                        <ListItem
-                            key={activity.id}
-                            sx={{
-                                bgcolor: "background.paper",
-                                borderRadius: 2,
-                                py: 2,
-                                width: "100%",
-                                boxShadow: 3,
-                            }}
-                        >
-                            <ListItemAvatar>
-                                <Avatar sx={{ bgcolor: "primary.main" }}>
-                                    <Hiking />
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ActivityCard activity={activity} />
-                        </ListItem>
-                    ))}
+                    {activities.map((activity) => {
+                        const isWinner = activity.isWinner === true;
+                        const isSelected = selectedActivityId === activity.id;
+                        
+                        return (
+                            <ListItem
+                                key={activity.id}
+                                onClick={() => onActivitySelect?.(activity.id, activity.title)}
+                                sx={{
+                                    bgcolor: "background.paper",
+                                    borderRadius: 2,
+                                    py: 2,
+                                    width: "100%",
+                                    boxShadow: 3,
+                                    cursor: onActivitySelect ? "pointer" : "default",
+                                    border: isSelected ? 3 : 0,
+                                    borderColor: "primary.main",
+                                    transition: "all 0.2s",
+                                    position: "relative",
+                                    overflow: "hidden",
+                                    "&:hover": onActivitySelect ? {
+                                        boxShadow: 6,
+                                        transform: "scale(1.01)",
+                                    } : {},
+                                }}
+                            >
+                                <ListItemAvatar>
+                                    <Avatar sx={{ bgcolor: "primary.main" }}>
+                                        <Hiking />
+                                    </Avatar>
+                                </ListItemAvatar>
+                                <ActivityCard activity={activity} />
+                                {isWinner && (
+                                    <Typography
+                                        component="div"
+                                        sx={{
+                                            position: "absolute",
+                                            top: 12,
+                                            right: -32,
+                                            bgcolor: "warning.main",
+                                            color: "warning.contrastText",
+                                            px: 5,
+                                            py: 0.5,
+                                            fontWeight: "bold",
+                                            fontSize: "0.7rem",
+                                            transform: "rotate(45deg)",
+                                            boxShadow: 2,
+                                            zIndex: 1,
+                                            width: 140,
+                                            textAlign: "center",
+                                        }}
+                                    >
+                                        🏆 SELECTED
+                                    </Typography>
+                                )}
+                            </ListItem>
+                        );
+                    })}
                 </List>
             )}
         </>

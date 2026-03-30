@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
     Alert,
@@ -19,16 +19,23 @@ import { ShareOutlined } from "@mui/icons-material";
 import { getGroupDetails } from "@/features/groups/api/group-details";
 import type { GroupDetailsData } from "@/features/groups/api/group-details";
 import ShareInviteDialog from "@/features/groups/components/ShareInviteDialog";
+import AdminControls from "@/features/groups/components/AdminControls";
 import axios from "axios";
 import ActivitiesList from "@/features/activities/components/ActivitiesList";
+import { useAuth } from "@/providers/AuthProvider";
 
 const GroupDetails = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
+    const { user } = useAuth();
     const [group, setGroup] = useState<GroupDetailsData["group"] | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [shareDialogOpen, setShareDialogOpen] = useState(false);
+    const [selectedActivityId, setSelectedActivityId] = useState<string | null>(null);
+    const [selectedActivityTitle, setSelectedActivityTitle] = useState<string | null>(null);
+    const [groupStatus, setGroupStatus] = useState<string>("WIP");
+    const [finalizationLoading, setFinalizationLoading] = useState(false);
 
     useEffect(() => {
         if (!id) {
@@ -43,6 +50,7 @@ const GroupDetails = () => {
                 setError(null);
                 const res = await getGroupDetails(id);
                 setGroup(res.data.group);
+                setGroupStatus(res.data.group.status || "WIP");
             } catch (err: unknown) {
                 let message = "Failed to load group details.";
                 
@@ -58,6 +66,39 @@ const GroupDetails = () => {
 
         void load();
     }, [id]);
+
+    const handleActivitySelect = useCallback((activityId: string, activityTitle: string) => {
+        // Only allow selection if user is creator and group not finalized
+        if (user && group && user.id === group.creatorId && groupStatus !== "Finalized") {
+            setSelectedActivityId(activityId);
+            setSelectedActivityTitle(activityTitle);
+        }
+    }, [user, group, groupStatus]);
+
+    const handleGroupStatusChange = useCallback((status: string) => {
+        setGroupStatus(status);
+    }, []);
+
+    const handleFinalized = useCallback(async () => {
+        // Reload group details after finalization
+        if (!id) return;
+        
+        setFinalizationLoading(true);
+        
+        try {
+            const res = await getGroupDetails(id);
+            setGroup(res.data.group);
+            setGroupStatus(res.data.group.status || "WIP");
+            setSelectedActivityId(null);
+            setSelectedActivityTitle(null);
+        } catch (err) {
+            console.error("Failed to reload group after finalization", err);
+        } finally {
+            setFinalizationLoading(false);
+        }
+    }, [id]);
+
+    const isCreator = user && group && user.id === group.creatorId;
 
     if (loading) {
         return (
@@ -99,8 +140,37 @@ const GroupDetails = () => {
                 <Typography variant="h6" sx={{ mb: 1 }}>
                     Proposed Activities
                 </Typography>
-                <ActivitiesList groupId={group.id} />
+                <ActivitiesList 
+                    groupId={group.id} 
+                    onActivitySelect={isCreator && !finalizationLoading ? handleActivitySelect : undefined}
+                    selectedActivityId={selectedActivityId}
+                    onGroupStatusChange={handleGroupStatusChange}
+                />
             </Paper>
+
+            {/* Admin Controls - Only visible to creator */}
+            {isCreator && (
+                <Paper 
+                    sx={{ 
+                        p: 0, 
+                        mb: 3,
+                        '& *:focus': { 
+                            scrollMargin: 0,
+                            outline: 'none',
+                        }
+                    }}
+                    tabIndex={-1}
+                >
+                    <AdminControls
+                        groupId={group.id}
+                        groupStatus={groupStatus}
+                        selectedActivityId={selectedActivityId}
+                        selectedActivityTitle={selectedActivityTitle}
+                        onFinalized={handleFinalized}
+                        isLoading={finalizationLoading}
+                    />
+                </Paper>
+            )}
 
             <Paper sx={{ p: 2 }}>
                 <Typography variant="h6" sx={{ mb: 1 }}>
