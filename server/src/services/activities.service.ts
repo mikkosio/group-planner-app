@@ -13,8 +13,9 @@ export class ActivityService {
             where: { groupId },
             orderBy: { createdAt: "desc" },
             include: {
-                _count: { select: { votes: true }},
+                _count: { select: { votes: true } },
                 votes: { where: { userId } },
+                user: true,
             },
         });
     }
@@ -95,6 +96,7 @@ export class ActivityService {
             include: {
                 _count: { select: { votes: true } },
                 votes: { where: { userId } },
+                user: true,
             },
         });
 

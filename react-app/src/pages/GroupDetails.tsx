@@ -20,6 +20,7 @@ import { getGroupDetails } from "@/features/groups/api/group-details";
 import type { GroupDetailsData } from "@/features/groups/api/group-details";
 import ShareInviteDialog from "@/features/groups/components/ShareInviteDialog";
 import axios from "axios";
+import ActivitiesList from "@/features/activities/components/ActivitiesList";
 
 const GroupDetails = () => {
     const { id } = useParams<{ id: string }>();
@@ -96,11 +97,9 @@ const GroupDetails = () => {
 
             <Paper sx={{ p: 2, mb: 3 }}>
                 <Typography variant="h6" sx={{ mb: 1 }}>
-                    Activities
+                    Proposed Activities
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    Placeholder. Insert Activities here.
-                </Typography>
+                <ActivitiesList groupId={group.id} />
             </Paper>
 
             <Paper sx={{ p: 2 }}>
