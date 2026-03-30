@@ -22,23 +22,24 @@ import {
     isActivityCreator,
     isGroupCreatorOrActivityCreator,
 } from "../middlewares/activitiesMiddleware";
-import { isGroupCreator } from "../middlewares/groupMiddleware";
+import { isGroupCreator, preventFinalizedModifications } from "../middlewares/groupMiddleware";
 
 const router = Router({ mergeParams: true });
 
 //=============================== ENDPOINTS ===============================
+// Read operations - allowed even on finalized groups
 router.get( "/", getGroupActivities);
-router.post("/", validateRequest(createActivitySchema), createActivity);
-
 router.get("/winner", getWinnerActivity);
-router.post("/:activityId/set-winner", isActivityInGroup, isGroupCreator, setWinnerActivity);
+router.get("/:activityId", isActivityInGroup, getActivityById);
 
-router.get(   "/:activityId", isActivityInGroup, getActivityById);
-router.put(   "/:activityId", isActivityInGroup, isActivityCreator, validateRequest(updateActivitySchema), updateActivity);
-router.delete("/:activityId", isActivityInGroup, isGroupCreatorOrActivityCreator, deleteActivity);
+// Write operations - blocked on finalized groups
+router.post("/", preventFinalizedModifications, validateRequest(createActivitySchema), createActivity);
+router.post("/:activityId/set-winner", preventFinalizedModifications, isActivityInGroup, isGroupCreator, setWinnerActivity);
+router.put("/:activityId", preventFinalizedModifications, isActivityInGroup, isActivityCreator, validateRequest(updateActivitySchema), updateActivity);
+router.delete("/:activityId", preventFinalizedModifications, isActivityInGroup, isGroupCreatorOrActivityCreator, deleteActivity);
 
-// Vote endpoints
-router.post(  "/:activityId/vote", isActivityInGroup, addVote);
-router.delete("/:activityId/vote", isActivityInGroup, removeVote);
+// Vote endpoints - blocked on finalized groups
+router.post("/:activityId/vote", preventFinalizedModifications, isActivityInGroup, addVote);
+router.delete("/:activityId/vote", preventFinalizedModifications, isActivityInGroup, removeVote);
 
 export default router;
