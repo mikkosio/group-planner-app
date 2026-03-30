@@ -1,58 +1,66 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
+import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { useState } from "react";
+import { createActivity } from "../api/create-activity";
+import axios from "axios";
 
 interface CreateActivityDialogProps {
     open: boolean;
     onClose: () => void;
+    groupId: string;
 }
 
-const CreateActivityDialog = ({ open, onClose }: CreateActivityDialogProps) => {
+const CreateActivityDialog = ({ open, onClose, groupId }: CreateActivityDialogProps) => {
+    const [successMessage, setSuccessMessage] = useState("");
+    const [error, setError] = useState("");
     const [titleError, setTitleError] = useState("");
     const [dateError, setDateError] = useState("");
     const [timeError, setTimeError] = useState("");
 
-    const validate = (title: string, date: Dayjs, time: Dayjs | null) => {
-        let hasError = false;
+    const validate = (title: string, date: Dayjs, time: Dayjs) => {
+        let valid = true;
+        // title errors
         if (title.length < 3) {
             setTitleError("Title must be at least 3 characters");
-            hasError = true;
+            valid = false;
         } else if (title.length > 60) {
             setTitleError("Title must be under 60 characters")
-            hasError = true;
+            valid = false;
         }
         
+        // date errors
         if (!date.isValid()) {
             setDateError("Proposed date is invalid");
-            hasError = true;
+            valid = false;
         } else if (date.isBefore(dayjs(), "day")) {
             setDateError("Proposed date cannot be in the past");
-            hasError = true;
+            valid = false;
         }
         
-        if (time) {
-            if (!time.isValid()) {
-                setTimeError("Proposed time is invalid");
-                hasError = true;
-            } else if (date.isSame(dayjs(), "day") && time.isBefore(dayjs())) {
-                setTimeError("Proposed time cannot be in the past");
-                hasError = true;
-            }
+        // time errors
+        if (!time.isValid()) {
+            setTimeError("Proposed time is invalid");
+            valid = false;
+        } else if (date.isSame(dayjs(), "day") && time.isBefore(dayjs())) {
+            setTimeError("Proposed time cannot be in the past");
+            valid = false;
         }
         
-        return hasError;
+        return valid;
     };
 
-    const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setError("");
         setTitleError("");
         setDateError("");
         setTimeError("");
 
+        // Get form data
         const formData = new FormData(e.currentTarget);
 
         const title = formData.get("title")?.toString().trim() || "";
@@ -60,18 +68,38 @@ const CreateActivityDialog = ({ open, onClose }: CreateActivityDialogProps) => {
         const timeString = formData.get("time")?.toString() || "";
         const description = formData.get("description")?.toString() || "";
 
+        // Convert date and time to dayjs objects
         const date = dayjs(dateString, "MM/DD/YYYY", true);
-        const time = timeString ? dayjs(timeString, "hh:mm A", true) : null;
+        const time = dayjs(timeString, "hh:mm A", true);
         
-        if (validate(title, date, time)) return;
+        // Validate
+        if (!validate(title, date, time)) return;
         
-        let finalDatetime = date;
-        if (time) {
-            finalDatetime = date.hour(time.hour()).minute(time.minute())
-        }
+        // Combine date and time to isostring
+        const finalDatetime = date.hour(time.hour()).minute(time.minute());
         const isoString = finalDatetime.toISOString();
 
-        console.log(title, isoString, description);
+        // Create activity API call
+        try {
+            const res = await createActivity(groupId, title, isoString, description);
+            if (!res.success) {
+                const message = res.message || "Failed to join group.";
+                setError(message);
+                return;
+            }
+            setSuccessMessage("Activity proposal created successfully!")
+
+            // Close dialog after brief delay
+            setTimeout(() => onClose(), 1500);
+        } catch (error) {
+            let message = "Failed to create activity. Please try again.";
+            
+            if (axios.isAxiosError(error) && error.response?.data?.message) {
+                message = error.response.data.message;
+            }
+
+            setError(message);
+        }
     }
 
     return (
@@ -126,6 +154,7 @@ const CreateActivityDialog = ({ open, onClose }: CreateActivityDialogProps) => {
                             name="time"
                             slotProps={{ 
                                 textField: { 
+                                    required: true,
                                     fullWidth: true, 
                                     margin: "normal",
                                     error: Boolean(timeError),
@@ -144,13 +173,21 @@ const CreateActivityDialog = ({ open, onClose }: CreateActivityDialogProps) => {
                     />
                 </DialogContent>
 
-                <DialogActions>
-                    <Button onClick={onClose}>Cancel</Button>
-                    <Button type="submit" variant="contained">
+                <DialogActions sx={{ justifyContent: "space-between", alignItems: "center" }}>
+                    <Box>
+                        {error && <Alert severity="error">{error}</Alert>}
+                        {successMessage && <Alert severity="success">{successMessage}</Alert>}
+                    </Box>
+
+                    <Box>
+                        <Button onClick={onClose}>Cancel</Button>
+                        <Button type="submit" variant="contained">
                         Submit
-                    </Button>
+                        </Button>
+                    </Box>
                 </DialogActions>
             </Box>
+
         </Dialog>
     );
 };

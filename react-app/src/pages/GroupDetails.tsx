@@ -168,6 +168,7 @@ const GroupDetails = () => {
             <CreateActivityDialog 
                 open={createActivityOpen}
                 onClose={() => setCreateActivityOpen(false)}
+                groupId={group.id}
             />
         </Container>
     );
