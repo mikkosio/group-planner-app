@@ -57,6 +57,8 @@ const AdminControls = ({
             await finalizeGroup(groupId, selectedActivityId);
             setConfirmDialogOpen(false);
             onFinalized();
+            // Refresh the page to show updated state
+            window.location.reload();
         } catch (err: unknown) {
             let message = "Failed to finalize group.";
             if (axios.isAxiosError(err) && err.response?.data?.message) {
