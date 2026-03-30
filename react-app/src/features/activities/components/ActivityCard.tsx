@@ -47,7 +47,7 @@ const ActivityCard = ({ activity }: ActivityCardProps) => {
                             cursor: "default",
                         }}
                     >
-                        proposed by asdasdasdas as dasd asd asd asd a
+                        proposed by {activity.user.name}
                     </Typography>
                 </Tooltip>
                 

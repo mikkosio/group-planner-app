@@ -94,7 +94,7 @@ const CreateActivityDialog = ({ open, onClose, groupId, loadGroupDetails }: Crea
         try {
             const res = await createActivity(groupId, title, isoString, description);
             if (!res.success) {
-                const message = res.message || "Failed to join group.";
+                const message = res.message || "Failed to create activity.";
                 setError(message);
                 return;
             }
