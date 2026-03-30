@@ -154,19 +154,22 @@ const GroupDetails = () => {
                     <Typography variant="h6" sx={{ flex: 1 }}>
                         Proposed Activities
                     </Typography>
-                    <Button
-                        variant="contained"
-                        onClick={() => setCreateActivityOpen(true)}
-                        startIcon={<Add sx={{ width: 22, height: 22 }} />}
-                        size="small"
-                        sx={{
-                            "& .MuiButton-startIcon": { margin: 0 },
-                            minWidth: 0,
-                            minHeight: 0,
-                            width: 40,
-                            height: 40,
-                        }}
-                    />
+                    {/** Only show "Add Activity" button if user is a member and group not finalized */}
+                    {groupStatus !== "Finalized" && (
+                        <Button
+                            variant="contained"
+                            onClick={() => setCreateActivityOpen(true)}
+                            startIcon={<Add sx={{ width: 22, height: 22 }} />}
+                            size="small"
+                            sx={{
+                                "& .MuiButton-startIcon": { margin: 0 },
+                                minWidth: 0,
+                                minHeight: 0,
+                                width: 40,
+                                height: 40,
+                            }}
+                        />
+                    )}
                 </Box>
                 <ActivitiesList
                     groupId={group.id}
