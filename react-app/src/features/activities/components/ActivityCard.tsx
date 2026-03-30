@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Divider, Tooltip } from "@mui/material";
+import { Card, CardContent, Typography, Divider, Tooltip, IconButton } from "@mui/material";
 import { formatDate } from "@/utils/formatDate";
 import type { Activity } from "@/types/models";
 import { ThumbUp } from "@mui/icons-material";
@@ -6,30 +6,38 @@ import { useState } from "react";
 
 interface ActivityCardProps {
     activity: Activity;
+    onVote?: (activityId: string, currentlyVoted: boolean) => void;
+    isVoted?: boolean;
 }
 
-const ActivityCard = ({ activity }: ActivityCardProps) => {
+const ActivityCard = ({ activity, onVote, isVoted = false }: ActivityCardProps) => {
     const [expanded, setExpanded] = useState(false);
 
     const maxLength = 60;
     const isLong = (activity.description?.length ?? 0) > maxLength;
-    const description = expanded ? activity.description : (activity.description && activity.description.slice(0, maxLength).trim());
+    const description = expanded
+        ? activity.description
+        : activity.description && activity.description.slice(0, maxLength).trim();
     return (
         <Card elevation={0} sx={{ width: "100%" }}>
             <CardContent
-                sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 0, "&:last-child": { pb: 0 } }}
+                sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    p: 0,
+                    "&:last-child": { pb: 0 },
+                }}
             >
                 <div>
-                    <Typography variant="subtitle1">
-                        {activity.title}
-                    </Typography>
+                    <Typography variant="subtitle1">{activity.title}</Typography>
                     <Typography variant="body2" color="text.secondary">
                         {formatDate(activity.proposedTime)}
                     </Typography>
                 </div>
             </CardContent>
 
-            <Divider sx={{ borderBottomWidth: 2.5, my: 1, bgcolor: "background.default" }} /> 
+            <Divider sx={{ borderBottomWidth: 2.5, my: 1, bgcolor: "background.default" }} />
             <CardContent sx={{ p: 0, m: 0, position: "relative", "&:last-child": { pb: 0 } }}>
                 <Tooltip title={activity.user.name} arrow>
                     <Typography
@@ -50,11 +58,11 @@ const ActivityCard = ({ activity }: ActivityCardProps) => {
                         proposed by {activity.user.name}
                     </Typography>
                 </Tooltip>
-                
+
                 {activity.description && (
                     <Typography variant="body2" color="text.secondary">
                         {description}
-                        {(isLong && !expanded) && "..."}
+                        {isLong && !expanded && "..."}
                         {isLong && (
                             <Typography
                                 variant="inherit"
@@ -72,15 +80,23 @@ const ActivityCard = ({ activity }: ActivityCardProps) => {
                 )}
                 <Typography
                     variant="caption"
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 0.5,
-                        color: "success.main",
-                        mt: 1.5,
-                    }}
+                    sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 1.5 }}
                 >
-                    <ThumbUp color="success" fontSize="small" />
+                    <Tooltip title={isVoted ? "Remove vote" : "Vote for this activity"} arrow>
+                        <IconButton
+                            size="small"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onVote?.(activity.id, isVoted);
+                            }}
+                            sx={{ p: 0.25 }}
+                        >
+                            <ThumbUp
+                                fontSize="small"
+                                sx={{ color: isVoted ? "success.main" : "text.disabled" }}
+                            />
+                        </IconButton>
+                    </Tooltip>
                     {activity._count.votes}
                 </Typography>
             </CardContent>
