@@ -1,7 +1,7 @@
 import FeedbackSnackbar from "@/components/FeedbackSnackbar";
 import { joinGroup } from "@/features/groups/api/join-group";
 import { Check, Close, Home } from "@mui/icons-material";
-import { Alert, Box, Button, CircularProgress, Container, Paper, Snackbar, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Container, Paper, Typography } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
