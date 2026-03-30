@@ -4,7 +4,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { createActivity } from "../api/create-activity";
 import axios from "axios";
 import FeedbackSnackbar from "@/components/FeedbackSnackbar";
@@ -17,12 +17,13 @@ interface CreateActivityDialogProps {
 }
 
 const CreateActivityDialog = ({ open, onClose, groupId, loadGroupDetails }: CreateActivityDialogProps) => {
-    const [disabled, setDisabled] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState("");
     const [titleError, setTitleError] = useState("");
     const [dateError, setDateError] = useState("");
     const [timeError, setTimeError] = useState("");
+    const [dateValue, setDateValue] = useState<Dayjs | null>(null);
+    const [timeValue, setTimeValue] = useState<Dayjs | null>(null);
     const [snackbar, setSnackbar] = useState<{
         open: boolean;
         message: string;
@@ -30,6 +31,68 @@ const CreateActivityDialog = ({ open, onClose, groupId, loadGroupDetails }: Crea
         open: false,
         message: "",
     });
+
+    const resetForm = () => {
+        setError("");
+        setTitleError("");
+        setDateError("");
+        setTimeError("");
+        setDateValue(null);
+        setTimeValue(null);
+        setLoading(false);
+    };
+
+    const handleClose = () => {
+        resetForm();
+        onClose();
+    };
+
+    const validateTitle = (title: string) => {
+        if (title.length === 0) {
+            return true; // Let HTML5 required handle empty
+        }
+        if (title.length < 3) {
+            setTitleError("Title must be at least 3 characters");
+            return false;
+        } else if (title.length > 60) {
+            setTitleError("Title must be under 60 characters");
+            return false;
+        }
+        setTitleError("");
+        return true;
+    };
+
+    const validateDate = (date: Dayjs | null) => {
+        if (!date) {
+            return true; // Let required handle empty
+        }
+        if (!date.isValid()) {
+            setDateError("Proposed date is invalid");
+            return false;
+        } else if (date.isBefore(dayjs(), "day")) {
+            setDateError("Proposed date cannot be in the past");
+            return false;
+        }
+        setDateError("");
+        return true;
+    };
+
+    const validateTime = (time: Dayjs | null, dateValue: Dayjs | null) => {
+        if (!time) {
+            return true; // Let required handle empty
+        }
+        if (!time.isValid()) {
+            setTimeError("Proposed time is invalid");
+            return false;
+        }
+        // Only check past time if date is today
+        if (dateValue && dateValue.isValid() && dateValue.isSame(dayjs(), "day") && time.isBefore(dayjs())) {
+            setTimeError("Proposed time cannot be in the past");
+            return false;
+        }
+        setTimeError("");
+        return true;
+    };
 
     const validate = (title: string, date: Dayjs, time: Dayjs) => {
         let valid = true;
@@ -65,7 +128,8 @@ const CreateActivityDialog = ({ open, onClose, groupId, loadGroupDetails }: Crea
 
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setLoading(true);
+        
+        // Clear previous errors
         setError("");
         setTitleError("");
         setDateError("");
@@ -84,7 +148,12 @@ const CreateActivityDialog = ({ open, onClose, groupId, loadGroupDetails }: Crea
         const time = dayjs(timeString, "hh:mm A", true);
         
         // Validate
-        if (!validate(title, date, time)) return;
+        if (!validate(title, date, time)) {
+            return; // Exit early if validation fails, loading state not affected
+        }
+        
+        // Set loading ONLY after validation passes
+        setLoading(true);
         
         // Combine date and time to isostring
         const finalDatetime = date.hour(time.hour()).minute(time.minute());
@@ -99,15 +168,14 @@ const CreateActivityDialog = ({ open, onClose, groupId, loadGroupDetails }: Crea
                 return;
             }
             
-            setDisabled(true);
             setSnackbar({
                 open: true,
                 message: "Activity proposal created successfully!"
-            })
+            });
 
             // Close dialog after brief delay
             setTimeout(() => {
-                onClose();
+                handleClose();
                 setSnackbar({ open: false, message: "" });
                 loadGroupDetails(groupId); // refetch activities
             }, 1500);
@@ -124,15 +192,10 @@ const CreateActivityDialog = ({ open, onClose, groupId, loadGroupDetails }: Crea
         }
     }
 
-    // Reenable submit button
-    useEffect(() => {
-        if (open) setDisabled(false)
-    }, [open])
-
     return (
         <Dialog 
             open={open}
-            onClose={onClose}
+            onClose={handleClose}
             fullWidth
             maxWidth="sm"
             slotProps={{
@@ -163,6 +226,8 @@ const CreateActivityDialog = ({ open, onClose, groupId, loadGroupDetails }: Crea
                         helperText={titleError}
                         required
                         autoFocus
+                        onBlur={(e) => validateTitle(e.target.value)}
+                        onChange={() => titleError && setTitleError("")}
                     />
 
                     {/* Date and Time */}
@@ -170,27 +235,45 @@ const CreateActivityDialog = ({ open, onClose, groupId, loadGroupDetails }: Crea
                         <DatePicker
                             label="Date"
                             name="date"
+                            value={dateValue}
                             minDate={dayjs()}
+                            onChange={(newValue) => {
+                                setDateValue(newValue);
+                                if (dateError) setDateError("");
+                                // Re-validate time when date changes (for past time check)
+                                if (timeValue) {
+                                    validateTime(timeValue, newValue);
+                                }
+                            }}
+                            onClose={() => validateDate(dateValue)}
                             slotProps={{ 
                                 textField: { 
                                     required: true,
                                     fullWidth: true, 
                                     margin: "normal",
                                     error: Boolean(dateError),
-                                    helperText: dateError
+                                    helperText: dateError,
+                                    onBlur: () => validateDate(dateValue)
                                 } 
                             }}
                         />
                         <TimePicker
                             label="Time"
                             name="time"
+                            value={timeValue}
+                            onChange={(newValue) => {
+                                setTimeValue(newValue);
+                                if (timeError) setTimeError("");
+                            }}
+                            onClose={() => validateTime(timeValue, dateValue)}
                             slotProps={{ 
                                 textField: { 
                                     required: true,
                                     fullWidth: true, 
                                     margin: "normal",
                                     error: Boolean(timeError),
-                                    helperText: timeError
+                                    helperText: timeError,
+                                    onBlur: () => validateTime(timeValue, dateValue)
                                 } 
                             }}
                         />
@@ -214,8 +297,8 @@ const CreateActivityDialog = ({ open, onClose, groupId, loadGroupDetails }: Crea
                     </Box>
 
                     <Box>
-                        <Button onClick={onClose}>Cancel</Button>
-                        <Button type="submit" variant="contained" disabled={loading || disabled}>
+                        <Button onClick={handleClose}>Cancel</Button>
+                        <Button type="submit" variant="contained" disabled={loading}>
                             {loading ? "Creating..." : "Create"}
                         </Button>
                     </Box>
