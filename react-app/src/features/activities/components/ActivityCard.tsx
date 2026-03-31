@@ -80,11 +80,11 @@ const ActivityCard = ({
                         gap: 3,
                     }}
                 >
+                    {/* Vote Count */}
                     <Typography
                         variant="caption"
                         sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
                     >
-                        {/* Vote Count */}
                         <Tooltip
                             title={
                                 disabled
