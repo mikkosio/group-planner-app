@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { alpha, AppBar, Box, Toolbar, Typography } from "@mui/material";
 import MenuButton from "./MenuButton";
 import NavDropdown from "./NavDropdown";
+import { useNavigate } from "react-router-dom";
 
 const navbarInset = { left: 16, right: 16 };
 const navbarZIndex = {
@@ -17,6 +18,7 @@ const routes = [
 const Navbar = () => {
     const navbarRef = useRef<HTMLDivElement | null>(null);
     const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
 
     return (
         <>
@@ -38,6 +40,7 @@ const Navbar = () => {
                     {/* Logo */}
                     <Typography
                         variant="h6"
+                        onClick={() => navigate("/home")}
                         sx={{ flexGrow: 1, display: "flex", justifyContent: "left" }}
                     >
                         Gatherly

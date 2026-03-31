@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alert, Box, Button, Container, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Paper, Container, TextField, Typography } from "@mui/material";
 import { createGroup } from "@/features/groups/api/create-group";
 import axios from "axios";
 
@@ -47,7 +47,7 @@ const CreateGroup = () => {
             setErrors({});
         } catch (error: unknown) {
             let message = "Failed to create group. Please try again.";
-            
+
             if (axios.isAxiosError(error) && error.response?.data?.message) {
                 message = error.response.data.message;
             }
@@ -60,46 +60,48 @@ const CreateGroup = () => {
 
     return (
         <Container maxWidth="sm" sx={{ py: 4 }}>
-            <Typography variant="h4" sx={{ mb: 3 }}>
-                Create Group
-            </Typography>
+            <Paper elevation={5} sx={{ p: 3, borderRadius: 2 }}>
+                <Typography variant="h4" sx={{ mb: 3 }}>
+                    Create Group
+                </Typography>
 
-            <Box
-                component="form"
-                onSubmit={handleSubmit}
-                sx={{ display: "flex", flexDirection: "column", gap: 2 }}
-            >
-                <TextField
-                    label="Group Name"
-                    value={name}
-                    onChange={(event) => setName(event.target.value)}
-                    error={Boolean(errors.name)}
-                    helperText={errors.name}
-                    required
-                    fullWidth
-                />
+                <Box
+                    component="form"
+                    onSubmit={handleSubmit}
+                    sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+                >
+                    <TextField
+                        label="Group Name"
+                        value={name}
+                        onChange={(event) => setName(event.target.value)}
+                        error={Boolean(errors.name)}
+                        helperText={errors.name}
+                        required
+                        fullWidth
+                    />
 
-                <TextField
-                    label="Description"
-                    value={description}
-                    onChange={(event) => setDescription(event.target.value)}
-                    multiline
-                    minRows={3}
-                    fullWidth
-                />
+                    <TextField
+                        label="Description"
+                        value={description}
+                        onChange={(event) => setDescription(event.target.value)}
+                        multiline
+                        minRows={3}
+                        fullWidth
+                    />
 
-                <Button type="submit" variant="contained" disabled={loading}>
-                    {loading ? "Creating..." : "Create Group"}
-                </Button>
-            </Box>
+                    <Button type="submit" variant="contained" disabled={loading}>
+                        {loading ? "Creating..." : "Create Group"}
+                    </Button>
+                </Box>
 
-            {apiError && <Alert severity="error">{apiError}</Alert>}
+                {apiError && <Alert severity="error">{apiError}</Alert>}
 
-            {successMessage && (
-                <Alert severity="success" sx={{ mt: 2 }}>
-                    {successMessage}
-                </Alert>
-            )}
+                {successMessage && (
+                    <Alert severity="success" sx={{ mt: 2 }}>
+                        {successMessage}
+                    </Alert>
+                )}
+            </Paper>
         </Container>
     );
 };
