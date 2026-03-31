@@ -31,6 +31,7 @@ const ActivitiesList = ({
     const [activities, setActivities] = useState<Activity[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [groupStatus, setGroupStatus] = useState<string>("");
 
     useEffect(() => {
         const loadActivities = async (groupId: string) => {
@@ -39,7 +40,7 @@ const ActivitiesList = ({
                 setError(null);
 
                 const res = await getAllActivities(groupId);
-                const groupStatus = (res.data as any).groupStatus;
+                const status = (res.data as any).groupStatus;
 
                 const activities = res.data.activities.map((a: any) => ({
                     ...a,
@@ -47,9 +48,10 @@ const ActivitiesList = ({
                 }));
 
                 setActivities(activities);
+                setGroupStatus(status);
 
-                if (onGroupStatusChange && groupStatus) {
-                    onGroupStatusChange(groupStatus);
+                if (onGroupStatusChange && status) {
+                    onGroupStatusChange(status);
                 }
             } catch (err: unknown) {
                 let message = "Failed to fetch activities.";
@@ -68,6 +70,9 @@ const ActivitiesList = ({
     }, [groupId, onGroupStatusChange]);
 
     const handleVote = async (activityId: string, currentlyVoted: boolean) => {
+        // Prevent voting if the group is finalized
+        if (groupStatus.toUpperCase() === "FINALIZED") return;
+
         setActivities((prev) =>
             prev.map((a) =>
                 a.id === activityId
@@ -166,6 +171,7 @@ const ActivitiesList = ({
                                     activity={activity}
                                     onVote={handleVote}
                                     isVoted={activity.hasVoted === true}
+                                    disabled={groupStatus.toUpperCase() === "FINALIZED"}
                                 />
                                 {isWinner && (
                                     <Typography

@@ -8,9 +8,10 @@ interface ActivityCardProps {
     activity: Activity;
     onVote?: (activityId: string, currentlyVoted: boolean) => void;
     isVoted?: boolean;
+    disabled?: boolean;
 }
 
-const ActivityCard = ({ activity, onVote, isVoted = false }: ActivityCardProps) => {
+const ActivityCard = ({ activity, onVote, isVoted = false, disabled = false }: ActivityCardProps) => {
     const [expanded, setExpanded] = useState(false);
 
     const maxLength = 60;
@@ -82,20 +83,23 @@ const ActivityCard = ({ activity, onVote, isVoted = false }: ActivityCardProps) 
                     variant="caption"
                     sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 1.5 }}
                 >
-                    <Tooltip title={isVoted ? "Remove vote" : "Vote for this activity"} arrow>
-                        <IconButton
-                            size="small"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onVote?.(activity.id, isVoted);
-                            }}
-                            sx={{ p: 0.25 }}
-                        >
-                            <ThumbUp
-                                fontSize="small"
-                                sx={{ color: isVoted ? "success.main" : "text.disabled" }}
-                            />
-                        </IconButton>
+                    <Tooltip title={disabled ? "Voting closed" : (isVoted ? "Remove vote" : "Vote for this activity")} arrow>
+                        <span>
+                            <IconButton
+                                size="small"
+                                disabled={disabled}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onVote?.(activity.id, isVoted);
+                                }}
+                                sx={{ p: 0.25 }}
+                            >
+                                <ThumbUp
+                                    fontSize="small"
+                                    sx={{ color: isVoted && !disabled ? "success.main" : "text.disabled" }}
+                                />
+                            </IconButton>
+                        </span>
                     </Tooltip>
                     {activity._count.votes}
                 </Typography>
