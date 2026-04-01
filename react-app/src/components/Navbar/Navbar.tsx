@@ -3,6 +3,7 @@ import { alpha, AppBar, Box, Toolbar, Typography } from "@mui/material";
 import MenuButton from "./MenuButton";
 import NavDropdown from "./NavDropdown";
 import { useNavigate } from "react-router-dom";
+import GatherlyLogo from "@/assets/gatherlylogo.png";
 
 const navbarInset = { left: 16, right: 16 };
 const navbarZIndex = {
@@ -36,15 +37,17 @@ const Navbar = () => {
                     zIndex: navbarZIndex.navbar,
                 }}
             >
-                <Toolbar>
+                <Toolbar sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     {/* Logo */}
-                    <Typography
-                        variant="h6"
+                    <Box
                         onClick={() => navigate("/home")}
-                        sx={{ flexGrow: 1, display: "flex", justifyContent: "left" }}
+                        sx={{ display: "flex", alignItems: "center", gap: 1, cursor: "pointer" }}
                     >
-                        Gatherly
-                    </Typography>
+                        <Box component="img" src={GatherlyLogo} alt="Gatherly" sx={{ height: 38 }} />
+                        <Typography variant="h5" sx={{ mt: 0.5 }}>
+                            Gatherly
+                        </Typography>
+                    </Box>
 
                     {/* Profile */}
                     <MenuButton open={open} setOpen={setOpen} />
