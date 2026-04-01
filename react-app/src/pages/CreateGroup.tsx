@@ -32,7 +32,6 @@ const CreateGroup = () => {
 
     const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
         event.preventDefault();
-        setGroupCreated(false);
         setApiError(null);
 
         if (!validate()) return;
