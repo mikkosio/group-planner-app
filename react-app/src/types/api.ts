@@ -1,4 +1,4 @@
-import type { Membership, User } from "./models";
+import type { Activity, Membership, User } from "./models";
 
 export type ApiResponse<T> = {
     success: boolean;
@@ -16,5 +16,9 @@ export type MeData = {
 };
 
 export type MembershipData = {
-  membership: Membership;
+    membership: Membership;
 };
+
+export type ActivitiesData = {
+    activities: Array<Activity>;
+}

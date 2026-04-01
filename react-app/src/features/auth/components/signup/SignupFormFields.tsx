@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { Stack, TextField, Button, Alert } from "@mui/material";
 import { useAuth } from "@/providers/AuthProvider";
-import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
+
+interface SignupFormFieldsProps {
+    handleSuccess: () => void;
+}
 
 type ApiFieldError = {
     field: string;
@@ -16,9 +19,8 @@ type ApiErrorResponse = {
 
 const PASSWORD_RULES = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
 
-const SignupFormFields = () => {
+const SignupFormFields = ({ handleSuccess }: SignupFormFieldsProps) => {
     const { register } = useAuth();
-    const navigate = useNavigate();
 
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -55,7 +57,7 @@ const SignupFormFields = () => {
         setIsLoading(true);
         try {
             await register(email, password, name);
-            navigate("/home");
+            handleSuccess();
         } catch (err: unknown) {
             if (err instanceof AxiosError) {
                 const payload = err.response?.data as ApiErrorResponse | undefined;

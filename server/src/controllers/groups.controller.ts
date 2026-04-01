@@ -158,3 +158,26 @@ export const unjoinGroup = asyncHandler(async (req: Request, res: Response) => {
 
     res.status(200).json(response);
 });
+
+/**
+ * Finalize a group by selecting a winner activity and marking as complete.
+ * PATCH /api/v1/groups/:id/finalize
+ */
+export const finalizeGroup = asyncHandler(async (req: Request, res: Response) => {
+    const groupId = req.params.id as string;
+    const { activityId } = req.body;
+
+    logger.info(`Finalize group attempt: ${groupId} with winner activity: ${activityId}`);
+
+    const group = await groupService.finalizeGroup(groupId, activityId);
+
+    logger.info(`Group finalized: ${groupId} with winner: ${activityId}`);
+
+    const response: ApiResponse<{ group: typeof group }> = {
+        success: true,
+        message: "Group finalized successfully",
+        data: { group },
+    };
+
+    res.status(200).json(response);
+});

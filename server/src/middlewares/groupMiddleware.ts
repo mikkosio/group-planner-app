@@ -57,3 +57,25 @@ export const isGroupCreator = asyncHandler(async (req: Request, res: Response, n
 
     next();
 });
+
+/**
+ * Middleware to prevent modifications to a finalized group.
+ * Must be chained after isGroupMember (relies on req.group being set).
+ * 
+ * Blocks the following operations when status = "Finalized":
+ * - Creating activities
+ * - Voting on activities
+ * - Updating activities
+ * - Deleting activities
+ * 
+ * Read operations (GET) are still allowed.
+ * 
+ * Usage: router.post('/:id/activities', protect, isGroupMember, preventFinalizedModifications, handler)
+ */
+export const preventFinalizedModifications = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    if (req.group!.status.toUpperCase() === "FINALIZED") {
+        throw new AppError("Cannot modify a finalized group", 400);
+    }
+
+    next();
+});

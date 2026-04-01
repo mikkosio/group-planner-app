@@ -24,3 +24,19 @@ export type Membership = {
     user?: User;
     group?: Group;
 };
+
+export type Activity = {
+    id: string;
+    groupId: string;
+    userId: string;
+    title: string;
+    description?: string;
+    proposedTime: string;
+    isWinner: boolean;
+    createdAt: string;
+    hasVoted?: boolean;
+    _count: {
+        votes: number;
+    };
+    user: User;
+};
