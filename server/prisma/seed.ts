@@ -175,7 +175,7 @@ async function main() {
                 title: "Lighthouse Park Trail",
                 description: "Easy coastal hike with stunning ocean views.",
                 proposedTime: new Date("2026-04-12T09:30:00Z"),
-                isWinner: true,
+                isWinner: false,
                 createdAt: new Date("2026-03-18T09:15:00Z")
             },
 
@@ -186,7 +186,7 @@ async function main() {
                 title: "April Book Discussion",
                 description: "Discussing 'Project Hail Mary' by Andy Weir",
                 proposedTime: new Date("2026-04-15T19:00:00Z"),
-                isWinner: true,
+                isWinner: false,
                 createdAt: new Date("2026-03-10T16:45:00Z")
             },
             { 
@@ -224,7 +224,7 @@ async function main() {
                 title: "Sushi Making Workshop",
                 description: "Learn to roll sushi at home. BYOB!",
                 proposedTime: new Date("2026-04-10T18:00:00Z"),
-                isWinner: true,
+                isWinner: false,
                 createdAt: new Date("2026-03-14T12:10:00Z")
             },
             { 
@@ -253,7 +253,7 @@ async function main() {
                 title: "React 19 Deep Dive",
                 description: "Exploring new features and migration strategies",
                 proposedTime: new Date("2026-03-28T18:00:00Z"),
-                isWinner: true,
+                isWinner: false,
                 createdAt: new Date("2026-03-05T14:00:00Z")
             },
             { 
@@ -300,7 +300,7 @@ async function main() {
                 title: "Street Photography Walk - Gastown",
                 description: "Exploring historic streets and urban scenes",
                 proposedTime: new Date("2026-04-09T14:00:00Z"),
-                isWinner: true,
+                isWinner: false,
                 createdAt: new Date("2026-03-09T13:40:00Z")
             },
             { 
