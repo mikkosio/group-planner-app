@@ -11,8 +11,6 @@ const SignUpPage = () => {
     const dest = location.state?.from || "/home";
 
     const handleSuccess = () => {
-        console.log(dest);
-
         navigate(dest, { replace: true });
     };
 
