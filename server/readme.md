@@ -125,6 +125,12 @@ Server runs at `http://localhost:3000`
 | `npm run db:migrate`  | Run database migrations                  |
 | `npm run db:push`     | Push schema changes (dev only)           |
 | `npm run db:studio`   | Open Prisma Studio (database GUI)        |
+| `npm run db:seed`     | Seed database with sample data           |
+| `npm run db:reset`    | Reset database (WARNING: deletes data)   |
+| `npm run db:docker:up`| Start PostgreSQL container               |
+| `npm run db:docker:down`| Stop PostgreSQL container              |
+| `npm run db:docker:logs`| View PostgreSQL container logs         |
+| `npm run db:docker:reset`| Reset PostgreSQL container            |
 
 ---
 
@@ -144,20 +150,83 @@ Server runs at `http://localhost:3000`
 
 All group endpoints require a Bearer token. Routes marked **Creator only** additionally require the authenticated user to be the group's creator.
 
-| Method   | Path                       | Access        | Description                                          |
-| -------- | -------------------------- | ------------- | ---------------------------------------------------- |
-| `POST`   | `/api/v1/groups`           | Bearer        | Create a group; creator is auto-enrolled as Admin    |
-| `GET`    | `/api/v1/groups`           | Bearer        | List all groups the authenticated user is a member of |
-| `GET`    | `/api/v1/groups/:id`       | Member        | Get full group details including members list        |
-| `PUT`    | `/api/v1/groups/:id`       | Creator only  | Update group name and/or description                 |
-| `DELETE` | `/api/v1/groups/:id`       | Creator only  | Delete the group                                     |
-| `POST`   | `/api/v1/groups/join`      | Bearer        | Join a group using its invite code                   |
-| `POST`   | `/api/v1/groups/:id/unjoin`| Member        | Leave a group (creator cannot leave their own group) |
+| Method   | Path                        | Access       | Description                                          |
+| -------- | --------------------------- | ------------ | ---------------------------------------------------- |
+| `POST`   | `/api/v1/groups`            | Bearer       | Create a group; creator is auto-enrolled as Admin    |
+| `GET`    | `/api/v1/groups`            | Bearer       | List all groups the authenticated user is a member of |
+| `GET`    | `/api/v1/groups/:id`        | Member       | Get full group details including members list        |
+| `PUT`    | `/api/v1/groups/:id`        | Creator only | Update group name and/or description                 |
+| `DELETE` | `/api/v1/groups/:id`        | Creator only | Delete the group                                     |
+| `POST`   | `/api/v1/groups/join`       | Bearer       | Join a group using its invite code                   |
+| `POST`   | `/api/v1/groups/:id/unjoin` | Member       | Leave a group (creator cannot leave their own group) |
+| `PATCH`  | `/api/v1/groups/:id/finalize` | Creator only | Finalize group and lock winner activity            |
 
 **Join group request body:**
 ```json
 { "inviteCode": "A1B2C3" }
 ```
+
+**Finalize group request body:**
+```json
+{ "winnerActivityId": "clx123abc..." }
+```
+
+**Note:** Once a group is finalized, all write operations on activities (POST, PUT, DELETE) are blocked. Only read operations (GET) remain available.
+
+---
+
+### Activities
+
+All activity endpoints are nested under groups and require the user to be a group member. Routes marked **Creator only** require the activity creator. Routes marked **Group Creator only** require the group's creator.
+
+**Write operations (POST, PUT, DELETE) are blocked on finalized groups.**
+
+| Method   | Path                                           | Access              | Description                        |
+| -------- | ---------------------------------------------- | ------------------- | ---------------------------------- |
+| `GET`    | `/api/v1/groups/:id/activities`                | Member              | List all activities in a group     |
+| `GET`    | `/api/v1/groups/:id/activities/winner`         | Member              | Get the winner activity (if set)   |
+| `GET`    | `/api/v1/groups/:id/activities/:activityId`    | Member              | Get details of a specific activity |
+| `POST`   | `/api/v1/groups/:id/activities`                | Member              | Create a new activity              |
+| `PUT`    | `/api/v1/groups/:id/activities/:activityId`    | Activity Creator    | Update an activity                 |
+| `DELETE` | `/api/v1/groups/:id/activities/:activityId`    | Activity/Group Creator | Delete an activity              |
+| `POST`   | `/api/v1/groups/:id/activities/:activityId/set-winner` | Group Creator | Set activity as winner    |
+
+**Create activity request body:**
+```json
+{
+  "title": "Bowling Night",
+  "description": "Let's go bowling at the local alley",
+  "location": "Downtown Bowl",
+  "dateTime": "2026-04-15T19:00:00Z"
+}
+```
+
+**Update activity request body:**
+```json
+{
+  "title": "Updated Title",
+  "description": "Updated description",
+  "location": "New Location",
+  "dateTime": "2026-04-16T20:00:00Z"
+}
+```
+
+---
+
+### Votes
+
+Vote endpoints are nested under activities. Voting is only allowed for group members.
+
+**Vote operations are blocked on finalized groups.**
+
+| Method   | Path                                              | Access | Description                |
+| -------- | ------------------------------------------------- | ------ | -------------------------- |
+| `POST`   | `/api/v1/groups/:id/activities/:activityId/vote`  | Member | Add a vote to an activity  |
+| `DELETE` | `/api/v1/groups/:id/activities/:activityId/vote`  | Member | Remove vote from activity  |
+
+**Note:** Each user can only have one vote per activity. Adding a vote when one already exists will not create a duplicate. Removing a vote is idempotent.
+
+---
 
 ### System
 
