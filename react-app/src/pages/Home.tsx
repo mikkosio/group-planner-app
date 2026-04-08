@@ -111,19 +111,30 @@ const Home = () => {
                         <Box
                             sx={{
                                 position: "absolute",
-                                top: 15,
-                                right: -35,
-                                backgroundColor: "info.main",
+                                top: 3,
+                                right: 3,
+                                width: 150,
+                                height: 150,
                                 color: "white",
-                                padding: "4px 40px",
                                 transform: "rotate(45deg)",
-                                fontSize: "0.75rem",
-                                fontWeight: "bold",
-                                boxShadow: 2,
-                                textAlign: "center",
                             }}
                         >
-                            Coming Soon
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    backgroundColor: "info.main",
+                                    color: "white",
+                                    py: 0.6,
+                                    px: 1,
+                                    fontSize: "0.75rem",
+                                    fontWeight: "bold",
+                                    boxShadow: 2,
+                                    textAlign: "center",
+                                }}
+                            >
+                                Coming Soon
+                            </Box>
                         </Box>
                     </Card>
                 ))}
