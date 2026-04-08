@@ -9,11 +9,16 @@ import { beforeAll, afterAll } from 'vitest';
 const TEST_TIMEOUT = 30000;
 
 beforeAll(async () => {
-    console.log('🧪 Starting test suite...');
+    console.log('===================');
+    console.log('Starting test suite...');
+    console.log('===================');
 }, TEST_TIMEOUT);
 
 afterAll(async () => {
-    console.log('✅ Test suite completed');
+    console.log('===================');
+    console.log('Test suite completed!');
+    console.log('===================');
+
 });
 
 // Global error handler
