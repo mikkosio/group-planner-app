@@ -1,5 +1,7 @@
 # Gatherly - Group Hangout Planner
 
+[![CI](https://github.com/mikkosio/group-planner-app/actions/workflows/ci.yml/badge.svg)](https://github.com/mikkosio/group-planner-app/actions/workflows/ci.yml)
+
 Gatherly is a full-stack web application that helps groups plan hangouts through collaborative activity voting. Users can create groups, propose activities, vote on their favorites, and finalize plans—all in one streamlined platform.
 
 ## 🛠 Tech Stack
