@@ -118,7 +118,8 @@ describe("GroupDetails", () => {
             user: { id: "u1", name: "Amrit" },
         } as any);
 
-        mockedGetGroupDetails.mockRejectedValue(new Error("Boom"));
+        const errorMessage = "Network Error";
+        mockedGetGroupDetails.mockRejectedValue(new Error(errorMessage));
 
         render(
             <MemoryRouter initialEntries={["/groups/g1"]}>
@@ -128,6 +129,6 @@ describe("GroupDetails", () => {
             </MemoryRouter>,
         );
 
-        expect(await screen.findByText(/failed to load group details/i)).toBeInTheDocument();
+        expect(await screen.findByText(errorMessage)).toBeInTheDocument();
     });
 });
