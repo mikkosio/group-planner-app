@@ -54,7 +54,7 @@ describe("Login Flow Test", () => {
         vi.clearAllMocks();
     });
 
-    it("typing into login fields", async () => {
+    it("types into login fields", async () => {
         renderLogin();
 
         // Find input fields
@@ -70,7 +70,7 @@ describe("Login Flow Test", () => {
         expect(passwordField).toHaveValue(password);
     });
 
-    it("submitting login form", async () => {
+    it("submits login form", async () => {
         // Mock login response
         mockLogin.mockResolvedValueOnce({
             success: true,
@@ -105,7 +105,7 @@ describe("Login Flow Test", () => {
         });
     });
 
-    it("display error login message from API", async () => {
+    it("displays error login message from API", async () => {
         const errorMessage = "Invalid email or password";
 
         // Mock invalid credentials response to login
@@ -168,7 +168,7 @@ describe("Signup Flow Test", () => {
         vi.clearAllMocks();
     });
 
-    it("typing into signup fields", async () => {
+    it("types into signup fields", async () => {
         renderSignup();
 
         // Find input fields
@@ -193,7 +193,7 @@ describe("Signup Flow Test", () => {
         expect(confirmPasswordField).toHaveValue(confirmPassword);
     });
 
-    it("submitting signup form", async () => {
+    it("submits signup form", async () => {
         const fullName = `${firstName} ${lastName}`;
         // Mock register response
         mockRegister.mockResolvedValueOnce({
@@ -229,7 +229,7 @@ describe("Signup Flow Test", () => {
         });
     });
 
-    it("display error signup message from API", async () => {
+    it("displays error signup message from API", async () => {
         const errorMessage = "Email already exists";
 
         // Mock error response to register
