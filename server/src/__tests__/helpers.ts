@@ -2,14 +2,13 @@
  * Test helpers and utilities
  */
 
-import { Express } from 'express';
-import request from 'supertest';
-import app from '../app';
+import request from "supertest";
+import app from "../app";
 
 /**
  * Get the Express app instance for testing
  */
-export function getTestApp(): Express {
+export function getTestApp() {
     return app;
 }
 
@@ -29,7 +28,7 @@ export async function registerAndLogin(userData: {
     password: string;
 }) {
     const registerResponse = await request(app)
-        .post('/api/v1/auth/register')
+        .post("/api/v1/auth/register")
         .send(userData);
 
     if (!registerResponse.body.success) {
@@ -37,7 +36,7 @@ export async function registerAndLogin(userData: {
     }
 
     const loginResponse = await request(app)
-        .post('/api/v1/auth/login')
+        .post("/api/v1/auth/login")
         .send({
             email: userData.email,
             password: userData.password,
