@@ -75,10 +75,10 @@ const LoginFields = ({ handleSuccess }: LoginFieldsProps) => {
 
                 {/* Submit button */}
                 <Button
+                    data-testid="submit-button"
                     type="submit"
                     variant="contained"
                     fullWidth
-                    sx={{ backgroundColor: "#35c2f1" }}
                 >
                     Sign In
                 </Button>
