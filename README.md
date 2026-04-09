@@ -222,6 +222,9 @@ npm run db:reset
 
 Gatherly uses GitHub Actions via `.github/workflows/ci.yml` (**Gatherly CI**).
 
+**Current deployment (Railway):** https://gatherly-bcit.up.railway.app/  
+**Note:** this hosted instance is temporary and expires on Apr 27, 2026.
+
 The pipeline runs on every push and pull request and includes:
 1. Frontend build (`react-app`)
 2. Backend migration + test run (`server`)
