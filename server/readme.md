@@ -134,6 +134,37 @@ Server runs at `http://localhost:3000`
 
 ---
 
+## Testing & CI/CD
+
+### Backend Tests
+
+```bash
+# Run all backend tests
+npm test
+
+# Watch mode
+npm run test:watch
+
+# Run with coverage
+npm run test:coverage
+
+# Visual test UI
+npm run test:ui
+```
+
+### CI Pipeline
+
+Gatherly uses GitHub Actions via `.github/workflows/ci.yml` (**Gatherly CI**).
+
+CI runs on every push and pull request and includes:
+1. Frontend build
+2. Backend database migration + tests
+3. Backend build
+
+Pipeline details are documented in the root README under **CI/CD Pipeline**.
+
+---
+
 ## API Endpoints
 
 ### Auth
@@ -168,7 +199,7 @@ All group endpoints require a Bearer token. Routes marked **Creator only** addit
 
 **Finalize group request body:**
 ```json
-{ "winnerActivityId": "clx123abc..." }
+{ "activityId": "clx123abc..." }
 ```
 
 **Note:** Once a group is finalized, all write operations on activities (POST, PUT, DELETE) are blocked. Only read operations (GET) remain available.
@@ -196,8 +227,7 @@ All activity endpoints are nested under groups and require the user to be a grou
 {
   "title": "Bowling Night",
   "description": "Let's go bowling at the local alley",
-  "location": "Downtown Bowl",
-  "dateTime": "2026-04-15T19:00:00Z"
+  "proposedTime": "2026-04-15T19:00:00Z"
 }
 ```
 
@@ -206,8 +236,7 @@ All activity endpoints are nested under groups and require the user to be a grou
 {
   "title": "Updated Title",
   "description": "Updated description",
-  "location": "New Location",
-  "dateTime": "2026-04-16T20:00:00Z"
+  "proposedTime": "2026-04-16T20:00:00Z"
 }
 ```
 

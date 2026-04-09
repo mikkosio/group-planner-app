@@ -1,5 +1,7 @@
 # Gatherly - Group Hangout Planner
 
+[![CI](https://github.com/mikkosio/group-planner-app/actions/workflows/ci.yml/badge.svg)](https://github.com/mikkosio/group-planner-app/actions/workflows/ci.yml)
+
 Gatherly is a full-stack web application that helps groups plan hangouts through collaborative activity voting. Users can create groups, propose activities, vote on their favorites, and finalize plans—all in one streamlined platform.
 
 ## 🛠 Tech Stack
@@ -214,6 +216,29 @@ npm run db:migrate
 
 # Reset database (WARNING: deletes all data)
 npm run db:reset
+```
+
+### CI/CD Pipeline
+
+Gatherly uses GitHub Actions via `.github/workflows/ci.yml` (**Gatherly CI**).
+
+The pipeline runs on every push and pull request and includes:
+1. Frontend build (`react-app`)
+2. Backend migration + test run (`server`)
+3. Backend build (`server`)
+
+**Backend CI environment**
+- Postgres service mapped to `5433:5432` (project-standard non-default host port)
+- `DATABASE_URL=postgresql://gatherly_user:gatherly_password@localhost:5433/gatherly`
+- `NODE_ENV=test`
+- `API_VERSION=v1`
+- `CORS_ORIGIN=http://localhost:5173`
+
+**Run equivalent checks locally**
+```bash
+npm --prefix server test
+npm --prefix server run build
+npm --prefix react-app run build
 ```
 
 ## 📝 API Overview

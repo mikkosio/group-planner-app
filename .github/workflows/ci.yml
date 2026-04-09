@@ -1,0 +1,92 @@
+name: Gatherly CI
+
+on:
+    push:
+        branches:
+            - "**"
+    pull_request:
+        branches:
+            - "**"
+
+jobs:
+    frontend-build:
+        name: Frontend Build
+        runs-on: ubuntu-latest
+
+        defaults:
+            run:
+                working-directory: react-app
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: npm
+                  cache-dependency-path: react-app/package-lock.json
+
+            - name: Install frontend dependencies
+              run: npm ci
+
+            - name: Build frontend
+              run: npm run build
+
+    backend-test-build:
+        name: Backend Test & Build
+        runs-on: ubuntu-latest
+
+        services:
+            postgres:
+                image: postgres:16
+                env:
+                    POSTGRES_USER: gatherly_user
+                    POSTGRES_PASSWORD: gatherly_password
+                    POSTGRES_DB: gatherly
+                ports:
+                    - 5433:5432
+                options: >-
+                    --health-cmd "pg_isready -U gatherly_user -d gatherly"
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 5
+
+        env:
+            DATABASE_URL: postgresql://gatherly_user:gatherly_password@localhost:5433/gatherly
+            NODE_ENV: test
+            API_VERSION: v1
+            CORS_ORIGIN: http://localhost:5173
+            JWT_SECRET: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+            JWT_EXPIRES_IN: 7d
+
+        defaults:
+            run:
+                working-directory: server
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: npm
+                  cache-dependency-path: server/package-lock.json
+
+            - name: Install backend dependencies
+              run: npm ci
+
+            - name: Generate Prisma client
+              run: npm run db:generate
+
+            - name: Run database migrations
+              run: npx prisma migrate deploy
+
+            - name: Run backend tests
+              run: npm test
+
+            - name: Build backend
+              run: npm run build
