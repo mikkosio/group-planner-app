@@ -1,21 +1,11 @@
 import { useState } from "react";
 import { Stack, TextField, Button, Alert } from "@mui/material";
 import { useAuth } from "@/providers/AuthProvider";
-import { AxiosError } from "axios";
+import { handleError } from "@/utils/errorHandler";
 
 interface SignupFormFieldsProps {
     handleSuccess: () => void;
 }
-
-type ApiFieldError = {
-    field: string;
-    message: string;
-};
-
-type ApiErrorResponse = {
-    message?: string;
-    errors?: ApiFieldError[] | ApiFieldError;
-};
 
 const PASSWORD_RULES = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
 
@@ -59,26 +49,7 @@ const SignupFormFields = ({ handleSuccess }: SignupFormFieldsProps) => {
             await register(email, password, name);
             handleSuccess();
         } catch (err: unknown) {
-            if (err instanceof AxiosError) {
-                const payload = err.response?.data as ApiErrorResponse | undefined;
-                const errors = payload?.errors;
-                if (Array.isArray(errors) && errors.length > 0) {
-                    setError(errors.map((entry) => entry.message).join(" "));
-                    return;
-                }
-
-                if (errors && !Array.isArray(errors) && errors.message) {
-                    setError(errors.message);
-                    return;
-                }
-
-                if (payload?.message) {
-                    setError(payload.message);
-                    return;
-                }
-            }
-
-            setError(err instanceof Error ? err.message : "Registration failed. Please try again.");
+            setError(handleError(err, "Registration failed. Please try again."));
         } finally {
             setIsLoading(false);
         }

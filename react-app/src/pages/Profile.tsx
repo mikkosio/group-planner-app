@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Alert, Box, Button, Container, Paper, Stack, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/providers/AuthProvider";
+import { handleError } from "@/utils/errorHandler";
 import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
 
 const ProfilePage = () => {
@@ -39,11 +40,7 @@ const ProfilePage = () => {
             );
             setSuccess(true);
         } catch (err: unknown) {
-            if (err instanceof Error) {
-                setError(err.message);
-            } else {
-                setError("Failed to update profile. Please try again.");
-            }
+            setError(handleError(err, "Failed to update profile. Please try again."));
         } finally {
             setIsLoading(false);
         }
@@ -56,11 +53,7 @@ const ProfilePage = () => {
             await deleteAccount();
             navigate("/");
         } catch (err: unknown) {
-            if (err instanceof Error) {
-                setDeleteError(err.message);
-            } else {
-                setDeleteError("Failed to delete account. Please try again.");
-            }
+            setDeleteError(handleError(err, "Failed to delete account. Please try again."));
         } finally {
             setIsDeleting(false);
         }

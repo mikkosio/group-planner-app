@@ -9,11 +9,11 @@ import {
     ListItemAvatar,
     Typography,
 } from "@mui/material";
-import axios from "axios";
 import { getAllActivities } from "@/features/activities/api/get-all-activities";
 import type { Activity } from "@/types/models";
 import ActivityCard from "./ActivityCard";
 import { addVote, removeVote } from "@/features/activities/api/vote-activity";
+import { handleError } from "@/utils/errorHandler";
 
 interface ActivitiesListProps {
     groupId: string;
@@ -54,13 +54,7 @@ const ActivitiesList = ({
                     onGroupStatusChange(status);
                 }
             } catch (err: unknown) {
-                let message = "Failed to fetch activities.";
-
-                if (axios.isAxiosError(err) && err.response?.data?.message) {
-                    message = err.response.data.message;
-                }
-
-                setError(message);
+                setError(handleError(err, "Failed to fetch activities."));
             } finally {
                 setLoading(false);
             }
