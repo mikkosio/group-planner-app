@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { joinGroup } from "@/features/groups/api/join-group";
-import axios from "axios";
+import { handleError } from "@/utils/errorHandler";
 import FeedbackSnackbar from "@/components/FeedbackSnackbar";
 
 /**
@@ -71,12 +71,7 @@ const InviteCodeDialog = ({ open, handleClose }: JoinGroupDialogProps) => {
                 setSnackbar({ open: false, message: "" });
             }, 1500);
         } catch (err) {
-            if (axios.isAxiosError(err)) {
-                const message = err.response?.data?.message || "Failed to join group";
-                setError(message);
-            } else {
-                setError("Unexpected error");
-            }
+            setError(handleError(err, "Failed to join group"));
         } finally {
             setLoading(false);
         }
