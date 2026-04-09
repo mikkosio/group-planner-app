@@ -13,7 +13,7 @@ import {
     Typography,
 } from "@mui/material";
 import type { ApiResponse } from "@/types/api";
-import axios from "axios";
+import { handleError } from "@/utils/errorHandler";
 
 type MyGroupBase = {
     id: string;
@@ -55,13 +55,7 @@ const GroupsList = () => {
                 });
                 setGroups(mappedGroups);
             } catch (err: unknown) {
-                let message = "Failed to load groups.";
-                
-                if (axios.isAxiosError(err) && err.response?.data?.message) {
-                    message = err.response.data.message;
-                }
-
-                setError(message);
+                setError(handleError(err, "Failed to load groups."));
             } finally {
                 setLoading(false);
             }

@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { EmojiEvents, CheckCircle } from "@mui/icons-material";
 import { finalizeGroup } from "@/features/groups/api/finalize-group";
-import axios from "axios";
+import { handleError } from "@/utils/errorHandler";
 
 interface AdminControlsProps {
     groupId: string;
@@ -60,11 +60,7 @@ const AdminControls = ({
             // Refresh the page to show updated state
             window.location.reload();
         } catch (err: unknown) {
-            let message = "Failed to finalize group.";
-            if (axios.isAxiosError(err) && err.response?.data?.message) {
-                message = err.response.data.message;
-            }
-            setError(message);
+            setError(handleError(err, "Failed to finalize group."));
         } finally {
             setInternalLoading(false);
         }

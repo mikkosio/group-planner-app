@@ -1,8 +1,8 @@
 import FeedbackSnackbar from "@/components/FeedbackSnackbar";
 import { joinGroup } from "@/features/groups/api/join-group";
+import { handleError } from "@/utils/errorHandler";
 import { Check, Close, Home } from "@mui/icons-material";
 import { Box, Button, CircularProgress, Container, Paper, Typography } from "@mui/material";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -49,23 +49,19 @@ const InvitePage = () => {
                     navigate("/home");
                 }, 3000);
             } catch (err) {
-                if (axios.isAxiosError(err)) {
-                    const message = err.response?.data?.message || "Failed to join group";
-
-                    // Special handling for "already a member"
-                    if (message.toLowerCase().includes("already a member")) {
-                        setSuccess(true);
-                        setSnackbar({
-                            open: true,
-                            message: "You're already in this group!",
-                            severity: "info",
-                        });
-                        setTimeout(() => navigate("/home"), 2500);
-                    } else {
-                        setError(message);
-                    }
+                const message = handleError(err, "Failed to join group.");
+                
+                // Special handling for "already a member"
+                if (message.toLowerCase().includes("already a member")) {
+                    setSuccess(true);
+                    setSnackbar({
+                        open: true,
+                        message: "You're already in this group!",
+                        severity: "info",
+                    });
+                    setTimeout(() => navigate("/home"), 2500);
                 } else {
-                    setError("Unexpected error");
+                    setError(message);
                 }
             } finally {
                 setLoading(false);

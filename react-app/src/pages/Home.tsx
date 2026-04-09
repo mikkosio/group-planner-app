@@ -15,6 +15,7 @@ import GroupsList from "@/features/groups/components/GroupsList";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/providers/AuthProvider";
 import InviteCodeDialog from "@/features/groups/components/InviteCodeDialog";
+import FeedbackSnackbar from "@/components/FeedbackSnackbar";
 import { useState } from "react";
 import { GroupAdd, Input } from "@mui/icons-material";
 
@@ -30,6 +31,15 @@ const Home = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const [joinDialogOpen, setJoinDialogOpen] = useState(false);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+    const handleComingSoonClick = () => {
+        setSnackbarOpen(true);
+    };
+
+    const handleSnackbarClose = () => {
+        setSnackbarOpen(false);
+    };
 
     const actions = [
         {
@@ -49,7 +59,7 @@ const Home = () => {
             title: "Manage Preferences",
             subhead: "Update your activity preferences",
             icon: SettingsIcon,
-            onClick: () => console.log("Manage Preferences clicked"), // replace with actual function
+            onClick: handleComingSoonClick,
         },
     ];
 
@@ -92,9 +102,40 @@ const Home = () => {
                             borderRadius: 4,
                             p: 3,
                             boxShadow: 5,
+                            position: "relative",
+                            overflow: "hidden",
                         }}
                     >
                         <Typography variant="body1">{card.label}</Typography>
+                        {/* Coming Soon Ribbon */}
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                top: 3,
+                                right: 3,
+                                width: 150,
+                                height: 150,
+                                color: "white",
+                                transform: "rotate(45deg)",
+                            }}
+                        >
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    backgroundColor: "info.main",
+                                    color: "white",
+                                    py: 0.6,
+                                    px: 1,
+                                    fontSize: "0.75rem",
+                                    fontWeight: "bold",
+                                    boxShadow: 2,
+                                    textAlign: "center",
+                                }}
+                            >
+                                Coming Soon
+                            </Box>
+                        </Box>
                     </Card>
                 ))}
             </Box>
@@ -142,6 +183,13 @@ const Home = () => {
             {joinDialogOpen && (
                 <InviteCodeDialog open={true} handleClose={() => setJoinDialogOpen(false)} />
             )}
+
+            <FeedbackSnackbar
+                open={snackbarOpen}
+                message="Coming Soon - This feature is not yet available"
+                severity="info"
+                onClose={handleSnackbarClose}
+            />
         </Container>
     );
 };

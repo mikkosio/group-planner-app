@@ -20,7 +20,7 @@ import { getGroupDetails } from "@/features/groups/api/group-details";
 import type { GroupDetailsData } from "@/features/groups/api/group-details";
 import ShareInviteDialog from "@/features/groups/components/ShareInviteDialog";
 import AdminControls from "@/features/groups/components/AdminControls";
-import axios from "axios";
+import { handleError } from "@/utils/errorHandler";
 import ActivitiesList from "@/features/activities/components/ActivitiesList";
 import { useAuth } from "@/providers/AuthProvider";
 import CreateActivityDialog from "@/features/activities/components/CreateActivityDialog";
@@ -46,13 +46,7 @@ const GroupDetails = () => {
             const res = await getGroupDetails(groupId);
             setGroup(res.data.group);
         } catch (err: unknown) {
-            let message = "Failed to load group details.";
-
-            if (axios.isAxiosError(err) && err.response?.data?.message) {
-                message = err.response.data.message;
-            }
-
-            setError(message);
+            setError(handleError(err, "Failed to load group details."));
         } finally {
             setLoading(false);
         }

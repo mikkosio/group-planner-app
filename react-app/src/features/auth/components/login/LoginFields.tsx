@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Stack, TextField, Button, Alert } from "@mui/material";
 import { useAuth } from "@/providers/AuthProvider";
-import axios from "axios";
+import { handleError } from "@/utils/errorHandler";
 
 interface LoginFieldsProps {
     handleSuccess: () => void;
@@ -23,15 +23,7 @@ const LoginFields = ({ handleSuccess }: LoginFieldsProps) => {
             await login(email, password);
             handleSuccess();
         } catch (error: unknown) {
-            let message = "Login failed. Please try again.";
-            
-            if (axios.isAxiosError(error) && error.response?.data?.message) {
-                message = error.response.data.message;
-            } else if (error instanceof Error) {
-                message = error.message;
-            }
-            
-            setError(message);
+            setError(handleError(error, "Login failed. Please try again."));
         }
     };
 
@@ -75,10 +67,10 @@ const LoginFields = ({ handleSuccess }: LoginFieldsProps) => {
 
                 {/* Submit button */}
                 <Button
+                    data-testid="submit-button"
                     type="submit"
                     variant="contained"
                     fullWidth
-                    sx={{ backgroundColor: "#35c2f1" }}
                 >
                     Sign In
                 </Button>

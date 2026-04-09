@@ -6,7 +6,7 @@ import { TimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { useState } from "react";
 import { createActivity } from "../api/create-activity";
-import axios from "axios";
+import { handleError } from "@/utils/errorHandler";
 import FeedbackSnackbar from "@/components/FeedbackSnackbar";
 
 interface CreateActivityDialogProps {
@@ -49,7 +49,7 @@ const CreateActivityDialog = ({ open, onClose, groupId, loadGroupDetails }: Crea
 
     const validateTitle = (title: string) => {
         if (title.length === 0) {
-            return true; // Let HTML5 required handle empty
+            return true;
         }
         if (title.length < 3) {
             setTitleError("Title must be at least 3 characters");
@@ -64,7 +64,7 @@ const CreateActivityDialog = ({ open, onClose, groupId, loadGroupDetails }: Crea
 
     const validateDate = (date: Dayjs | null) => {
         if (!date) {
-            return true; // Let required handle empty
+            return true;
         }
         if (!date.isValid()) {
             setDateError("Proposed date is invalid");
@@ -79,7 +79,7 @@ const CreateActivityDialog = ({ open, onClose, groupId, loadGroupDetails }: Crea
 
     const validateTime = (time: Dayjs | null, dateValue: Dayjs | null) => {
         if (!time) {
-            return true; // Let required handle empty
+            return true;
         }
         if (!time.isValid()) {
             setTimeError("Proposed time is invalid");
@@ -181,13 +181,7 @@ const CreateActivityDialog = ({ open, onClose, groupId, loadGroupDetails }: Crea
                 loadGroupDetails(groupId); // refetch activities
             }, 1500);
         } catch (error) {
-            let message = "Failed to create activity. Please try again.";
-            
-            if (axios.isAxiosError(error) && error.response?.data?.message) {
-                message = error.response.data.message;
-            }
-
-            setError(message);
+            setError(handleError(error, "Failed to create activity. Please try again."));
             setLoading(false);
         }
     }
