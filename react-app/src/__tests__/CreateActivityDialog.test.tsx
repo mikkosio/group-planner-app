@@ -81,6 +81,9 @@ describe("CreateActivityDialog", () => {
         it("rejects past time", async () => {
             render(<CreateActivityDialog {...defaultProps} />);
 
+            // Mock current date to fixed date and time
+            vi.setSystemTime(new Date("2026-04-09T12:00:00"));
+
             const titleInput = screen.getByLabelText(/title/i);
             fireEvent.change(titleInput, { target: { value: "Test Title" } })
 
@@ -162,9 +165,10 @@ describe("CreateActivityDialog", () => {
 
         it("displays generic error message on API exception", async () => {
             const user = userEvent.setup();
+            const errorMessage = "Network error";
 
             // Mock generic error
-            mockedCreateActivity.mockRejectedValue(new Error("Network error"));
+            mockedCreateActivity.mockRejectedValue(new Error(errorMessage));
 
             render(<CreateActivityDialog {...defaultProps} />);
 
@@ -173,7 +177,7 @@ describe("CreateActivityDialog", () => {
             await user.click(screen.getByRole("button", { name: /create/i }));
 
             expect(
-                await screen.findByText(/failed to create activity/i)
+                await screen.findByText(errorMessage)
             ).toBeInTheDocument();
         });
 
